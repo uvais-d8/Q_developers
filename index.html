@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q Developers | Construction Company in Calicut</title>
+    <style>
+        /* ------------------------- */
+        /* --- CSS STYLESHEET ------ */
+        /* ------------------------- */
+
+        :root {
+            --cool-white: #F4F4F9;
+            --purple: #5E239D;
+            --light-purple: #8A4BCE;
+            --dark-gray: #333333;
+            --light-gray: #A9A9A9;
+        }
+
+        /* --- Basic Setup & Typography --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: auto; 
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cool-white);
+            color: var(--dark-gray);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--purple);
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            max-width: 700px;
+        }
+/* --- Immersive Header --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(244, 244, 249, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s ease-in-out;
+            transform: translateY(-100%); /* Start off-screen for animation */
+        }
+        header.scrolled {
+             background: rgba(244, 244, 249, 0.8);
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--purple);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 600;
+            padding: 5px 0;
+            position: relative;
+        }
+        nav a::after { /* Underline effect */
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--purple);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        nav a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* --- Mobile Menu --- */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 101;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: var(--dark-gray);
+            margin: 5px 0;
+            transition: all 0.3s ease-in-out;
+        }
+        @media (max-width: 768px) {
+            nav {
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 70%;
+                height: 100vh;
+                background: var(--cool-white);
+                transform: translateX(100%);
+                transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+            nav.active {
+                transform: translateX(0);
+            }
+            nav ul {
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                gap: 20px;
+            }
+            nav a {
+                font-size: 1.5rem;
+            }
+            .menu-toggle {
+                display: block;
+            }
+             .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+        }
+        section {
+            position: relative;
+            width: 100%;
+            padding: 100px 8%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 1; /* Ensure content is above backgrounds */
+        }
+        
+        /* --- Backgrounds & Canvas --- */
+        .hero-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-image: url('/Background.webp');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+        }
+
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            outline: none;
+        }
+        
+        /* --- Loader --- */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--cool-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            font-size: 2rem;
+            color: var(--purple);
+        }
+
+        /* --- Header / Hero Section --- */
+        #hero {
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #hero h1 {
+            font-size: clamp(3rem, 12vw, 8rem);
+            font-weight: 800;
+            line-height: 1;
+            color: var(--cool-white);
+            mix-blend-mode: difference; /* Cool effect against background */
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(50px) rotate(10deg);
+            filter: blur(10px);
+        }
+
+        /* --- About Section --- */
+        #about {
+            align-items: flex-end;
+            text-align: right;
+        }
+        #about p {
+            margin-left: auto;
+        }
+
+        /* --- Services Section (Layered Cards) --- */
+        #services {
+            padding-bottom: 200px;
+        }
+        .services-container {
+            position: relative;
+            height: 300vh;
+        }
+        .sticky-wrapper {
+            position: sticky;
+            top: 150px;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+        .service-card {
+            position: absolute;
+            width: 50%;
+            max-width: 500px;
+            aspect-ratio: 4 / 3;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(230, 230, 230, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            will-change: transform;
+        }
+        .service-card h3 { font-size: 2rem; margin-bottom: 15px; }
+        .service-card p { font-size: 1rem; }
+
+ /* --- Horizontal Scroll Section --- */
+        #portfolio {
+            padding: 0; 
+            height: auto;
+        }
+        .portfolio-container {
+            height: 300vh; 
+            position: relative;
+        }
+        .portfolio-sticky-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.5vh; /* NEW: Using viewport height for responsive spacing */
+        }
+        .portfolio-track {
+            display: flex;
+            /* REMOVED: width and padding-left are no longer needed here */
+        }
+        .portfolio-item {
+            width: 28%; /* UPDATED: Slightly larger items for better visuals */
+            flex-shrink: 0;
+            padding: 0 10px; /* NEW: Horizontal padding instead of just right */
+            position: relative; /* Needed for the text overlay */
+        }
+        .portfolio-item img {
+            width: 100%;
+            height: 25vh; /* UPDATED: Key change to make rows fit */
+            object-fit: cover;
+            border-radius: 15px; /* Slightly smaller radius */
+            transition: transform 0.5s ease; /* NEW: Smooth transition for hover */
+        }
+        
+        /* NEW: Cool hover effect you asked for! */
+        .portfolio-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .portfolio-item h3, .portfolio-item p {
+            margin-top: 0.5rem;
+            padding-left: 10px; /* Align text with image padding */
+        }
+
+        .portfolio-item p {
+            font-size: 0.9rem; /* Smaller text for location */
+            color: var(--light-gray);
+        }
+
+        .portfolio-heading {
+            padding: 0 8%;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Projects Section (Bento Grid) --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 200px);
+            gap: 20px;
+            width: 100%;
+            margin-top: 40px;
+        }
+        .bento-item {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            font-weight: 600;
+                        clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+
+        } .bento-text {
+            /* Hides text initially */
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .bento-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+        }
+        .bento-item > * { z-index: 1; }
+        .item-1 { grid-column: 1 / 3; grid-row: 1 / 3; background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
+        .item-2 { grid-column: 3 / 4; grid-row: 1 / 2; background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
+        .item-3 { grid-column: 4 / 5; grid-row: 1 / 3; background-image: url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
+        .item-4 { grid-column: 1 / 2; grid-row: 3 / 4; background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
+        .item-5 { grid-column: 2 / 4; grid-row: 3 / 4; background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
+
+
+        /* --- Contact Section & Footer --- */
+        #contact {
+            text-align: center;
+            min-height: 80vh;
+        }
+        #contact a {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: var(--purple);
+            color: var(--cool-white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        #contact a:hover {
+            transform: scale(1.05);
+            background-color: var(--light-purple);
+        }
+        footer {
+            text-align: center;
+            padding: 20px 8%;
+            background: var(--dark-gray);
+            color: var(--light-gray);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            h2 { font-size: 2.5rem; }
+            p { font-size: 1rem; }
+            section { padding: 80px 5%; }
+            #about, #about p { text-align: left; margin: 0;}
+            .service-card { width: 90%; max-width: none; }
+            .portfolio-track { width: 800%; } /* More items to scroll through */
+            .portfolio-item { width: 12.5%; padding-right: 20px; }
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(4, 200px);
+            }
+            .item-1 { grid-column: 1 / 3; grid-row: 1 / 2; }
+            .item-2 { grid-column: 1 / 2; grid-row: 2 / 3; }
+            .item-3 { grid-column: 2 / 3; grid-row: 2 / 4; }
+            .item-4 { grid-column: 1 / 2; grid-row: 3 / 4; }
+            .item-5 { grid-column: 1 / 3; grid-row: 4 / 5; }
+        }
+
+        .logo{
+            height: 50px;
+            width: 40px;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+<div class="1logo">
+  <img class="logo" src="logo.jpg" alt="Q Developers Logo">
+</div>        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <button class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+    <div class="hero-background"></div>
+    <canvas id="three-canvas"></canvas>
+    
+    <div class="loader">Loading...</div>
+
+    <main>
+        <section id="hero">
+            <h1 data-splitting>Q DEVELOPERS</h1>
+        </section>
+
+        <section id="about">
+            <div>
+                <h2 class="fade-in">Crafting Landmarks</h2>
+                <p class="fade-in">
+                    Based in Calicut, Q Developers has been the cornerstone of quality construction for over a decade. We don't just build structures; we build dreams. Our commitment to excellence, innovation, and sustainability sets us apart.
+                </p>
+            </div>
+        </section>
+
+        <section id="services">
+            <h2 class="fade-in">Our Expertise</h2>
+            <div class="services-container">
+                <div class="sticky-wrapper">
+                    <div class="service-card" id="card-1">
+                        <h3>Architectural Design</h3>
+                        <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
+                    </div>
+                    <div class="service-card" id="card-2">
+                        <h3>Construction</h3>
+                        <p>End-to-end construction services with a focus on quality materials and craftsmanship.</p>
+                    </div>
+                    <div class="service-card" id="card-3">
+                        <h3>Project Management</h3>
+                        <p>Ensuring your project is delivered on time and within budget, with complete transparency.</p>
+                    </div> <div class="service-card" id="card-1">
+                        <h3>Architectural Design</h3>
+                        <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
+                    </div>
+                    <div class="service-card" id="card-2">
+                        <h3>Construction</h3>
+                        <p>End-to-end construction services with a focus on quality materials and craftsmanship.</p>
+                    </div>
+                    <div class="service-card" id="card-3">
+                        <h3>Project Management</h3>
+                        <p>Ensuring your project is delivered on time and within budget, with complete transparency.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+      <section id="portfolio">
+             <div class="portfolio-container">
+                <div class="portfolio-sticky-wrapper">
+                    <div class="portfolio-heading">
+                        <h2 class="fade-in">Our Portfolio</h2>
+                    </div>
+
+                    <div class="portfolio-track">
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 1">
+                            <h3>Villa Serenity</h3><p>Calicut</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House">
+                             <h3>The Crest</h3><p>Thrissur</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 2">
+                            <h3>Apex Tower</h3><p>Kochi</p>
+                        </div>
+                        
+                         <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 1">
+                            <h3>Villa Serenity</h3><p>Calicut</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House">
+                             <h3>The Crest</h3><p>Thrissur</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 2">
+                            <h3>Apex Tower</h3><p>Kochi</p>
+                        </div>
+                       
+                    </div>
+
+                    <div class="portfolio-track">
+                        
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
+                            <h3>Elysian Fields</h3><p>Calicut</p>
+                        </div>
+                         <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
+                            <h3>Horizon Homes</h3><p>Calicut</p>
+                        </div>
+                         <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Luxury Interior">
+                            <h3>Oakwood Premier</h3><p>Kochi</p>
+                        </div>
+                        
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
+                            <h3>Elysian Fields</h3><p>Calicut</p>
+                        </div>
+                         <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
+                            <h3>Horizon Homes</h3><p>Calicut</p>
+                        </div>
+                         <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Luxury Interior">
+                            <h3>Oakwood Premier</h3><p>Kochi</p>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-track">
+                        
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="House with Pool">
+                            <h3>Aqua Vista</h3><p>Alappuzha</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior">
+                            <h3>Granite Ridge</h3><p>Idukki</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House">
+                            <h3>The Sanctuary</h3><p>Wayanad</p>
+                        </div>
+                       
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="House with Pool">
+                            <h3>Aqua Vista</h3><p>Alappuzha</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior">
+                            <h3>Granite Ridge</h3><p>Idukki</p>
+                        </div>
+                        <div class="portfolio-item">
+                            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House">
+                            <h3>The Sanctuary</h3><p>Wayanad</p>
+                        </div>
+                    </div>
+
+                </div>
+             </div>
+        </section>
+<section id="projects">
+            <h2 style="margin-top: 100px;" class="fade-in">Signature Projects</h2>
+            <div class="bento-grid">
+                <div class="bento-item item-1"><div class="bento-text">Azure Heights</div></div>
+                <div class="bento-item item-2"><div class="bento-text">The Orchid</div></div>
+                <div class="bento-item item-3"><div class="bento-text">Crimson Plaza</div></div>
+                <div class="bento-item item-4"><div class="bento-text">Greenway Villas</div></div>
+                <div class="bento-item item-5"><div class="bento-text">Nexus Business Park</div></div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2 class="fade-in">Have a project in mind?</h2>
+            <p class="fade-in">Let's build the future together. Contact us for a consultation.</p>
+            <a href="mailto:contact@qdevelopers.com">Get In Touch</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Q Developers, Calicut. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/split-type"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+    /* -------------------------------- */
+    /* --- JAVASCRIPT LOGIC ----------- */
+    /* -------------------------------- */
+
+    import * as THREE from 'three';
+
+    // --- 0. BASIC SETUP ---
+    gsap.registerPlugin(ScrollTrigger);
+    const loader = document.querySelector('.loader');
+
+    // --- 1. LENIS SMOOTH SCROLL ---
+    const lenis = new Lenis();
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+
+    // --- 2. THREE.JS SCENE SETUP ---
+    let scene, camera, renderer, qModel;
+
+    function initThree() {
+        const canvas = document.querySelector('#three-canvas');
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        createQModel();
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
+function createQModel() {
+        // Rotated curves to hide the seam
+        const rotationAngle = -Math.PI / 4; // -45 degrees
+
+        // High-resolution curves for a perfect round shape
+        const outerCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5, 0, Math.PI * 2, false, rotationAngle);
+        const innerCurve = new THREE.EllipseCurve(0, 0, 0.8, 0.8, 0, Math.PI * 2, false, rotationAngle);
+
+        const oShape = new THREE.Shape(outerCurve.getPoints(128));
+        const holePath = new THREE.Path(innerCurve.getPoints(128));
+        oShape.holes.push(holePath);
+
+        // Connected tail shape
+        const tailShape = new THREE.Shape();
+        const innerRadius = 0.8, outerRadius = 1.5;
+
+        const p1 = { x: innerRadius * 0.6, y: -innerRadius * 0.6 };
+        const p2 = { x: outerRadius * 1.3, y: -outerRadius * 1.3 };
+        const p3 = { x: p2.x - 0.4, y: p2.y + 0.1 };
+        const p4 = { x: p1.x - 0.3, y: p1.y + 0.05 };
+
+        tailShape.moveTo(p1.x, p1.y);
+        tailShape.lineTo(p2.x, p2.y);
+        tailShape.lineTo(p3.x, p3.y);
+        tailShape.lineTo(p4.x, p4.y);
+        
+        const extrudeSettings = {
+            depth: 0.7,
+            bevelEnabled: true,
+            bevelSegments: 120, // Max practical smoothness
+            steps: 2,
+            bevelSize: 0.15,
+            bevelThickness: 0.15,
+        };
+
+        const geometry = new THREE.ExtrudeGeometry([oShape, tailShape], extrudeSettings);
+        geometry.center();
+
+        const material = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#FFBAF8"),
+            metalness: 0.1,
+            roughness: 0.7,
+        });
+
+        qModel = new THREE.Mesh(geometry, material);
+        scene.add(qModel);
+    }
+    function initAnimations() {
+        // --- Header Entrance & Scroll Behavior ---
+        gsap.to("header", {
+            y: 0,
+            duration: 1,
+            ease: 'power3.out',
+            delay: 1.5 // Wait for hero text animation to be visible
+        });
+        
+        ScrollTrigger.create({
+            start: 'top -80',
+            end: 99999,
+            toggleClass: { className: 'scrolled', targets: 'header' }
+        });
+
+        // --- Smooth Scroll For Nav Links ---
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                lenis.scrollTo(this.getAttribute('href'));
+                // Close mobile menu on click
+                document.querySelector('nav').classList.remove('active');
+                document.querySelector('.menu-toggle').classList.remove('active');
+            });
+        });
+
+        // --- Mobile Menu Toggle ---
+        const menuToggle = document.querySelector('.menu-toggle');
+        const nav = document.querySelector('nav');
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        const split = new SplitType('#hero h1', { types: 'chars' });
+        gsap.from(split.chars, {
+            delay: 0.2,
+            duration: 1.2,
+            stagger: 0.05,
+            y: 50,
+            rotation: 10,
+            opacity: 0,
+            filter: 'blur(10px)',
+            ease: 'power3.out',
+            onComplete: () => {
+                loader.style.display = 'none';
+            }
+        });
+        
+        // --- Hero Background Fade ---
+        gsap.to(".hero-background", {
+            opacity: 0,
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top bottom",
+                end: "top center",
+                scrub: true
+            }
+        });
+
+        // --- Generic Fade-in for sections ---
+        const fadeElements = gsap.utils.toArray('.fade-in');
+        fadeElements.forEach(el => {
+            gsap.from(el, {
+                opacity: 0, y: 50, filter: 'blur(5px)', duration: 1,
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none',
+                }
+            });
+        });
+
+        // --- Main 'Q' model Scroll Timeline ---
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 1,
+            }
+        });
+
+        // Hero -> About
+        tl.to(qModel.rotation, { y: Math.PI * 1.5, z: -Math.PI * 0.5, ease: 'power1.inOut' }, 0)
+          .to(qModel.position, { x: 3.5, y: -0.5, ease: 'power1.inOut' }, 0)
+          .to(qModel.scale, { x: 0.8, y: 0.8, z: 0.8, ease: 'power1.inOut' }, 0);
+        
+        // About -> Services
+        tl.to(qModel.rotation, { y: Math.PI * 2.5, z: Math.PI * 0.2, ease: 'power1.inOut' }, 1)
+          .to(qModel.position, { x: -3.5, y: -1.5, ease: 'power1.inOut' }, 1);
+        
+        // Services -> Portfolio (Horizontal Scroll)
+        tl.to(qModel.rotation, { y: Math.PI * 3, x: Math.PI * 0.2, ease: 'power1.inOut' }, 2)
+          .to(qModel.position, { x: 5, y: -3, ease: 'power1.inOut' }, 2)
+          .to(qModel.scale, { x: 0.6, y: 0.6, z: 0.6, ease: 'power1.inOut' }, 2);
+
+        // Portfolio -> Projects (Bento)
+        tl.to(qModel.rotation, { y: Math.PI * 3.5, x: Math.PI * 0.5, ease: 'power1.inOut' }, 3)
+          .to(qModel.position, { x: -4, y: 2, ease: 'power1.inOut' }, 3)
+          .to(qModel.scale, { x: 1, y: 1, z: 1, ease: 'power1.inOut' }, 3);
+
+        // Projects -> Contact
+        tl.to(qModel.rotation, { y: Math.PI * 4, z: 0, ease: 'power1.inOut' }, 4)
+          .to(qModel.position, { x: 0, y: 0, ease: 'power1.inOut' }, 4);
+
+        // --- Layered Card Animation ---
+        const cards = gsap.utils.toArray('.service-card');
+        gsap.to(cards, {
+            yPercent: (i) => -150 * (cards.length - 1 - i),
+            scrollTrigger: {
+                trigger: ".services-container",
+                start: "top top", end: "bottom bottom", scrub: 1,
+                pin: ".sticky-wrapper",
+            }
+        });
+         
+          
+      // --- Horizontal Scroll Animation ---
+        const tracks = gsap.utils.toArray(".portfolio-track");
+        
+        const portfolioTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".portfolio-container",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1,
+                pin: ".portfolio-sticky-wrapper",
+            }
+        });
+
+        tracks.forEach((track, i) => {
+            // NEW: More robust width calculation
+            const trackWidth = track.scrollWidth; 
+            const scrollDistance = trackWidth - window.innerWidth;
+
+            // Animate from a different starting point for the reversed track
+            if (i % 2 !== 0) {
+                 gsap.set(track, { x: -scrollDistance });
+            }
+
+            portfolioTl.to(track, {
+                x: i % 2 === 0 ? -scrollDistance : 0,
+                ease: "none"
+            }, 0);
+        });
+        
+        // --- Bento Grid Animation ---
+        gsap.from(".bento-item", {
+            opacity: 0, scale: 0.9, y: 30, stagger: 0.1, duration: 0.8, ease: "power2.out",
+            scrollTrigger: { trigger: ".bento-grid", start: "top 80%", }
+        });
+    }
+
+    // --- INITIALIZE EVERYTHING ---
+    window.addEventListener('load', () => {
+        initThree();
+        initAnimations();
+    });// --- Advanced Bento Grid Animation ---
+        const bentoTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".bento-grid",
+                start: "top 75%",
+            }
+        });
+
+        // Animate the wipe-down reveal of the boxes
+        bentoTl.to(".bento-item", {
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+            stagger: 0.1,
+            duration: 1,
+            ease: "power3.inOut"
+        });
+
+        // Animate the text fading in, slightly after the boxes appear
+        bentoTl.to(".bento-text", {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "power2.out"
+        }, "-=0.75"); // The '-=0.75' overlaps the animation slightly for a smoother effect
+    </script>
+    
+</body>
+</html>
