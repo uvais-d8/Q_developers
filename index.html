@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,12 +14,10 @@
             --cool-white: #F4F4F9;
             --purple: #5E239D;
             --light-purple: #8A4BCE;
-            --dark-gray: #333333;
-            --light-gray: #A9A9A9;
-            --footer-light-bg: #f0f2f5; /* New light footer bg */
             --electric-purple: #7f5af0;
-
-
+            --dark-gray: #16161a;
+            --light-gray: #A9A9A9;
+            --footer-light-bg: #f0f2f5;
         }
 
         /* --- Basic Setup & Typography --- */
@@ -29,7 +28,7 @@
         }
 
         html {
-            height: auto; 
+            height: auto;
         }
 
         body {
@@ -39,14 +38,16 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             color: var(--purple);
         }
 
         h2 {
-            font-size: 3rem;
+            font-size: clamp(2.5rem, 5vw, 3rem);
             margin-bottom: 1rem;
         }
 
@@ -54,107 +55,19 @@
             font-size: 1.1rem;
             line-height: 1.7;
             max-width: 700px;
-        } 
-       
-        .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--purple);
-        }
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 40px;
-        }
-        nav a {
-            text-decoration: none;
-            color: var(--dark-gray);
-            font-weight: 600;
-            padding: 5px 0;
-            position: relative;
-        }
-        nav a::after { /* Underline effect */
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--purple);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        nav a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
         }
 
-        /* --- Mobile Menu --- */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 101;
-        }
-        .menu-toggle span {
-            display: block;
-            width: 25px;
-            height: 2px;
-            background-color: var(--dark-gray);
-            margin: 5px 0;
-            transition: all 0.3s ease-in-out;
-        }
-        @media (max-width: 768px) {
-            nav {
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 70%;
-                height: 100vh;
-                background: var(--cool-white);
-                transform: translateX(100%);
-                transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            }
-            nav.active {
-                transform: translateX(0);
-            }
-            nav ul {
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                height: 100%;
-                gap: 20px;
-            }
-            nav a {
-                font-size: 1.5rem;
-            }
-            .menu-toggle {
-                display: block;
-            }
-             .menu-toggle.active span:nth-child(1) {
-                transform: rotate(45deg) translate(5px, 5px);
-            }
-            .menu-toggle.active span:nth-child(2) {
-                opacity: 0;
-            }
-            .menu-toggle.active span:nth-child(3) {
-                transform: rotate(-45deg) translate(5px, -5px);
-            }
-        }
         section {
             position: relative;
             width: 100%;
-            padding: 100px 8%;
+            padding: 120px 8%;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            z-index: 1; /* Ensure content is above backgrounds */
+            z-index: 1;
         }
-        
+
         /* --- Backgrounds & Canvas --- */
         .hero-background {
             position: fixed;
@@ -177,7 +90,7 @@
             z-index: -1;
             outline: none;
         }
-        
+
         /* --- Loader --- */
         .loader {
             position: fixed;
@@ -192,6 +105,12 @@
             z-index: 9999;
             font-size: 2rem;
             color: var(--purple);
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* --- Hero Section --- */
@@ -207,69 +126,209 @@
             font-weight: 800;
             line-height: 1;
             color: var(--cool-white);
-            mix-blend-mode: difference; /* Cool effect against background */
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+            mix-blend-mode: difference;
+            /* Base shadow for "DEVELOPERS" */
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        #hero .hero-q {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            /* Increased for maximum thickness */
+
+            /* More pronounced 3D "extruded" effect */
+            text-shadow:
+                1px 1px 0px #3c1766,
+                /* Dark purple shadow for depth */
+                2px 2px 0px #3c1766,
+                3px 3px 0px #3c1766,
+                4px 4px 0px #3c1766,
+                5px 5px 0px #3c1766,
+                /* Final soft drop shadow */
+                6px 6px 15px rgba(0, 0, 0, 0.5);
         }
 
         .char {
             display: inline-block;
-            opacity: 0;
-            transform: translateY(50px) rotate(10deg);
-            filter: blur(10px);
         }
 
-        /* --- About Section --- */
-        #about {
-            align-items: flex-end;
-            text-align: right;
-        }
-        #about p {
-            margin-left: auto;
-        }
-
-        /* --- Services Section (Layered Cards) --- */
-        #services {
-            padding-bottom: 200px;
-        }
-        .services-container {
-            position: relative;
-            height: 300vh;
-        }
-        .sticky-wrapper {
-            position: sticky;
-            top: 150px;
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-        }
-        .service-card {
+        /* NEW: Text overlay for 3D model */
+        .hero-text-overlay {
             position: absolute;
-            width: 50%;
-            max-width: 500px;
-            aspect-ratio: 4 / 3;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(230, 230, 230, 0.8);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            will-change: transform;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: white;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            /* Allows mouse interaction with canvas behind it */
         }
-        .service-card h3 { font-size: 2rem; margin-bottom: 15px; }
-        .service-card p { font-size: 1rem; }
 
- /* --- Horizontal Scroll Section --- */
+        /* ========== START: ADVANCED ABOUT SECTION STYLES ========== */
+
+        /* UPDATED: #about section layout */
+        #about {
+            align-items: flex-start;
+            /* Align content to the left */
+            justify-content: center;
+            text-align: left;
+            /* Ensure text is left-aligned */
+            min-height: 100vh;
+            /* Restore min-height for proper spacing */
+            padding-bottom: 20vh;
+        }
+
+        #about div {
+            max-width: 700px;
+            /* Constrain width for readability */
+        }
+
+        /* Style for the new subheading */
+        .about-subheading {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--light-purple);
+            margin-bottom: 20px;
+            opacity: 0;
+            /* Initial state for animation */
+            transform: translateY(20px);
+        }
+
+        /* Style for the paragraphs */
+        .about-text {
+            margin-bottom: 1.5em;
+        }
+
+        /* This is for the line-by-line animation */
+        .about-text .line {
+            display: block;
+            /* Ensures each line is on its own row */
+            overflow: hidden;
+            /* Hides the child .word element */
+        }
+
+        .about-text .word {
+            display: inline-block;
+            transform: translateY(110%);
+            /* Start each word below its line */
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* --- Quick Enquiry Button --- */
+        #enquiry-button {
+            position: absolute;
+            bottom: 10vh;
+            /* Initial position at bottom right of the section */
+            right: 8%;
+            background-color: var(--electric-purple);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(127, 90, 240, 0.4);
+            transition: all 0.4s ease-in-out;
+            opacity: 0;
+            /* Hidden initially */
+            transform: scale(0.8);
+        }
+
+        /* The "sticky" state for the button */
+        #enquiry-button.sticky {
+            position: fixed;
+            top: 30px;
+            /* Position at the top right of the viewport */
+            bottom: auto;
+        }
+
+        #enquiry-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(127, 90, 240, 0.6);
+        }
+
+        #enquiry-button svg {
+            transition: transform 0.3s ease;
+        }
+
+        #enquiry-button:hover svg {
+            transform: rotate(45deg);
+        }
+
+
+
+
+        /* ========== END: ADVANCED ABOUT SECTION STYLES ========== *//* --- Services Section (Full Width) --- */
+#services {
+    padding-bottom: 200px;
+}
+
+.services-container {
+    position: relative;
+    height: 300vh; /* This still controls the scroll duration */
+}
+
+.sticky-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* UPDATED: Container is now full-width */
+.cards-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around; /* Distributes cards evenly */
+    padding: 0 5%; /* Adds some space at the edges */
+    width: 100%;
+    height: 100%;
+}
+
+.service-card {
+    position: relative;
+    flex-shrink: 0;
+    /* UPDATED: Cards are now sized to fit, with a max-width */
+    width: 30%;
+    max-width: 450px;
+    min-width: 280px;
+    aspect-ratio: 4 / 3;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.service-card h3 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+
+
         #portfolio {
-            padding: 0; 
+            padding: 0;
             height: auto;
         }
+
         .portfolio-container {
             height: 300vh; 
             position: relative;
         }
+
         .portfolio-sticky-wrapper {
             position: sticky;
             top: 0;
@@ -279,60 +338,49 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 1.5vh; /* NEW: Using viewport height for responsive spacing */
-        }
-        .portfolio-track {
-            display: flex;
-            /* REMOVED: width and padding-left are no longer needed here */
-        }
-        .portfolio-item {
-            width: 28%; /* UPDATED: Slightly larger items for better visuals */
-            flex-shrink: 0;
-            padding: 0 10px; /* NEW: Horizontal padding instead of just right */
-            position: relative; /* Needed for the text overlay */
-        }
-        .portfolio-item img {
-            width: 100%;
-            height: 25vh; /* UPDATED: Key change to make rows fit */
-            object-fit: cover;
-            border-radius: 15px; /* Slightly smaller radius */
-            transition: transform 0.5s ease; /* NEW: Smooth transition for hover */
-        }
-        
-        /* NEW: Cool hover effect you asked for! */
-        .portfolio-item:hover img {
-            transform: scale(1.05);
-        }
-        
-        .portfolio-item h3, .portfolio-item p {
-            margin-top: 0.5rem;
-            padding-left: 10px; /* Align text with image padding */
+            gap: 1.5vh;
         }
 
-        .portfolio-item p {
-            font-size: 0.9rem; /* Smaller text for location */
-            color: var(--light-gray);
+        .portfolio-track {
+            display: flex;
+        }
+
+        .portfolio-item {
+            width: 28%;
+            flex-shrink: 0;
+            padding: 0 10px;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 25vh;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.05);
         }
 
         .portfolio-heading {
             padding: 0 8%;
             margin-bottom: 1.5rem;
+            margin-top: 10rem;
         }
 
-        /* --- Projects Section (Bento Grid) --- */
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(3, 200px);
             gap: 20px;
-            width: 100%;
             margin-top: 40px;
         }
+
         .bento-item {
             background-color: white;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             position: relative;
             background-size: cover;
             background-position: center;
@@ -342,32 +390,57 @@
             flex-direction: column;
             justify-content: flex-end;
             font-weight: 600;
-                        clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
-
-        } .bento-text {
-            /* Hides text initially */
-            opacity: 0;
-            transform: translateY(20px);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
         }
+
         .bento-item::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
         }
-        .bento-item > * { z-index: 1; }
-        .item-1 { grid-column: 1 / 3; grid-row: 1 / 3; background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-2 { grid-column: 3 / 4; grid-row: 1 / 2; background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-3 { grid-column: 4 / 5; grid-row: 1 / 3; background-image: url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-4 { grid-column: 1 / 2; grid-row: 3 / 4; background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-5 { grid-column: 2 / 4; grid-row: 3 / 4; background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
 
+        .bento-text {
+            opacity: 0;
+            transform: translateY(20px);
+            z-index: 1;
+        }
 
-        /* --- Contact Section & Footer --- */
+        .item-1 {
+            grid-column: 1 / 3;
+            grid-row: 1 / 3;
+            background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-2 {
+            grid-column: 3 / 4;
+            grid-row: 1 / 2;
+            background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-3 {
+            grid-column: 4 / 5;
+            grid-row: 1 / 3;
+            background-image: url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-4 {
+            grid-column: 1 / 2;
+            grid-row: 3 / 4;
+            background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-5 {
+            grid-column: 2 / 4;
+            grid-row: 3 / 4;
+            background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
         #contact {
             text-align: center;
-            min-height: 80vh;
+            min-height: 50vh;
         }
+
         #contact a {
             display: inline-block;
             margin-top: 30px;
@@ -379,60 +452,23 @@
             font-weight: 600;
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
+
         #contact a:hover {
             transform: scale(1.05);
             background-color: var(--light-purple);
         }
-        footer {
-            text-align: center;
-            padding: 20px 8%;
-            background: var(--dark-gray);
-            color: var(--light-gray);
-            position: relative;
-            z-index: 1;
-        }
 
-        /* --- Responsive Adjustments --- */
-        @media (max-width: 768px) {
-            h2 { font-size: 2.5rem; }
-            p { font-size: 1rem; }
-            section { padding: 80px 5%; }
-            #about, #about p { text-align: left; margin: 0;}
-            .service-card { width: 90%; max-width: none; }
-            .portfolio-track { width: 800%; } /* More items to scroll through */
-            .portfolio-item { width: 12.5%; padding-right: 20px; }
-            .bento-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(4, 200px);
-            }
-            .item-1 { grid-column: 1 / 3; grid-row: 1 / 2; }
-            .item-2 { grid-column: 1 / 2; grid-row: 2 / 3; }
-            .item-3 { grid-column: 2 / 3; grid-row: 2 / 4; }
-            .item-4 { grid-column: 1 / 2; grid-row: 3 / 4; }
-            .item-5 { grid-column: 1 / 3; grid-row: 4 / 5; }
-        }
-
-        .logo{
-            height: 50px;
-            width: 40px;
-        }
-
-        #contact {
-            min-height: 50vh; /* Shorter section leading to footer */
-        }
-        
-        /* ========== START: FUTURISTIC LIGHTNING FOOTER ========== */
+        /* ========== FUTURISTIC LIGHTNING FOOTER ========== */
         footer {
             position: relative;
             z-index: 5;
             padding: 120px 8% 50px;
             background-color: var(--footer-light-bg);
             color: var(--dark-gray);
-            border-top: 1px solid rgba(0,0,0,0.08);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
 
-       /* Add these two new CSS rules within your footer styles */
         .footer-trace-svg {
             position: absolute;
             top: 50%;
@@ -445,11 +481,11 @@
         }
 
         .footer-trace-path {
-            stroke: var(--electric-purple); /* Make sure --electric-purple is in your :root */
+            stroke: var(--electric-purple);
             stroke-width: 1.5;
             fill: none;
-            stroke-dasharray: 1000; /* A large number to cover the path length */
-            stroke-dashoffset: 1000; /* Hides the line initially */
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
         }
 
         .footer-grid {
@@ -479,7 +515,7 @@
             display: inline-block;
             padding: 16px 40px;
             border: 2px solid var(--electric-purple);
-            border-radius: 8px; /* Sharper corners */
+            border-radius: 8px;
             color: var(--electric-purple);
             text-decoration: none;
             font-weight: 600;
@@ -494,7 +530,7 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(127, 90, 240, 0.5);
         }
-        
+
         .footer-links-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -510,19 +546,28 @@
             font-weight: 600;
         }
 
-        .footer-section ul { list-style: none; }
-        .footer-section li { margin-bottom: 10px; }
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 10px;
+        }
+
         .footer-section a {
             text-decoration: none;
             color: rgba(22, 22, 26, 0.7);
             transition: color 0.3s ease;
         }
-        .footer-section a:hover { color: var(--electric-purple); }
-        
+
+        .footer-section a:hover {
+            color: var(--electric-purple);
+        }
+
         .footer-bottom {
             padding-top: 50px;
             margin-top: 50px;
-            border-top: 1px solid rgba(0,0,0,0.08);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -530,220 +575,539 @@
             color: rgba(22, 22, 26, 0.5);
         }
 
-        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials {
+            display: flex;
+            gap: 20px;
+        }
+
         .footer-socials a svg {
-            width: 24px; height: 24px;
+            width: 24px;
+            height: 24px;
             fill: var(--dark-gray);
             opacity: 0.6;
             transition: all 0.3s;
         }
+
         .footer-socials a:hover svg {
             opacity: 1;
             fill: var(--electric-purple);
             transform: scale(1.1);
         }
 
-        /* Animation Classes */
         .reveal-mask {
             clip-path: inset(0 100% 0 0);
         }
+
         .fade-in-anim {
             opacity: 0;
             transform: translateY(15px);
         }
-        /* ========== END: FUTURISTIC LIGHTNING FOOTER ========== */
-        
+
         /* --- Responsive Adjustments --- */
         @media (max-width: 900px) {
-            .footer-grid { grid-template-columns: 1fr; }
-            .footer-cta { text-align: center; }
-            .footer-cta p { margin: 0 auto 30px; }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-cta p {
+                margin: 0 auto 30px;
+            }
         }
 
         @media (max-width: 768px) {
-            section { padding: 80px 5%; }
-            nav { position: fixed; top: 0; right: 0; width: 70%; height: 100vh; background: var(--cool-white); transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
-            nav.active { transform: translateX(0); }
-            nav ul { flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 20px; }
-            .menu-toggle { display: block; }
-            .bento-grid { grid-template-columns: 1fr; grid-template-rows: repeat(5, 250px); }
-            .item-1, .item-2, .item-3, .item-4, .item-5 { grid-column: 1 / 2; grid-row: auto; }
-            .footer-bottom { flex-direction: column-reverse; gap: 30px; }
-            .footer-links-grid { grid-template-columns: 1fr; }
+            section {
+                padding: 80px 5%;
+            }
+
+            #about {
+                padding-top: 10vh;
+                padding-bottom: 20vh;
+            }
+
+            /* Adjust for mobile */
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(5, 250px);
+            }
+
+            .item-1,
+            .item-2,
+            .item-3,
+            .item-4,
+            .item-5 {
+                grid-column: 1 / 2;
+                grid-row: auto;
+            }
+
+            .footer-bottom {
+                flex-direction: column-reverse;
+                gap: 30px;
+            }
+
+            .footer-links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #hero .hero-q {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            /* Makes the letter bolder */
+
+            /* Layered shadows for a 3D and drop shadow effect */
+            text-shadow:
+                -1px -1px 1px rgba(255, 255, 255, 0.1),
+                /* Subtle top-left highlight for a 3D feel */
+                2px 2px 3px rgba(0, 0, 0, 0.5),
+                /* Main sharp shadow for depth */
+                0 0 15px rgba(0, 0, 0, 0.4);
+            /* Softer, larger drop shadow for emphasis */
+        }
+
+        /* ========== START: BLUEPRINT SECTION STYLES ========== */
+        #blueprint {
+            /* UPDATED: Removed fixed height and added responsive padding */
+            min-height: auto;
+            padding: 15vh 8%;
+     overflow: hidden;
+            color: var(--dark-gray);
+            position: relative;
+            /* Needed for the grid lines */
+        }
+
+        .blueprint-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            z-index: 1;
+        }
+
+        .grid-line {
+            background-color: rgba(142, 75, 206, 0.1);
+            transform-origin: center;
+        }
+
+        .grid-line:nth-child(1) {
+            grid-column: 2 / 3;
+            width: 1px;
+            height: 100%;
+            justify-self: center;
+            transform: scaleY(0);
+        }
+
+        .grid-line:nth-child(2) {
+            grid-column: 3 / 4;
+            width: 1px;
+            height: 100%;
+            justify-self: center;
+            transform: scaleY(0);
+        }
+
+        .grid-line:nth-child(3) {
+            grid-row: 2 / 3;
+            width: 100%;
+            height: 1px;
+            align-self: center;
+            transform: scaleX(0);
+        }
+
+        .grid-line:nth-child(4) {
+            grid-column: 1 / 2;
+            width: 1px;
+            height: 100%;
+            justify-self: center;
+            transform: scaleY(0);
+        }
+
+        .grid-line:nth-child(5) {
+            grid-column: 4 / 5;
+            width: 1px;
+            height: 100%;
+            justify-self: center;
+            transform: scaleY(0);
+        }
+
+        .grid-line:nth-child(6) {
+            grid-row: 1 / 2;
+            width: 100%;
+            height: 1px;
+            align-self: center;
+            transform: scaleX(0);
+        }
+
+
+        .blueprint-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 100%;
+        }
+
+        .blueprint-block {
+            /* UPDATED: Added position, overflow and removed margins */
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* NEW: The pseudo-element that creates the glow */
+        .blueprint-block::before {
+            content: '';
+            position: absolute;
+            /* Use CSS variables for mouse position, with a fallback */
+            left: var(--mouse-x, 50%);
+            top: var(--mouse-y, 50%);
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle closest-side, rgba(127, 90, 240, 0.25), transparent);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        /* On hover, fade the glow in */
+        .blueprint-block:hover::before {
+            opacity: 1;
+        }
+
+        .blueprint-icon {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .blueprint-icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--electric-purple);
+            stroke-width: 1.5;
+        }
+
+        .blueprint-block h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--purple);
+        }
+
+        .blueprint-block p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--dark-gray);
+        }
+
+        .blueprint-block p .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(10px) rotateX(-90deg);
+            transform-origin: bottom;
+        }
+
+        /* ========== END: BLUEPRINT SECTION STYLES ========== */
+        .hero-description {
+            color: var(--dark-gray);
+            mix-blend-mode: difference;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            /* UPDATED: Made slightly smaller */
+            max-width: 550px;
+            margin: 25px auto 0;
+            line-height: 1.6;
+            font-weight: 400;
+
+            /* NEW: Subtle "inset" shadow for a realistic 3D effect */
+            text-shadow:
+                0px 1px 1px rgba(0, 0, 0, 0.3),
+                0px -1px 1px rgba(255, 255, 255, 0.4);
+
+            /* Initial state for animation */
+            opacity: 0;
+            transform: translateY(20px);
         }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;600;800;900&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
-    <header>
-    
-        <button class="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
     <div class="hero-background"></div>
     <canvas id="three-canvas"></canvas>
-    
+
     <div class="loader">Loading...</div>
 
     <main>
         <section id="hero">
-            <h1 data-splitting>Q DEVELOPERS</h1>
+            <h1 data-splitting><span class="hero-q">Q</span> DEVELOPERS</h1>
+            <p class="hero-description">Crafting Calicut's skyline with a commitment to quality and innovation. Your
+                vision, built to last.</p>
         </section>
 
+        <!-- ========== START: ADVANCED ABOUT SECTION ========== -->
         <section id="about">
             <div>
-                <h2 class="fade-in">Crafting Landmarks</h2>
-                <p class="fade-in">
-                    Based in Calicut, Q Developers has been the cornerstone of quality construction for over a decade. We don't just build structures; we build dreams. Our commitment to excellence, innovation, and sustainability sets us apart.
-                </p>
+                <h2 class="fade-in">Crafting Landmarks, Building Dreams.</h2>
+                <h3 class="about-subheading">Welcome to Kerala’s Finest Properties!</h3>
+                <p class="about-text" data-splitting>Q Developers is where we transform your aspirations into tangible
+                    reality. People have always dreamt of living in lifestyle properties, and it was not until the dawn
+                    of Q Developers that Kozhikode experienced what it was like to live in a home of their dreams.</p>
+                <p class="about-text" data-splitting>We unveil a plethora of living spaces comprising luxury villas,
+                    flats, and apartments in Calicut City, each designed with an unwavering commitment to excellence,
+                    innovation, and sustainability.</p>
             </div>
-        </section>
 
-        <section id="services">
-            <h2 class="fade-in">Our Expertise</h2>
-            <div class="services-container">
-                <div class="sticky-wrapper">
-                    <div class="service-card" id="card-1">
-                        <h3>Architectural Design</h3>
-                        <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                    </div>
-                    <div class="service-card" id="card-2">
-                        <h3>Construction</h3>
-                        <p>End-to-end construction services with a focus on quality materials and craftsmanship.</p>
-                    </div>
-                    <div class="service-card" id="card-3">
-                        <h3>Project Management</h3>
-                        <p>Ensuring your project is delivered on time and within budget, with complete transparency.</p>
-                    </div> <div class="service-card" id="card-1">
-                        <h3>Architectural Design</h3>
-                        <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                    </div>
-                    <div class="service-card" id="card-2">
-                        <h3>Construction</h3>
-                        <p>End-to-end construction services with a focus on quality materials and craftsmanship.</p>
-                    </div>
-                    <div class="service-card" id="card-3">
-                        <h3>Project Management</h3>
-                        <p>Ensuring your project is delivered on time and within budget, with complete transparency.</p>
-                    </div>
+        </section>
+        <!-- ========== END: ADVANCED ABOUT SECTION ========== -->
+         <section id="services">
+    <h2 class="fade-in">Our Expertise</h2>
+    <div style="margin-top: -400px;" class="services-container">
+        <div class="sticky-wrapper">
+            <div class="cards-container"> 
+                <div class="service-card" id="card-1">
+                    <h3>Architectural Design</h3>
+                    <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
+                    <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
+                    <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
+                </div>
+                <div class="service-card" id="card-2">
+                    <h3>Construction Works</h3>
+                    <p>End-to-end construction services with a focus on quality materials and craft.</p>
+                    <p>End-to-end construction services with a focus on quality materials and craft.</p>
+                    <p>End-to-end construction services with a focus on quality materials and craft.</p>
+                </div>
+                <div class="service-card" id="card-3">
+                    <h3>Project Management</h3>
+                    <p>Ensuring your project is delivered on time and within budget, with complete .</p>
+                    <p>Ensuring your project is delivered on time and within budget, with complete .</p>
+                    <p>Ensuring your project is delivered on time and within budget, with complete .</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
-
-      <section id="portfolio">
-             <div class="portfolio-container">
+        <section id="portfolio">
+            <div class="portfolio-container">
                 <div class="portfolio-sticky-wrapper">
                     <div class="portfolio-heading">
                         <h2 class="fade-in">Our Portfolio</h2>
                     </div>
-
                     <div class="portfolio-track">
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 1">
-                            <h3>Villa Serenity</h3><p>Calicut</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House 1">
+                            <h3>Villa Serenity</h3>
+                            <p>Calicut</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House">
-                             <h3>The Crest</h3><p>Thrissur</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House">
+                            <h3>The Crest</h3>
+                            <p>Thrissur</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 2">
-                            <h3>Apex Tower</h3><p>Kochi</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House 2">
+                            <h3>Apex Tower</h3>
+                            <p>Kochi</p>
                         </div>
-                        
-                         <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 1">
-                            <h3>Villa Serenity</h3><p>Calicut</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House 1">
+                            <h3>Villa Serenity</h3>
+                            <p>Calicut</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House">
-                             <h3>The Crest</h3><p>Thrissur</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House">
+                            <h3>The Crest</h3>
+                            <p>Thrissur</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 2">
-                            <h3>Apex Tower</h3><p>Kochi</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House 2">
+                            <h3>Apex Tower</h3>
+                            <p>Kochi</p>
                         </div>
-                       
+
                     </div>
-
                     <div class="portfolio-track">
-                        
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
-                            <h3>Elysian Fields</h3><p>Calicut</p>
-                        </div>
-                         <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
-                            <h3>Horizon Homes</h3><p>Calicut</p>
-                        </div>
-                         <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Luxury Interior">
-                            <h3>Oakwood Premier</h3><p>Kochi</p>
-                        </div>
-                        
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
-                            <h3>Elysian Fields</h3><p>Calicut</p>
-                        </div>
-                         <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House 4">
-                            <h3>Horizon Homes</h3><p>Calicut</p>
-                        </div>
-                         <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Luxury Interior">
-                            <h3>Oakwood Premier</h3><p>Kochi</p>
-                        </div>
-                    </div>
 
-                    <div class="portfolio-track">
-                        
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="House with Pool">
-                            <h3>Aqua Vista</h3><p>Alappuzha</p>
+
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House 4">
+                            <h3>Horizon Homes</h3>
+                            <p>Calicut</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior">
-                            <h3>Granite Ridge</h3><p>Idukki</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Luxury Interior">
+                            <h3>Oakwood Premier</h3>
+                            <p>Kochi</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House">
-                            <h3>The Sanctuary</h3><p>Wayanad</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House 4">
+                            <h3>Horizon Homes</h3>
+                            <p>Calicut</p>
                         </div>
-                       
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="House with Pool">
-                            <h3>Aqua Vista</h3><p>Alappuzha</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Luxury Interior">
+                            <h3>Oakwood Premier</h3>
+                            <p>Kochi</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior">
-                            <h3>Granite Ridge</h3><p>Idukki</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern House 4">
+                            <h3>Horizon Homes</h3>
+                            <p>Calicut</p>
                         </div>
-                        <div class="portfolio-item">
-                            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House">
-                            <h3>The Sanctuary</h3><p>Wayanad</p>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Luxury Interior">
+                            <h3>Oakwood Premier</h3>
+                            <p>Kochi</p>
                         </div>
                     </div>
+                    <div class="portfolio-track">
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="House with Pool">
+                            <h3>Aqua Vista</h3>
+                            <p>Alappuzha</p>
+                        </div>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern Home Exterior">
+                            <h3>Granite Ridge</h3>
+                            <p>Idukki</p>
+                        </div>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Minimalist House">
+                            <h3>The Sanctuary</h3>
+                            <p>Wayanad</p>
+                        </div>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="House with Pool">
+                            <h3>Aqua Vista</h3>
+                            <p>Alappuzha</p>
+                        </div>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Modern Home Exterior">
+                            <h3>Granite Ridge</h3>
+                            <p>Idukki</p>
+                        </div>
+                        <div class="portfolio-item"><img
+                                src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                alt="Minimalist House">
+                            <h3>The Sanctuary</h3>
+                            <p>Wayanad</p>
+                        </div>
 
+                    </div>
                 </div>
-             </div>
-        </section>
-<section id="projects">
-            <h2 style="margin-top: 100px;" class="fade-in">Signature Projects</h2>
-            <div class="bento-grid">
-                <div class="bento-item item-1"><div class="bento-text">Azure Heights</div></div>
-                <div class="bento-item item-2"><div class="bento-text">The Orchid</div></div>
-                <div class="bento-item item-3"><div class="bento-text">Crimson Plaza</div></div>
-                <div class="bento-item item-4"><div class="bento-text">Greenway Villas</div></div>
-                <div class="bento-item item-5"><div class="bento-text">Nexus Business Park</div></div>
             </div>
         </section>
 
+        <section id="projects">
+            <h2 style="margin-top: 100px;" class="fade-in">Signature Projects</h2>
+            <div class="bento-grid">
+                <div class="bento-item item-1">
+                    <div class="bento-text">Azure Heights</div>
+                </div>
+                <div class="bento-item item-2">
+                    <div class="bento-text">The Orchid</div>
+                </div>
+                <div class="bento-item item-3">
+                    <div class="bento-text">Crimson Plaza</div>
+                </div>
+                <div class="bento-item item-4">
+                    <div class="bento-text">Greenway Villas</div>
+                </div>
+                <div class="bento-item item-5">
+                    <div class="bento-text">Nexus Business Park</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========== START: FUTURISTIC BLUEPRINT SECTION ========== -->
+        <section id="blueprint">
+            <!-- Animated background grid -->
+            <div class="blueprint-grid">
+                <div class="grid-line"></div>
+                <div class="grid-line"></div>
+                <div class="grid-line"></div>
+                <div class="grid-line"></div>
+                <div class="grid-line"></div>
+                <div class="grid-line"></div>
+            </div>
+
+            <!-- Main content container -->
+            <div class="blueprint-content">
+                <div class="blueprint-block">
+                    <div class="blueprint-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </div>
+                    <h3>Our Vision</h3>
+                    <p data-splitting>We see beyond structures; we envision landmarks. Our philosophy is to merge
+                        groundbreaking design with sustainable practices, creating spaces that inspire communities for
+                        generations to come.</p>
+                </div>
+
+                <div class="blueprint-block">
+                    <div class="blueprint-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 6V21M12 6L9 9M12 6L15 9" />
+                            <path d="M20.39 12.39L18 14.78M18 14.78L15.61 17.17M18 14.78L20.39 17.17" />
+                            <path d="M3.61 12.39L6 14.78M6 14.78L8.39 17.17M6 14.78L3.61 17.17" />
+                        </svg>
+                    </div>
+                    <h3>The Process</h3>
+                    <p data-splitting>Precision is our principle. From the initial sketch to the final fixture, every
+                        stage is meticulously planned and executed with cutting-edge technology and transparent
+                        communication.</p>
+                </div>
+
+                <div class="blueprint-block">
+                    <div class="blueprint-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M2 20h20" />
+                            <path d="M4 17.5V11a2 2 0 012-2h12a2 2 0 012 2v6.5" />
+                            <path d="M8 11V7a4 4 0 014-4h0a4 4 0 014 4v4" />
+                        </svg>
+                    </div>
+                    <h3>Execution</h3>
+                    <p data-splitting>Our commitment is to tangible excellence. We transform complex blueprints into
+                        reality, delivering projects that stand as a testament to superior craftsmanship and unwavering
+                        quality.</p>
+                </div>
+            </div>
+        </section>
+        <!-- ========== END: FUTURISTIC BLUEPRINT SECTION ========== -->
         <section id="contact">
             <h2 class="fade-in">Have a project in mind?</h2>
             <p class="fade-in">Let's build the future together. Contact us for a consultation.</p>
@@ -751,19 +1115,17 @@
         </section>
     </main>
 
-
     <footer>
         <svg class="footer-trace-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
-        <path class="footer-trace-path" d="M1100 350 Q 750 350 750 200 T 400 50 Q 200 50 100 150 T -100 350" />
-    </svg>
-
+            <path class="footer-trace-path" d="M1100 350 Q 750 350 750 200 T 400 50 Q 200 50 100 150 T -100 350" />
+        </svg>
         <div class="footer-grid">
             <div class="footer-cta">
                 <h2 class="reveal-mask">Build The Future.</h2>
-                <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your vision to life. We're ready to build the next landmark.</p>
+                <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your vision to life. We're
+                    ready to build the next landmark.</p>
                 <a href="mailto:contact@qdevelopers.com" class="footer-contact-button fade-in-anim">Get In Touch</a>
             </div>
-
             <div class="footer-links-grid">
                 <div class="footer-section">
                     <h4 class="reveal-mask">Company</h4>
@@ -783,16 +1145,25 @@
                 </div>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p class="fade-in-anim">&copy; 2025 Q Developers | Calicut, Kerala.</p>
             <div class="footer-socials">
-                <a href="#" class="fade-in-anim" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
-                <a href="#" class="fade-in-anim" title="Twitter/X"><svg viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.616 1.922 2.392 3.32 4.491 3.365-1.657 1.299-3.756 2.072-6.049 1.733 1.83 1.189 4.011 1.868 6.353 1.868 7.618 0 11.922-6.425 11.5-12.274.847-.608 1.574-1.373 2.149-2.23z"/></svg></a>
-                <a href="#" class="fade-in-anim" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg></a>
+                <a href="#" class="fade-in-anim" title="LinkedIn"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg></a>
+                <a href="#" class="fade-in-anim" title="Twitter/X"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.616 1.922 2.392 3.32 4.491 3.365-1.657 1.299-3.756 2.072-6.049 1.733 1.83 1.189 4.011 1.868 6.353 1.868 7.618 0 11.922-6.425 11.5-12.274.847-.608 1.574-1.373 2.149-2.23z" />
+                    </svg></a>
+                <a href="#" class="fade-in-anim" title="Instagram"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
+                    </svg></a>
             </div>
         </div>
     </footer>
+
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -807,301 +1178,307 @@
     </script>
 
     <script type="module">
-    /* -------------------------------- */
-    /* --- JAVASCRIPT LOGIC ----------- */
-    /* -------------------------------- */
+        import * as THREE from 'three';
 
-    import * as THREE from 'three';
+        gsap.registerPlugin(ScrollTrigger);
+        const loader = document.querySelector('.loader');
 
-    // --- 0. BASIC SETUP ---
-    gsap.registerPlugin(ScrollTrigger);
-    const loader = document.querySelector('.loader');
-
-    // --- 1. LENIS SMOOTH SCROLL ---
-    const lenis = new Lenis();
-    function raf(time) {
-        lenis.raf(time);
+        const lenis = new Lenis({ lerp: 0.07, smoothWheel: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-    gsap.ticker.lagSmoothing(0);
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
 
+        let scene, camera, renderer, qModel;
 
-    // --- 2. THREE.JS SCENE SETUP ---
-    let scene, camera, renderer, qModel;
-
-    function initThree() {
-        const canvas = document.querySelector('#three-canvas');
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 5;
-        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        directionalLight.position.set(5, 5, 5);
-        scene.add(directionalLight);
-
-        createQModel();
-
-        const animate = () => {
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
-        };
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
+        function initThree() {
+            const canvas = document.querySelector('#three-canvas');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    }
-function createQModel() {
-        // Rotated curves to hide the seam
-        const rotationAngle = -Math.PI / 4; // -45 degrees
-
-        // High-resolution curves for a perfect round shape
-        const outerCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5, 0, Math.PI * 2, false, rotationAngle);
-        const innerCurve = new THREE.EllipseCurve(0, 0, 0.8, 0.8, 0, Math.PI * 2, false, rotationAngle);
-
-        const oShape = new THREE.Shape(outerCurve.getPoints(128));
-        const holePath = new THREE.Path(innerCurve.getPoints(128));
-        oShape.holes.push(holePath);
-
-        // Connected tail shape
-        const tailShape = new THREE.Shape();
-        const innerRadius = 0.8, outerRadius = 1.5;
-
-        const p1 = { x: innerRadius * 0.6, y: -innerRadius * 0.6 };
-        const p2 = { x: outerRadius * 1.3, y: -outerRadius * 1.3 };
-        const p3 = { x: p2.x - 0.4, y: p2.y + 0.1 };
-        const p4 = { x: p1.x - 0.3, y: p1.y + 0.05 };
-
-        tailShape.moveTo(p1.x, p1.y);
-        tailShape.lineTo(p2.x, p2.y);
-        tailShape.lineTo(p3.x, p3.y);
-        tailShape.lineTo(p4.x, p4.y);
-        
-        const extrudeSettings = {
-            depth: 0.7,
-            bevelEnabled: true,
-            bevelSegments: 120, // Max practical smoothness
-            steps: 2,
-            bevelSize: 0.15,
-            bevelThickness: 0.15,
-        };
-
-        const geometry = new THREE.ExtrudeGeometry([oShape, tailShape], extrudeSettings);
-        geometry.center();
-
-        const material = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#FFBAF8"),
-            metalness: 0.1,
-            roughness: 0.7,
-        });
-
-        qModel = new THREE.Mesh(geometry, material);
-        scene.add(qModel);
-    }
-    function initAnimations() {
-        
-
-        // --- Smooth Scroll For Nav Links ---
-        document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                lenis.scrollTo(this.getAttribute('href'));
-                // Close mobile menu on click
-                document.querySelector('nav').classList.remove('active');
-                document.querySelector('.menu-toggle').classList.remove('active');
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x8A4BCE, 1);
+            scene.add(hemisphereLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            createQModel();
+            const clock = new THREE.Clock();
+            const animate = () => {
+                const elapsedTime = clock.getElapsedTime();
+                if (qModel) { qModel.rotation.y += 0.001; qModel.rotation.x += 0.0005; }
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            };
+            animate();
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             });
-        });
+        }
 
-        // --- Mobile Menu Toggle ---
-        const menuToggle = document.querySelector('.menu-toggle');
-        const nav = document.querySelector('nav');
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            nav.classList.toggle('active');
-        });
-
-        const split = new SplitType('#hero h1', { types: 'chars' });
-        gsap.from(split.chars, {
-            delay: 0.2,
-            duration: 1.2,
-            stagger: 0.05,
-            y: 50,
-            rotation: 10,
-            opacity: 0,
-            filter: 'blur(10px)',
-            ease: 'power3.out',
-            onComplete: () => {
-                loader.style.display = 'none';
-            }
-        });
-        
-        // --- Hero Background Fade ---
-        gsap.to(".hero-background", {
-            opacity: 0,
-            scrollTrigger: {
-                trigger: "#about",
-                start: "top bottom",
-                end: "top center",
-                scrub: true
-            }
-        });
-
-        // --- Generic Fade-in for sections ---
-        const fadeElements = gsap.utils.toArray('.fade-in');
-        fadeElements.forEach(el => {
-            gsap.from(el, {
-                opacity: 0, y: 50, filter: 'blur(5px)', duration: 1,
-                scrollTrigger: {
-                    trigger: el,
-                    start: 'top 85%',
-                    toggleActions: 'play none none none',
+        function createQModel() {
+            const rotationAngle = -Math.PI / 4;
+            const outerCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5, 0, Math.PI * 2, false, rotationAngle);
+            const innerCurve = new THREE.EllipseCurve(0, 0, 0.8, 0.8, 0, Math.PI * 2, false, rotationAngle);
+            const oShape = new THREE.Shape(outerCurve.getPoints(128));
+            const holePath = new THREE.Path(innerCurve.getPoints(128));
+            oShape.holes.push(holePath);
+            const tailShape = new THREE.Shape();
+            const innerRadius = 0.8, outerRadius = 1.5;
+            const p1 = { x: innerRadius * 0.6, y: -innerRadius * 0.6 };
+            const p2 = { x: outerRadius * 1.3, y: -outerRadius * 1.3 };
+            const p3 = { x: p2.x - 0.4, y: p2.y + 0.1 };
+            const p4 = { x: p1.x - 0.3, y: p1.y + 0.05 };
+            tailShape.moveTo(p1.x, p1.y); tailShape.lineTo(p2.x, p2.y); tailShape.lineTo(p3.x, p3.y); tailShape.lineTo(p4.x, p4.y);
+            const extrudeSettings = { depth: 0.7, bevelEnabled: true, bevelSegments: 120, steps: 2, bevelSize: 0.15, bevelThickness: 0.15 };
+            const geometry = new THREE.ExtrudeGeometry([oShape, tailShape], extrudeSettings);
+            geometry.center();
+            const material = new THREE.MeshStandardMaterial({ color: new THREE.Color("#FFBAF8"), metalness: 0.1, roughness: 0.7 });
+            qModel = new THREE.Mesh(geometry, material);
+            scene.add(qModel);
+        }
+        function initAnimations() {
+            const split = new SplitType('#hero h1', { types: 'chars' });
+            gsap.from(split.chars, {
+                delay: 0.2, duration: 1.2, stagger: 0.05,
+                y: 50, rotation: 10, opacity: 0, filter: 'blur(10px)',
+                ease: 'power3.out',
+                onComplete: () => {
+                    loader.classList.add('hidden');
+                    // This new part animates the description in
+                    gsap.to(".hero-description", {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1,
+                        ease: 'power2.out'
+                    });
                 }
             });
-        });
 
-        // --- Main 'Q' model Scroll Timeline ---
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: 'body',
-                start: 'top top',
-                end: 'bottom bottom',
-                scrub: 1,
-            }
-        });
+            gsap.to(".hero-background", { opacity: 0, scrollTrigger: { trigger: "#about", start: "top bottom", end: "top center", scrub: true } });
+            // --- ADVANCED ABOUT SECTION ANIMATIONS ---
 
-        // Hero -> About
-        tl.to(qModel.rotation, { y: Math.PI * 1.5, z: -Math.PI * 0.5, ease: 'power1.inOut' }, 0)
-          .to(qModel.position, { x: 3.5, y: -0.5, ease: 'power1.inOut' }, 0)
-          .to(qModel.scale, { x: 0.8, y: 0.8, z: 0.8, ease: 'power1.inOut' }, 0);
-        
-        // About -> Services
-        tl.to(qModel.rotation, { y: Math.PI * 2.5, z: Math.PI * 0.2, ease: 'power1.inOut' }, 1)
-          .to(qModel.position, { x: -3.5, y: -1.5, ease: 'power1.inOut' }, 1);
-        
-        // Services -> Portfolio (Horizontal Scroll)
-        tl.to(qModel.rotation, { y: Math.PI * 3, x: Math.PI * 0.2, ease: 'power1.inOut' }, 2)
-          .to(qModel.position, { x: 5, y: -3, ease: 'power1.inOut' }, 2)
-          .to(qModel.scale, { x: 0.6, y: 0.6, z: 0.6, ease: 'power1.inOut' }, 2);
+            // 1. Timeline for the text reveal
+            const aboutTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#about",
+                    start: "top 60%", // Start animation early
+                }
+            });
 
-        // Portfolio -> Projects (Bento)
-        tl.to(qModel.rotation, { y: Math.PI * 3.5, x: Math.PI * 0.5, ease: 'power1.inOut' }, 3)
-          .to(qModel.position, { x: -4, y: 2, ease: 'power1.inOut' }, 3)
-          .to(qModel.scale, { x: 1, y: 1, z: 1, ease: 'power1.inOut' }, 3);
+            // Use SplitType to prepare the paragraphs
+            const aboutLines = new SplitType('.about-text', { types: 'lines, words' });
 
-        // Projects -> Contact
-        tl.to(qModel.rotation, { y: Math.PI * 4, z: 0, ease: 'power1.inOut' }, 4)
-          .to(qModel.position, { x: 0, y: 0, ease: 'power1.inOut' }, 4);
+            aboutTl.to(".about-subheading", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out"
+            }).to(aboutLines.words, {
+                y: 0,
+                stagger: 0.04, // Controls the speed of the word reveal
+                duration: 1.2,
+                ease: "power3.out"
+            }, "-=0.8").to("#enquiry-button", { // Fade in the enquiry button
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                ease: "back.out(1.7)"
+            }, "-=1");
 
-        // --- Layered Card Animation ---
+
+            // 2. ScrollTrigger to make the enquiry button sticky
+            ScrollTrigger.create({
+                trigger: "#about",
+                start: "top top", // When the top of #about hits the top of the viewport
+                endTrigger: "footer", // The trigger to end the effect
+                end: "top bottom", // When the top of the footer hits the bottom of the viewport
+                toggleClass: {
+                    targets: "#enquiry-button",
+                    className: "sticky"
+                }
+            });
+            gsap.utils.toArray('.fade-in').forEach(el => {
+                gsap.from(el, { opacity: 0, y: 50, duration: 1, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
+            });
+
+            const tl = gsap.timeline({ scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 1 } });
+            const easeType = 'power2.inOut';
+            tl.to(qModel.rotation, { y: Math.PI * 1.5, z: -Math.PI * 0.5, ease: easeType }, 0)
+                .to(qModel.position, { x: 3.5, y: -0.5, ease: easeType }, 0)
+                .to(qModel.scale, { x: 0.8, y: 0.8, z: 0.8, ease: easeType }, 0)
+                .to(qModel.rotation, { y: Math.PI * 2.5, z: Math.PI * 0.2, ease: easeType }, 1)
+                .to(qModel.position, { x: -3.5, y: -1.5, ease: easeType }, 1)
+                .to(qModel.rotation, { y: Math.PI * 3, x: Math.PI * 0.2, ease: easeType }, 2)
+                .to(qModel.position, { x: 5, y: -3, ease: easeType }, 2)
+                .to(qModel.scale, { x: 0.6, y: 0.6, z: 0.6, ease: easeType }, 2)
+                .to(qModel.rotation, { y: Math.PI * 3.5, x: Math.PI * 0.5, ease: easeType }, 3)
+                .to(qModel.position, { x: -4, y: 2, ease: easeType }, 3)
+                .to(qModel.scale, { x: 1, y: 1, z: 1, ease: easeType }, 3)
+                .to(qModel.rotation, { y: Math.PI * 4, z: 0, ease: easeType }, 4)
+                .to(qModel.position, { x: 0, y: -0.5, ease: easeType }, 4);
+
+            // gsap.to('.service-card', { yPercent: (i, t, s) => -150 * (s.length - 1 - i), scrollTrigger: { trigger: ".services-container", start: "top top", end: "bottom bottom", scrub: 1, pin: ".sticky-wrapper" } });
+
+
+  // --- Horizontal Card "Filmstrip" Scroll ---
+     // --- Horizontal Card Fly-In Animation ---
         const cards = gsap.utils.toArray('.service-card');
-        gsap.to(cards, {
-            yPercent: (i) => -150 * (cards.length - 1 - i),
+
+        const cardTl = gsap.timeline({
             scrollTrigger: {
                 trigger: ".services-container",
-                start: "top top", end: "bottom bottom", scrub: 1,
-                pin: ".sticky-wrapper",
-            }
-        });
-         
-          
-      // --- Horizontal Scroll Animation ---
-        const tracks = gsap.utils.toArray(".portfolio-track");
-        
-        const portfolioTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: ".portfolio-container",
                 start: "top top",
                 end: "bottom bottom",
                 scrub: 1,
-                pin: ".portfolio-sticky-wrapper",
+                pin: ".sticky-wrapper",
             }
         });
 
-        tracks.forEach((track, i) => {
-            // NEW: More robust width calculation
-            const trackWidth = track.scrollWidth; 
-            const scrollDistance = trackWidth - window.innerWidth;
-
-            // Animate from a different starting point for the reversed track
-            if (i % 2 !== 0) {
-                 gsap.set(track, { x: -scrollDistance });
-            }
-
-            portfolioTl.to(track, {
-                x: i % 2 === 0 ? -scrollDistance : 0,
-                ease: "none"
-            }, 0);
-        });
-        
-        // --- Bento Grid Animation ---
-        gsap.from(".bento-item", {
-            opacity: 0, scale: 0.9, y: 30, stagger: 0.1, duration: 0.8, ease: "power2.out",
-            scrollTrigger: { trigger: ".bento-grid", start: "top 80%", }
-        });
-    }
-
-    // --- INITIALIZE EVERYTHING ---
-    window.addEventListener('load', () => {
-        initThree();
-        initAnimations();
-    });// --- Advanced Bento Grid Animation ---
-        const bentoTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: ".bento-grid",
-                start: "top 75%",
-            }
-        });
-
-        // Animate the wipe-down reveal of the boxes
-        bentoTl.to(".bento-item", {
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-            stagger: 0.1,
-            duration: 1,
-            ease: "power3.inOut"
-        });
-
-       // --- FUTURISTIC FOOTER ANIMATION ---
-        const footerTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: "footer",
-                start: "top 70%", // Starts when the footer top hits 70% of the viewport
-            }
-        });
-
-        // 1. Animate the SVG "lightning" trace
-        footerTl.to(".footer-trace-path", {
-            strokeDashoffset: 0,
-            duration: 2,
-            ease: "power2.inOut"
-        });
-        
-        // 2. Animate the text revealing with a mask effect
-        footerTl.to(".reveal-mask", {
-            clipPath: "inset(0 0% 0 0)",
-            stagger: 0.3,
-            duration: 1.5,
-            ease: "power3.out"
-        }, "-=1.5"); // Overlap with the trace animation
-
-        // 3. Animate the rest of the elements fading in
-        footerTl.to(".fade-in-anim", {
-            opacity: 1,
-            y: 0,
-            stagger: 0.1,
-            duration: 1,
+        // Set the initial state of the cards (off-screen to the right)
+        cardTl.from(cards, {
+            xPercent: 150, // Start 150% to the right
+            rotation: 15,
+            opacity: 0,
+            stagger: 0.1, // Animate each card with a slight delay
             ease: "power2.out"
-        }, "-=1"); // Overlap for a smooth, continuous feel
+        });
+
+
+
+
+
+
+
+
+
+
+
+            const tracks = gsap.utils.toArray(".portfolio-track");
+            const portfolioTl = gsap.timeline({ scrollTrigger: { trigger: ".portfolio-container", start: "top top", end: "bottom bottom", scrub: 1, pin: ".portfolio-sticky-wrapper" } });
+            tracks.forEach((track, i) => {
+                const scrollDistance = track.scrollWidth - window.innerWidth;
+                if (i % 2 !== 0) { gsap.set(track, { x: -scrollDistance }); }
+                portfolioTl.to(track, { x: i % 2 === 0 ? -scrollDistance : 0, ease: "none" }, 0);
+            });
+
+            // --- Advanced Bento Grid Animation ---
+            const bentoTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: ".bento-grid",
+                    start: "top 75%",
+                }
+            });
+            bentoTl.to(".bento-item", {
+                clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+                stagger: 0.1,
+                duration: 1,
+                ease: "power3.inOut"
+            });
+            bentoTl.to(".bento-text", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 0.8,
+                ease: "power2.out"
+            }, "-=0.75");
+            // --- FUTURISTIC BLUEPRINT SECTION ANIMATION ---
+            // --- NEW: Blueprint Card Mouse-Follow Glow ---
+            const blueprintCards = document.querySelectorAll('.blueprint-block');
+            blueprintCards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // --- FUTURISTIC BLUEPRINT SECTION ANIMATION ---
+            const blueprintTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#blueprint",
+                    start: "top 60%", // Start animation when section is 60% in view
+                }
+            });
+
+            // 1. Animate the grid lines drawing themselves
+            blueprintTl.to(".grid-line", {
+                scaleX: 1,
+                scaleY: 1,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power2.inOut"
+            });
+
+            // 2. Animate the content blocks appearing
+            blueprintTl.to(".blueprint-block", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            }, "-=0.7"); // Overlap for a smoother transition
+
+            // 3. Animate the icons inside the blocks
+            blueprintTl.to(".blueprint-icon", {
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "back.out(1.7)"
+            }, "-=0.8");
+
+            // 4. Animate the text, word by word, for each block
+            gsap.utils.toArray(".blueprint-block").forEach(block => {
+                const words = block.querySelectorAll(".word");
+                blueprintTl.to(words, {
+                    opacity: 1,
+                    y: 0,
+                    rotateX: 0,
+                    duration: 0.5,
+                    stagger: 0.03, // Controls speed of word reveals
+                    ease: "power2.out"
+                }, "-=0.9"); // Overlap significantly so text appears as blocks are settling
+            });
+            // --- FUTURISTIC FOOTER ANIMATION ---
+            const footerTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "footer",
+                    start: "top 70%",
+                }
+            });
+
+            footerTl.to(".footer-trace-path", {
+                strokeDashoffset: 0,
+                duration: 2,
+                ease: "power2.inOut"
+            }).to(".reveal-mask", {
+                clipPath: "inset(0 0% 0 0)",
+                stagger: 0.3,
+                duration: 1.5,
+                ease: "power3.out"
+            }, "-=1.5").to(".fade-in-anim", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 1,
+                ease: "power2.out"
+            }, "-=1");
+        }
+
+        window.addEventListener('load', () => {
+            initThree();
+            initAnimations();
+        });
     </script>
-    
 </body>
+
 </html>
