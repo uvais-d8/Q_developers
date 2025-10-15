@@ -172,20 +172,74 @@
         /* ========== START: ADVANCED ABOUT SECTION STYLES ========== */
 
         /* UPDATED: #about section layout */
+        /* --- About Section --- */
         #about {
-            align-items: flex-start;
-            /* Align content to the left */
+            /* Make sure it's at least 100vh to fill the screen when we pin it */
+            min-height: 100vh;
+            padding-bottom: 0;
+            /* No longer need the extra padding at the bottom */
+
+            /* Prepare for layering: About section is the bottom layer */
+            position: relative;
+            z-index: 1;
+
+            /* These existing styles are good */
+            display: flex;
+            /* Using flexbox to easily center the content */
+            align-items: center;
             justify-content: center;
             text-align: left;
-            /* Ensure text is left-aligned */
-            min-height: 100vh;
-            /* Restore min-height for proper spacing */
-            padding-bottom: 20vh;
         }
 
         #about div {
             max-width: 700px;
-            /* Constrain width for readability */
+        }
+
+        /* --- HORIZONTAL SCROLL STYLES --- */
+
+        /* This container gets pinned and provides the scroll duration */
+        .horizontal-container {
+            /* The height determines how long you scroll; we calculate it with JS */
+            position: relative;
+            width: 100%;
+            height: 200vh; /* A fixed height is often simpler for GSAP */
+        }
+
+        /* The track holds the panels and moves horizontally */
+        .horizontal-track {
+            display: flex;
+            width: 200%;
+            /* 2 panels * 100% width each */
+        }
+
+        /* Style each section as a full-screen panel */
+        #about,
+        #services {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column; /* Changed for easier centering of content */
+            justify-content: center;
+            align-items: center;
+            padding: 0 8%;
+            box-sizing: border-box;
+            /* Ensures padding is included in the width */
+        }
+
+        /* We need to override the old styles for the services section */
+        .services-container,
+        .sticky-wrapper {
+            height: auto !important;
+            position: static !important;
+            margin-top: 0 !important;
+        }
+
+        /* Ensure the cards inside the services panel are visible */
+        #services .cards-container {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            gap: 20px; /* Added gap for better spacing */
         }
 
         /* Style for the new subheading */
@@ -265,59 +319,35 @@
 
 
 
-        /* ========== END: ADVANCED ABOUT SECTION STYLES ========== *//* --- Services Section (Full Width) --- */
-#services {
-    padding-bottom: 200px;
-}
-
-.services-container {
-    position: relative;
-    height: 300vh; /* This still controls the scroll duration */
-}
-
-.sticky-wrapper {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-}
-
-/* UPDATED: Container is now full-width */
-.cards-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-around; /* Distributes cards evenly */
-    padding: 0 5%; /* Adds some space at the edges */
-    width: 100%;
-    height: 100%;
-}
-
-.service-card {
-    position: relative;
-    flex-shrink: 0;
-    /* UPDATED: Cards are now sized to fit, with a max-width */
-    width: 30%;
-    max-width: 450px;
-    min-width: 280px;
-    aspect-ratio: 4 / 3;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.service-card h3 {
-    font-size: 2rem;
-    margin-bottom: 15px;
-}
+        /* ========== END: ADVANCED ABOUT SECTION STYLES ========== */
 
 
+
+        .service-card {
+            position: relative;
+            flex-shrink: 0;
+            /* UPDATED: Cards are now sized to fit, with a max-width */
+            width: 30%;
+            max-width: 450px;
+            min-width: 280px;
+            aspect-ratio: 4 / 3;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .service-card h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* ----------------------------------------------------------- */
 
         #portfolio {
             padding: 0;
@@ -325,7 +355,7 @@
         }
 
         .portfolio-container {
-            height: 300vh; 
+            height: 300vh;
             position: relative;
         }
 
@@ -353,7 +383,7 @@
 
         .portfolio-item img {
             width: 100%;
-            height: 25vh;
+            height: 30vh;
             object-fit: cover;
             border-radius: 15px;
             transition: transform 0.5s ease;
@@ -366,14 +396,13 @@
         .portfolio-heading {
             padding: 0 8%;
             margin-bottom: 1.5rem;
-            margin-top: 10rem;
         }
 
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(3, 200px);
-            gap: 20px;
+            gap: 10px;
             margin-top: 40px;
         }
 
@@ -390,7 +419,11 @@
             flex-direction: column;
             justify-content: flex-end;
             font-weight: 600;
-            clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+
+            /* ADD these lines for the new blur effect */
+            opacity: 0;
+            filter: blur(10px);
+            transform: scale(0.95);
         }
 
         .bento-item::after {
@@ -436,27 +469,6 @@
             background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
         }
 
-        #contact {
-            text-align: center;
-            min-height: 50vh;
-        }
-
-        #contact a {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 15px 30px;
-            background-color: var(--purple);
-            color: var(--cool-white);
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-
-        #contact a:hover {
-            transform: scale(1.05);
-            background-color: var(--light-purple);
-        }
 
         /* ========== FUTURISTIC LIGHTNING FOOTER ========== */
         footer {
@@ -650,6 +662,7 @@
             }
         }
 
+        /* This is a duplicate rule, but we'll leave it as per the original code */
         #hero .hero-q {
             font-family: 'Poppins', sans-serif;
             font-weight: 800;
@@ -666,16 +679,40 @@
         }
 
         /* ========== START: BLUEPRINT SECTION STYLES ========== */
-        #blueprint {
-            /* UPDATED: Removed fixed height and added responsive padding */
-            min-height: auto;
-            padding: 15vh 8%;
-     overflow: hidden;
-            color: var(--dark-gray);
+        .footer-wrapper {
             position: relative;
-            /* Needed for the grid lines */
+            height: 200vh;
+            /* This provides the scrollable space for the effect */
         }
 
+        /* Update the #blueprint and footer styles like this */
+        #blueprint,
+        footer {
+            position: sticky;
+            /* <-- The magic property! */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            /* Prevents content from spilling out */
+        }
+
+        #blueprint {
+            z-index: 1;
+            /* Sits on the bottom layer */
+            /* Add this to make your content look good inside the 100vh container */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        footer {
+            z-index: 10;
+            /* Sits on the top layer, so it slides OVER the blueprint */
+        }
+
+        /* ------------------------- */
         .blueprint-grid {
             position: absolute;
             top: 0;
@@ -854,53 +891,57 @@
     <main>
         <section id="hero">
             <h1 data-splitting><span class="hero-q">Q</span> DEVELOPERS</h1>
-            <p class="hero-description">Crafting Calicut's skyline with a commitment to quality and innovation. Your
+            <p class="hero-description">Crafting Calicut's skyline with a commitment to quality and
+                innovation. Your
                 vision, built to last.</p>
         </section>
 
-        <!-- ========== START: ADVANCED ABOUT SECTION ========== -->
-        <section id="about">
-            <div>
-                <h2 class="fade-in">Crafting Landmarks, Building Dreams.</h2>
-                <h3 class="about-subheading">Welcome to Kerala’s Finest Properties!</h3>
-                <p class="about-text" data-splitting>Q Developers is where we transform your aspirations into tangible
-                    reality. People have always dreamt of living in lifestyle properties, and it was not until the dawn
-                    of Q Developers that Kozhikode experienced what it was like to live in a home of their dreams.</p>
-                <p class="about-text" data-splitting>We unveil a plethora of living spaces comprising luxury villas,
-                    flats, and apartments in Calicut City, each designed with an unwavering commitment to excellence,
-                    innovation, and sustainability.</p>
-            </div>
 
-        </section>
-        <!-- ========== END: ADVANCED ABOUT SECTION ========== -->
-         <section id="services">
-    <h2 class="fade-in">Our Expertise</h2>
-    <div style="margin-top: -400px;" class="services-container">
-        <div class="sticky-wrapper">
-            <div class="cards-container"> 
-                <div class="service-card" id="card-1">
-                    <h3>Architectural Design</h3>
-                    <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                    <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                    <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                </div>
-                <div class="service-card" id="card-2">
-                    <h3>Construction Works</h3>
-                    <p>End-to-end construction services with a focus on quality materials and craft.</p>
-                    <p>End-to-end construction services with a focus on quality materials and craft.</p>
-                    <p>End-to-end construction services with a focus on quality materials and craft.</p>
-                </div>
-                <div class="service-card" id="card-3">
-                    <h3>Project Management</h3>
-                    <p>Ensuring your project is delivered on time and within budget, with complete .</p>
-                    <p>Ensuring your project is delivered on time and within budget, with complete .</p>
-                    <p>Ensuring your project is delivered on time and within budget, with complete .</p>
-                </div>
+        <div class="horizontal-container">
+            <div class="horizontal-track">
+                <section id="about">
+                    <div>
+                        <h2 class="fade-in">Crafting Landmarks, Building Dreams.</h2>
+                        <h3 class="about-subheading">Welcome to Kerala’s Finest Properties!</h3>
+                        <p class="about-text" data-splitting>Q Developers is where we transform your
+                            aspirations into tangible
+                            reality. People have always dreamt of living in lifestyle properties,
+                            and it was not until the dawn
+                            of Q Developers that Kozhikode experienced what it was like to live in a
+                            home of their dreams.</p>
+                        <p class="about-text" data-splitting>We unveil a plethora of living spaces
+                            comprising luxury villas,
+                            flats, and apartments in Calicut City, each designed with an unwavering
+                            commitment to excellence,
+                            innovation, and sustainability.</p>
+                    </div>
+                </section>
+                <section id="services">
+                    <h2 class="fade-in">Our Expertise</h2>
+                     <div class="services-container">
+                        <div class="sticky-wrapper">
+                            <div class="cards-container">
+                                <div class="service-card" id="card-1">
+                                    <h3>Architectural Design</h3>
+                                    <p>Innovative and sustainable designs that blend
+                                        aesthetics with functionality.</p>
+                                </div>
+                                <div class="service-card" id="card-2">
+                                    <h3>Construction Works</h3>
+                                    <p>End-to-end construction services with a focus on
+                                        quality materials and craft.</p>
+                                </div>
+                                <div class="service-card" id="card-3">
+                                    <h3>Project Management</h3>
+                                    <p>Ensuring your project is delivered on time and within
+                                        budget, with complete transparency.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
-    </div>
-</section>
-
         <section id="portfolio">
             <div class="portfolio-container">
                 <div class="portfolio-sticky-wrapper">
@@ -945,46 +986,6 @@
                             <p>Kochi</p>
                         </div>
 
-                    </div>
-                    <div class="portfolio-track">
-
-
-                        <div class="portfolio-item"><img
-                                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                alt="Modern House 4">
-                            <h3>Horizon Homes</h3>
-                            <p>Calicut</p>
-                        </div>
-                        <div class="portfolio-item"><img
-                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                alt="Luxury Interior">
-                            <h3>Oakwood Premier</h3>
-                            <p>Kochi</p>
-                        </div>
-                        <div class="portfolio-item"><img
-                                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                alt="Modern House 4">
-                            <h3>Horizon Homes</h3>
-                            <p>Calicut</p>
-                        </div>
-                        <div class="portfolio-item"><img
-                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                alt="Luxury Interior">
-                            <h3>Oakwood Premier</h3>
-                            <p>Kochi</p>
-                        </div>
-                        <div class="portfolio-item"><img
-                                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                alt="Modern House 4">
-                            <h3>Horizon Homes</h3>
-                            <p>Calicut</p>
-                        </div>
-                        <div class="portfolio-item"><img
-                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                alt="Luxury Interior">
-                            <h3>Oakwood Premier</h3>
-                            <p>Kochi</p>
-                        </div>
                     </div>
                     <div class="portfolio-track">
                         <div class="portfolio-item"><img
@@ -1051,9 +1052,10 @@
         </section>
 
 
-        <!-- ========== START: FUTURISTIC BLUEPRINT SECTION ========== -->
+    </main>
+
+    <div class="footer-wrapper">
         <section id="blueprint">
-            <!-- Animated background grid -->
             <div class="blueprint-grid">
                 <div class="grid-line"></div>
                 <div class="grid-line"></div>
@@ -1063,7 +1065,6 @@
                 <div class="grid-line"></div>
             </div>
 
-            <!-- Main content container -->
             <div class="blueprint-content">
                 <div class="blueprint-block">
                     <div class="blueprint-icon">
@@ -1073,8 +1074,10 @@
                         </svg>
                     </div>
                     <h3>Our Vision</h3>
-                    <p data-splitting>We see beyond structures; we envision landmarks. Our philosophy is to merge
-                        groundbreaking design with sustainable practices, creating spaces that inspire communities for
+                    <p data-splitting>We see beyond structures; we envision landmarks. Our philosophy is
+                        to merge
+                        groundbreaking design with sustainable practices, creating spaces that
+                        inspire communities for
                         generations to come.</p>
                 </div>
 
@@ -1087,8 +1090,10 @@
                         </svg>
                     </div>
                     <h3>The Process</h3>
-                    <p data-splitting>Precision is our principle. From the initial sketch to the final fixture, every
-                        stage is meticulously planned and executed with cutting-edge technology and transparent
+                    <p data-splitting>Precision is our principle. From the initial sketch to the final
+                        fixture, every
+                        stage is meticulously planned and executed with cutting-edge technology and
+                        transparent
                         communication.</p>
                 </div>
 
@@ -1101,68 +1106,64 @@
                         </svg>
                     </div>
                     <h3>Execution</h3>
-                    <p data-splitting>Our commitment is to tangible excellence. We transform complex blueprints into
-                        reality, delivering projects that stand as a testament to superior craftsmanship and unwavering
+                    <p data-splitting>Our commitment is to tangible excellence. We transform complex
+                        blueprints into
+                        reality, delivering projects that stand as a testament to superior
+                        craftsmanship and unwavering
                         quality.</p>
                 </div>
             </div>
         </section>
-        <!-- ========== END: FUTURISTIC BLUEPRINT SECTION ========== -->
-        <section id="contact">
-            <h2 class="fade-in">Have a project in mind?</h2>
-            <p class="fade-in">Let's build the future together. Contact us for a consultation.</p>
-            <a href="mailto:contact@qdevelopers.com">Get In Touch</a>
-        </section>
-    </main>
-
-    <footer>
-        <svg class="footer-trace-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
-            <path class="footer-trace-path" d="M1100 350 Q 750 350 750 200 T 400 50 Q 200 50 100 150 T -100 350" />
-        </svg>
-        <div class="footer-grid">
-            <div class="footer-cta">
-                <h2 class="reveal-mask">Build The Future.</h2>
-                <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your vision to life. We're
-                    ready to build the next landmark.</p>
-                <a href="mailto:contact@qdevelopers.com" class="footer-contact-button fade-in-anim">Get In Touch</a>
-            </div>
-            <div class="footer-links-grid">
-                <div class="footer-section">
-                    <h4 class="reveal-mask">Company</h4>
-                    <ul>
-                        <li class="fade-in-anim"><a href="#about">About Us</a></li>
-                        <li class="fade-in-anim"><a href="#projects">Projects</a></li>
-                        <li class="fade-in-anim"><a href="#">Careers</a></li>
-                    </ul>
+        <footer>
+            <svg class="footer-trace-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
+                <path class="footer-trace-path" d="M1100 350 Q 750 350 750 200 T 400 50 Q 200 50 100 150 T -100 350" />
+            </svg>
+            <div class="footer-grid">
+                <div class="footer-cta">
+                    <h2 class="reveal-mask">Build The Future.</h2>
+                    <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your
+                        vision to life. We're
+                        ready to build the next landmark.</p>
+                    <a href="mailto:contact@qdevelopers.com" class="footer-contact-button fade-in-anim">Get In Touch</a>
                 </div>
-                <div class="footer-section">
-                    <h4 class="reveal-mask">Services</h4>
-                    <ul>
-                        <li class="fade-in-anim"><a href="#services">Architecture</a></li>
-                        <li class="fade-in-anim"><a href="#services">Construction</a></li>
-                        <li class="fade-in-anim"><a href="#services">Management</a></li>
-                    </ul>
+                <div class="footer-links-grid">
+                    <div class="footer-section">
+                        <h4 class="reveal-mask">Company</h4>
+                        <ul>
+                            <li class="fade-in-anim"><a href="#about">About Us</a></li>
+                            <li class="fade-in-anim"><a href="#projects">Projects</a></li>
+                            <li class="fade-in-anim"><a href="#">Careers</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4 class="reveal-mask">Services</h4>
+                        <ul>
+                            <li class="fade-in-anim"><a href="#services">Architecture</a></li>
+                            <li class="fade-in-anim"><a href="#services">Construction</a></li>
+                            <li class="fade-in-anim"><a href="#services">Management</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="fade-in-anim">&copy; 2025 Q Developers | Calicut, Kerala.</p>
-            <div class="footer-socials">
-                <a href="#" class="fade-in-anim" title="LinkedIn"><svg viewBox="0 0 24 24">
-                        <path
-                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg></a>
-                <a href="#" class="fade-in-anim" title="Twitter/X"><svg viewBox="0 0 24 24">
-                        <path
-                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.616 1.922 2.392 3.32 4.491 3.365-1.657 1.299-3.756 2.072-6.049 1.733 1.83 1.189 4.011 1.868 6.353 1.868 7.618 0 11.922-6.425 11.5-12.274.847-.608 1.574-1.373 2.149-2.23z" />
-                    </svg></a>
-                <a href="#" class="fade-in-anim" title="Instagram"><svg viewBox="0 0 24 24">
-                        <path
-                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
-                    </svg></a>
+            <div class="footer-bottom">
+                <p class="fade-in-anim">&copy; 2025 Q Developers | Calicut, Kerala.</p>
+                <div class="footer-socials">
+                    <a href="#" class="fade-in-anim" title="LinkedIn"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg></a>
+                    <a href="#" class="fade-in-anim" title="Twitter/X"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.616 1.922 2.392 3.32 4.491 3.365-1.657 1.299-3.756 2.072-6.049 1.733 1.83 1.189 4.011 1.868 6.353 1.868 7.618 0 11.922-6.425 11.5-12.274.847-.608 1.574-1.373 2.149-2.23z" />
+                        </svg></a>
+                    <a href="#" class="fade-in-anim" title="Instagram"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
+                        </svg></a>
+                </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -1250,7 +1251,6 @@
                 ease: 'power3.out',
                 onComplete: () => {
                     loader.classList.add('hidden');
-                    // This new part animates the description in
                     gsap.to(".hero-description", {
                         opacity: 1,
                         y: 0,
@@ -1261,52 +1261,62 @@
             });
 
             gsap.to(".hero-background", { opacity: 0, scrollTrigger: { trigger: "#about", start: "top bottom", end: "top center", scrub: true } });
-            // --- ADVANCED ABOUT SECTION ANIMATIONS ---
+            
+            // --- MAIN HORIZONTAL SCROLL TIMELINE ---
+            const track = document.querySelector(".horizontal-track");
+            const horizontalTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: ".horizontal-container",
+                    start: "top top",
+                    end: "bottom bottom", // Animate over the full height of the container
+                    scrub: 1,
+                    pin: true,
+                }
+            });
+            horizontalTl.to(track, {
+                xPercent: -50, // Move the track by half its width (since it's 200% wide)
+                ease: "none"
+            });
 
-            // 1. Timeline for the text reveal
-            const aboutTl = gsap.timeline({
+            // --- NESTED ANIMATIONS INSIDE HORIZONTAL SCROLL ---
+
+            // 1. About Section Text Animation
+            const aboutLines = new SplitType('.about-text', { types: 'lines, words' });
+            gsap.timeline({
                 scrollTrigger: {
                     trigger: "#about",
-                    start: "top 60%", // Start animation early
+                    containerAnimation: horizontalTl,
+                    start: "left center",
+                    toggleActions: "play reverse play reverse",
                 }
-            });
-
-            // Use SplitType to prepare the paragraphs
-            const aboutLines = new SplitType('.about-text', { types: 'lines, words' });
-
-            aboutTl.to(".about-subheading", {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: "power2.out"
+            }).to(".about-subheading", {
+                opacity: 1, y: 0, duration: 1, ease: "power2.out"
             }).to(aboutLines.words, {
-                y: 0,
-                stagger: 0.04, // Controls the speed of the word reveal
-                duration: 1.2,
-                ease: "power3.out"
-            }, "-=0.8").to("#enquiry-button", { // Fade in the enquiry button
-                opacity: 1,
-                scale: 1,
+                y: 0, stagger: 0.04, duration: 1.2, ease: "power3.out"
+            }, "-=0.8");
+
+            // 2. Services Section Card Animation
+            gsap.from(".service-card", {
+                scrollTrigger: {
+                    trigger: "#services",
+                    containerAnimation: horizontalTl,
+                    start: "left 70%",
+                    toggleActions: "play reverse play reverse",
+                },
+                xPercent: 100,
+                opacity: 0,
+                rotation: 10,
+                stagger: 0.1,
                 duration: 0.8,
-                ease: "back.out(1.7)"
-            }, "-=1");
-
-
-            // 2. ScrollTrigger to make the enquiry button sticky
-            ScrollTrigger.create({
-                trigger: "#about",
-                start: "top top", // When the top of #about hits the top of the viewport
-                endTrigger: "footer", // The trigger to end the effect
-                end: "top bottom", // When the top of the footer hits the bottom of the viewport
-                toggleClass: {
-                    targets: "#enquiry-button",
-                    className: "sticky"
-                }
+                ease: "power2.out"
             });
+            
+            // General fade-in animation for headings
             gsap.utils.toArray('.fade-in').forEach(el => {
                 gsap.from(el, { opacity: 0, y: 50, duration: 1, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
             });
 
+            // Global 3D Model scroll animation
             const tl = gsap.timeline({ scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 1 } });
             const easeType = 'power2.inOut';
             tl.to(qModel.rotation, { y: Math.PI * 1.5, z: -Math.PI * 0.5, ease: easeType }, 0)
@@ -1323,42 +1333,7 @@
                 .to(qModel.rotation, { y: Math.PI * 4, z: 0, ease: easeType }, 4)
                 .to(qModel.position, { x: 0, y: -0.5, ease: easeType }, 4);
 
-            // gsap.to('.service-card', { yPercent: (i, t, s) => -150 * (s.length - 1 - i), scrollTrigger: { trigger: ".services-container", start: "top top", end: "bottom bottom", scrub: 1, pin: ".sticky-wrapper" } });
-
-
-  // --- Horizontal Card "Filmstrip" Scroll ---
-     // --- Horizontal Card Fly-In Animation ---
-        const cards = gsap.utils.toArray('.service-card');
-
-        const cardTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: ".services-container",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1,
-                pin: ".sticky-wrapper",
-            }
-        });
-
-        // Set the initial state of the cards (off-screen to the right)
-        cardTl.from(cards, {
-            xPercent: 150, // Start 150% to the right
-            rotation: 15,
-            opacity: 0,
-            stagger: 0.1, // Animate each card with a slight delay
-            ease: "power2.out"
-        });
-
-
-
-
-
-
-
-
-
-
-
+            // --- PORTFOLIO SCROLL ANIMATION ---
             const tracks = gsap.utils.toArray(".portfolio-track");
             const portfolioTl = gsap.timeline({ scrollTrigger: { trigger: ".portfolio-container", start: "top top", end: "bottom bottom", scrub: 1, pin: ".portfolio-sticky-wrapper" } });
             tracks.forEach((track, i) => {
@@ -1366,19 +1341,21 @@
                 if (i % 2 !== 0) { gsap.set(track, { x: -scrollDistance }); }
                 portfolioTl.to(track, { x: i % 2 === 0 ? -scrollDistance : 0, ease: "none" }, 0);
             });
-
-            // --- Advanced Bento Grid Animation ---
+            
+            // --- BENTO GRID ANIMATION ---
             const bentoTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: ".bento-grid",
-                    start: "top 75%",
+                    start: "top 80%",
                 }
             });
             bentoTl.to(".bento-item", {
-                clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+                opacity: 1,
+                filter: 'blur(0px)',
+                scale: 1,
                 stagger: 0.1,
-                duration: 1,
-                ease: "power3.inOut"
+                duration: 0.8,
+                ease: "power2.out"
             });
             bentoTl.to(".bento-text", {
                 opacity: 1,
@@ -1386,30 +1363,26 @@
                 stagger: 0.1,
                 duration: 0.8,
                 ease: "power2.out"
-            }, "-=0.75");
-            // --- FUTURISTIC BLUEPRINT SECTION ANIMATION ---
-            // --- NEW: Blueprint Card Mouse-Follow Glow ---
+            }, "-=0.6");
+            
+            // --- BLUEPRINT SECTION ---
             const blueprintCards = document.querySelectorAll('.blueprint-block');
             blueprintCards.forEach(card => {
                 card.addEventListener('mousemove', e => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-
                     card.style.setProperty('--mouse-x', `${x}px`);
                     card.style.setProperty('--mouse-y', `${y}px`);
                 });
             });
 
-            // --- FUTURISTIC BLUEPRINT SECTION ANIMATION ---
             const blueprintTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#blueprint",
-                    start: "top 60%", // Start animation when section is 60% in view
+                    start: "top 60%",
                 }
             });
-
-            // 1. Animate the grid lines drawing themselves
             blueprintTl.to(".grid-line", {
                 scaleX: 1,
                 scaleY: 1,
@@ -1417,17 +1390,13 @@
                 stagger: 0.1,
                 ease: "power2.inOut"
             });
-
-            // 2. Animate the content blocks appearing
             blueprintTl.to(".blueprint-block", {
                 opacity: 1,
                 y: 0,
                 duration: 1,
                 stagger: 0.2,
                 ease: "power3.out"
-            }, "-=0.7"); // Overlap for a smoother transition
-
-            // 3. Animate the icons inside the blocks
+            }, "-=0.7");
             blueprintTl.to(".blueprint-icon", {
                 opacity: 1,
                 scale: 1,
@@ -1435,8 +1404,6 @@
                 stagger: 0.2,
                 ease: "back.out(1.7)"
             }, "-=0.8");
-
-            // 4. Animate the text, word by word, for each block
             gsap.utils.toArray(".blueprint-block").forEach(block => {
                 const words = block.querySelectorAll(".word");
                 blueprintTl.to(words, {
@@ -1444,18 +1411,30 @@
                     y: 0,
                     rotateX: 0,
                     duration: 0.5,
-                    stagger: 0.03, // Controls speed of word reveals
+                    stagger: 0.03,
                     ease: "power2.out"
-                }, "-=0.9"); // Overlap significantly so text appears as blocks are settling
+                }, "-=0.9");
             });
-            // --- FUTURISTIC FOOTER ANIMATION ---
+            
+            // --- FIXED: ADDED MISSING FOOTER REVEAL ANIMATION ---
+            gsap.from("footer", {
+                yPercent: -100,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".footer-wrapper",
+                    start: "top bottom",
+                    end: "bottom bottom",
+                    scrub: true,
+                }
+            });
+
+            // --- FOOTER CONTENT ANIMATION ---
             const footerTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "footer",
                     start: "top 70%",
                 }
             });
-
             footerTl.to(".footer-trace-path", {
                 strokeDashoffset: 0,
                 duration: 2,
