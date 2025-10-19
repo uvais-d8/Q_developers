@@ -1,6 +1,4 @@
-
-
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -42,8 +40,9 @@
         h1,
         h2,
         h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 700;
+            /* UPDATED: Cinematic font */
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
             color: var(--purple);
         }
 
@@ -120,14 +119,52 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            /* <-- NEW: for spotlights */
+        }
+
+        /* NEW: CSS-based cinematic spotlights */
+        #hero::before,
+        #hero::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            width: 60%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0.189) 0%,
+                    rgba(255, 255, 255, 0) 60%);
+            opacity: 0;
+            transition: opacity 2s ease-out;
+        }
+
+        #hero::before {
+            left: -15%;
+            transform: rotate(-25deg);
+        }
+
+        #hero::after {
+            right: -15%;
+            transform: rotate(25deg);
+        }
+
+        /* NEW: Class to fade in spotlights after load */
+        #hero.lights-on::before,
+        #hero.lights-on::after {
+            opacity: 1;
         }
 
         #hero h1 {
             font-size: clamp(4rem, 12vw, 9rem);
-            font-weight: 700;
+            font-weight: 800;
             line-height: 1;
             color: var(--cool-white);
             mix-blend-mode: difference;
+            z-index: 2;
+            position: relative;
         }
 
         #hero .word {
@@ -145,6 +182,8 @@
             margin: 30px auto 40px;
             line-height: 1.6;
             font-weight: 400;
+            z-index: 2;
+            position: relative;
         }
 
         .hero-description .word {
@@ -168,11 +207,18 @@
             border-radius: 50px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            z-index: 2;
+            position: relative;
         }
 
         .hero-cta:hover {
             background-color: rgba(255, 255, 255, 0.2);
             transform: translateY(0px) scale(1.05) !important;
+        }
+
+        /* NEW: Click animation */
+        .hero-cta:active {
+            transform: translateY(0px) scale(1.02) !important;
         }
 
         /* --- HORIZONTAL SCROLL WRAPPER --- */
@@ -214,6 +260,8 @@
         #about h2 {
             font-size: clamp(3rem, 6vw, 4.5rem);
             white-space: nowrap;
+            mix-blend-mode: difference;
+            color: var(--purple);
         }
 
         .about-subheading {
@@ -302,12 +350,33 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            position: relative;
+            /* <-- NEW: for absolute heading */
         }
+
+        /* NEW: Centered, absolute heading */
+        #portfolio h2 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            margin: 0;
+            pointer-events: none;
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            color: var(--purple);
+            font-size: 4.5rem;
+            text-align: center;
+            width: 100%;
+        }
+
 
         .portfolio-marquee {
             width: 100vw;
             position: relative;
-            margin: 2vh 0;
+            margin: 4vh 0;
+            /* <-- NEW: increased margin */
         }
 
         .portfolio-marquee::before,
@@ -333,6 +402,11 @@
         .portfolio-track {
             display: flex;
             width: fit-content;
+        }
+
+        /* NEW: Set initial state for reverse marquee */
+        #marquee2 .portfolio-track {
+            transform: translateX(-50%);
         }
 
         .portfolio-item {
@@ -365,21 +439,17 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
-            /* Ensures the heading is on top of the bento items */
             margin: 0;
-            /* Removes default h2 margin */
             pointer-events: none;
-            /* Allows clicks to pass through to the bento items underneath */
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            /* <-- NEW: consistent font */
+            font-weight: 800;
+            /* <-- NEW: consistent font */
             color: var(--purple);
-            /* These are optional, but good for styling the centered title */
             color: #5E239D;
             font-size: 4.5rem;
-            /* Adjust as needed */
             text-align: center;
             width: 100%;
-            /* Ensures text centers if it wraps */
         }
 
         .bento-grid {
@@ -407,7 +477,18 @@
             transform-style: preserve-3d;
             opacity: 0;
             transform: scale(0.5) rotateX(45deg) translateY(50px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            /* <-- NEW: transition for hover */
         }
+
+        /* NEW: Hover effect */
+        .bento-item:hover {
+            transform: scale(1.03) !important;
+            /* Important to override GSAP */
+            z-index: 5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
 
         .bento-item::after {
             content: '';
@@ -503,38 +584,36 @@
         /* --- Footer --- */
 
         /* ========== FUTURISTIC LIGHTNING FOOTER ========== */
-       /* --- Wrapper (Remove fixed height) --- */
-.footer-wrapper {
-    position: relative;
-    /* REMOVE height: 200vh; */
-    /* This wrapper now just acts as the container for the sticky footer */
-}
+        /* --- Wrapper (Remove fixed height) --- */
+        .footer-wrapper {
+            position: relative;
+            /* NEW: Set background color here for seamless transition */
+            background-color: var(--cool-white);
+        }
 
-/* --- Blueprint Section (Add z-index and background) --- */
-#blueprint {
-    position: relative;
-    background-color: transparent;
-    /* This is CRITICAL. It must be opaque to hide the footer underneath */
-    background-color: #fff; /* <-- CHANGE THIS to your page's background color */
-    z-index: 2;
-}
+        /* --- Blueprint Section (Add z-index and background) --- */
+        #blueprint {
+            position: relative;
+            background-color: transparent;
+            /* This is CRITICAL. It must be opaque to hide the footer underneath */
+            background-color: var(--cool-white);
+            /* <-- CHANGE THIS to your page's background color */
+            z-index: 2;
+        }
 
-/* --- Footer (This is the main fix) --- */
-footer {
-    /* Change position from 'relative' to 'sticky' */
-    position: sticky;
-    bottom: 0;
-    /* It sticks to the bottom of its parent, .footer-wrapper */
-    
-    z-index: 1; /* <-- Must be LOWER than #blueprint */
-    
-    /* The rest of your footer styling is fine */
-    padding: 120px 8% 50px;
-    background-color: var(--footer-light-bg);
-    color: var(--dark-gray);
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-}
+        /* --- Footer (This is the main fix) --- */
+        footer {
+            position: sticky;
+            bottom: 0;
+            z-index: 1;
+            padding: 120px 8% 50px;
+            /* UPDATED: transparent background to see Q model */
+            background-color: transparent;
+            color: var(--dark-gray);
+            /* UPDATED: removed border */
+            border-top: none;
+            overflow: hidden;
+        }
 
         .footer-trace-svg {
             position: absolute;
@@ -596,6 +675,11 @@ footer {
             color: white;
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(127, 90, 240, 0.5);
+        }
+
+        /* NEW: Click animation */
+        .footer-contact-button:active {
+            transform: translateY(-1px) scale(0.98);
         }
 
         .footer-links-grid {
@@ -683,10 +767,22 @@ footer {
                 height: auto;
                 min-height: 100vh;
                 background-color: transparent;
+                /* Add padding back for mobile */
+                padding: 120px 8%;
+            }
+
+            #portfolio {
+                /* Portfolio section needs padding reset when stacked */
+                padding: 120px 0;
             }
 
             .horizontal-scroll-wrapper {
                 height: auto !important;
+            }
+
+            #about h2 {
+                white-space: normal;
+                /* Allows the long heading to wrap */
             }
 
             .services-content-wrapper {
@@ -717,6 +813,7 @@ footer {
             .footer-grid {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 60px;
             }
 
             .footer-cta p {
@@ -729,9 +826,38 @@ footer {
                 padding: 80px 5%;
             }
 
+            .horizontal-track>section {
+                padding: 80px 5%;
+            }
+
+            #portfolio {
+                padding: 80px 0;
+            }
+
+            /* NEW: Mobile portfolio heading */
+            #portfolio h2 {
+                position: relative;
+                transform: none;
+                left: auto;
+                top: auto;
+                margin-bottom: 30px;
+                /* Add space */
+            }
+
             .bento-grid {
                 grid-template-columns: 1fr;
                 grid-template-rows: repeat(6, 250px);
+                margin-top: 40px;
+                /* Add space for heading */
+            }
+
+            #projects h2 {
+                /* Make heading static on mobile, not centered over grid */
+                position: relative;
+                transform: none;
+                left: auto;
+                top: auto;
+                z-index: 1;
             }
 
             .item-1,
@@ -744,6 +870,12 @@ footer {
                 grid-row: auto;
             }
 
+            .blueprint-content {
+                grid-template-columns: 1fr;
+                /* Stack blueprint blocks */
+                gap: 60px;
+            }
+
             .footer-bottom {
                 flex-direction: column-reverse;
                 gap: 30px;
@@ -751,13 +883,26 @@ footer {
 
             .footer-links-grid {
                 grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .portfolio-item {
+                width: 40vw;
+                /* Make marquee items a bit larger on mobile */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .portfolio-item {
+                width: 60vw;
+                /* Even larger on very small screens */
             }
         }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Poppins:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet">
 </head>
 
@@ -771,7 +916,7 @@ footer {
         <section id="hero">
             <h1 data-splitting>Q DEVELOPERS</h1>
             <p class="hero-description" data-splitting>Crafting Calicut's skyline with a commitment to quality and
-                innovation. Your vision, built to last.</p>
+                innovation. Your vision, built to last. 🏗️</p>
             <a href="#contact" class="hero-cta">Start Your Project</a>
         </section>
 
@@ -781,10 +926,10 @@ footer {
                 <section id="about">
                     <div>
                         <h2 data-splitting>Crafting Landmarks, Building Dreams.</h2>
-                        <h3 class="about-subheading" data-splitting>Welcome to Kerala’s Finest Properties!</h3>
+                        <h3 class="about-subheading" data-splitting>Welcome to Kerala’s Finest Properties! 🏡</h3>
                         <p class="about-text" data-splitting>We unveil a plethora of living spaces comprising luxury
                             villas, flats, and apartments in Calicut City, each designed with an unwavering commitment
-                            to excellence, innovation, and sustainability.</p>
+                            to excellence, innovation, and sustainability. ✨</p>
                     </div>
                 </section>
 
@@ -795,19 +940,19 @@ footer {
                         </div>
                         <div class="cards-container">
                             <div class="service-card">
-                                <h3>Architectural Design</h3>
+                                <h3>Architectural Design 📐</h3>
                                 <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
                                 <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
                                 <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
                             </div>
                             <div class="service-card">
-                                <h3>Construction Works</h3>
+                                <h3>Construction Works 🛠️</h3>
                                 <p>End-to-end services with a focus on quality materials and superior craft.</p>
                                 <p>End-to-end services with a focus on quality materials and superior craft.</p>
                                 <p>End-to-end services with a focus on quality materials and superior craft.</p>
                             </div>
                             <div class="service-card">
-                                <h3>Project Management</h3>
+                                <h3>Project Management 📋</h3>
                                 <p>Ensuring your vision is realized on time, on budget, and to the highest standards.
                                 <p>Ensuring your vision is realized on time, on budget, and to the highest standards.
                                 <p>Ensuring your vision is realized on time, on budget, and to the highest standards.
@@ -846,7 +991,6 @@ footer {
                                     alt="Modern House"></div>
                         </div>
                     </div>
-                    <h2 data-splitting>Our Portfolio.</h2>
                     <div class="portfolio-marquee" id="marquee2">
                         <div class="portfolio-track">
                             <div class="portfolio-item"><img
@@ -875,6 +1019,7 @@ footer {
                                     alt="Modern Interior"></div>
                         </div>
                     </div>
+                    <h2 data-splitting>Our Portfolio.</h2>
                 </section>
 
             </div>
@@ -923,7 +1068,7 @@ footer {
                                 <circle cx="12" cy="12" r="3" />
                             </svg>
                         </div>
-                        <h3>Our Vision</h3>
+                        <h3>Our Vision 🔭</h3>
                         <p data-splitting>We see beyond structures; we envision landmarks. Our philosophy is
                             to merge
                             groundbreaking design with sustainable practices, creating spaces that
@@ -939,7 +1084,7 @@ footer {
                                 <path d="M3.61 12.39L6 14.78M6 14.78L8.39 17.17M6 14.78L3.61 17.17" />
                             </svg>
                         </div>
-                        <h3>The Process</h3>
+                        <h3>The Process ⚙️</h3>
                         <p data-splitting>Precision is our principle. From the initial sketch to the final
                             fixture, every
                             stage is meticulously planned and executed with cutting-edge technology and
@@ -955,7 +1100,7 @@ footer {
                                 <path d="M8 11V7a4 4 0 014-4h0a4 4 0 014 4v4" />
                             </svg>
                         </div>
-                        <h3>Execution</h3>
+                        <h3>Execution 🏆</h3>
                         <p data-splitting>Our commitment is to tangible excellence. We transform complex
                             blueprints into
                             reality, delivering projects that stand as a testament to superior
@@ -974,7 +1119,7 @@ footer {
                         <h2 class="reveal-mask">Build The Future.</h2>
                         <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your
                             vision to life. We're
-                            ready to build the next landmark.</p>
+                            ready to build the next landmark. 🤝</p>
                         <a href="mailto:contact@qdevelopers.com" class="footer-contact-button fade-in-anim">Get In
                             Touch</a>
                     </div>
@@ -1015,7 +1160,7 @@ footer {
                     </div>
                 </div>
             </footer>
-        </div> 
+        </div>
     </main>
 
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
@@ -1030,7 +1175,6 @@ footer {
         }
     }
     </script>
-
     <script type="module">
         import * as THREE from 'three';
 
@@ -1044,7 +1188,8 @@ footer {
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        let scene, camera, renderer, qModel;
+        // --- ADDED cone1 and cone2 variables ---
+        let scene, camera, renderer, qModel, cone1, cone2;
 
         function initThree() {
             const canvas = document.querySelector('#three-canvas');
@@ -1055,20 +1200,70 @@ footer {
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
             scene.add(ambientLight);
 
-            const spotLight1 = new THREE.SpotLight(0xffffff, 35, 20, Math.PI * 0.15, 0.5, 1);
+            // Spotlight 1 (Key light, casts shadow)
+            const spotLight1 = new THREE.SpotLight(0xffffff, 40, 20, Math.PI * 0.15, 0.5, 1);
             spotLight1.position.set(8, 6, 8);
+            spotLight1.castShadow = true;
+            spotLight1.shadow.mapSize.width = 1024;
+            spotLight1.shadow.mapSize.height = 1024;
+            spotLight1.shadow.camera.near = 0.5;
+            spotLight1.shadow.camera.far = 30;
             scene.add(spotLight1);
 
-            const spotLight2 = new THREE.SpotLight(0xffffff, 35, 20, Math.PI * 0.15, 0.5, 1);
-            spotLight2.position.set(-8, 6, 8);
+            // Spotlight 2 (Fill light, no shadow)
+            const spotLight2 = new THREE.SpotLight(0xffffff, 15, 20, Math.PI * 0.15, 0.5, 1);
+            spotLight2.position.set(-8, 3, 6);
             scene.add(spotLight2);
+
+            // Invisible plane to receive shadows
+            const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+            const shadowPlaneGeo = new THREE.PlaneGeometry(30, 30);
+            const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowMaterial);
+            shadowPlane.position.z = -1;
+            shadowPlane.receiveShadow = true;
+            scene.add(shadowPlane);
 
             createQModel();
 
+            // --- ADDED: Target lights to Q model ---
+            if (qModel) {
+                spotLight1.target = qModel;
+                spotLight2.target = qModel;
+                scene.add(spotLight1.target);
+                scene.add(spotLight2.target);
+            }
+
+            // --- ADDED: Visible light ray cones ---
+            const coneGeo = new THREE.ConeGeometry(3, 15, 32, 1, true);
+            coneGeo.translate(0, 7.5, 0); // Move pivot to the cone's base
+            const coneMat = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.08, // Subtle opacity
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            cone1 = new THREE.Mesh(coneGeo, coneMat);
+            cone1.position.copy(spotLight1.position);
+            scene.add(cone1);
+
+            cone2 = new THREE.Mesh(coneGeo, coneMat.clone());
+            cone2.position.copy(spotLight2.position);
+            scene.add(cone2);
+
+
             const animate = () => {
+                // --- ADDED: Make cones look at the Q model every frame ---
+                if (cone1 && qModel) cone1.lookAt(qModel.position);
+                if (cone2 && qModel) cone2.lookAt(qModel.position);
+
                 renderer.render(scene, camera);
                 requestAnimationFrame(animate);
             };
@@ -1107,6 +1302,7 @@ footer {
                 roughness: 0.6
             });
             qModel = new THREE.Mesh(geometry, material);
+            qModel.castShadow = true;
             scene.add(qModel);
         }
 
@@ -1114,16 +1310,41 @@ footer {
             const splitTargets = document.querySelectorAll("[data-splitting]");
             splitTargets.forEach(target => { new SplitType(target, { types: 'words, lines' }); });
 
+            // --- THIS IS THE "small-to-large" Q ANIMATION ON LOAD ---
+            gsap.from(qModel.scale, {
+                x: 0.1,
+                y: 0.1,
+                z: 0.1,
+                duration: 2.5,
+                ease: 'power3.out'
+            });
+
+            // --- THIS IS THE CAMERA SCROLL ANIMATION IN HERO ---
+            gsap.to(camera.position, {
+                z: 4.5,
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+
             const heroTl = gsap.timeline();
             heroTl.to("#hero h1 .word, .hero-description .word", {
                 opacity: 1, filter: 'blur(0px)', y: 0,
-                duration: 1.2, stagger: 0.04, ease: 'power3.out'
+                duration: 1.2, stagger: 0.06,
+                ease: 'power3.out'
             })
-                .fromTo(".hero-description", { scale: 1 }, { scale: 1.05, duration: 0.6, ease: 'power2.out', repeat: 1, yoyo: true }, "-=1.2")
+                .to("#hero h1", { scale: 1.05, duration: 0.8, ease: 'power2.out', repeat: 1, yoyo: true }, "-=1.2")
                 .to(".hero-cta", {
                     opacity: 1, y: 0,
                     duration: 1, ease: 'power3.out'
-                }, "-=0.8");
+                }, "-=1")
+                .add(() => {
+                    document.getElementById('hero').classList.add('lights-on');
+                }, "-=0.5");
+
             // --- Cinematic Background Fade-Out ---
             gsap.to(".background-controller", {
                 opacity: 0,
@@ -1131,69 +1352,81 @@ footer {
                 scrollTrigger: {
                     trigger: "body",
                     start: "top top",
-                    end: "+=50%", // Fades out over the first 50% of the viewport height
+                    end: "+=50%",
                     scrub: 1
                 }
             });
-            // --- REVISED Q MODEL ANIMATION ---
+
+            // --- REVISED Q MODEL ANIMATION (Slower & Smoother) ---
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: 'body',
                     start: 'top top',
                     end: 'bottom bottom',
-                    scrub: 0.5 // Makes the animation feel responsive
+                    scrub: 1
                 }
             });
-            const easeType = 'power1.inOut'; // A softer, more natural ease
+            const easeType = 'power1.inOut';
 
-            // Continuous, smooth rotation for the entire scroll duration
+            // --- THIS IS THE Q ROTATION ANIMATION IN HERO ---
             tl.to(qModel.rotation, {
-                y: Math.PI * 2, // Adjust rotation amount as needed
+                y: Math.PI * 2,
                 ease: 'none',
                 duration: 1
-            }, 0); // Start at time 0 and run for the whole timeline
+            }, 0); // Starts at 0 (top of page)
 
-            // --- Position Animation Sequence ---
-
-            // 1. FAST move to the left
+            // --- THIS IS THE Q MOVEMENT ANIMATION IN HERO ---
             tl.to(qModel.position, {
                 x: -5,
                 ease: 'power2.out',
-                duration: 1 // Short duration = fast movement, happens over a small scroll distance
-            }, 0); // Start at time 0
+                duration: 3
+            }, 0); // Starts at 0 (top of page)
 
-            // 2. SLOW move to the right
+            // --- (Rest of the Q animation timeline) ---
             tl.to(qModel.position, {
                 x: 5,
                 ease: easeType,
-                duration: 8 // Long duration = slow movement, happens over a large scroll distance
-            }); // Starts automatically after the previous tween completes
-
-            // 3. Move DOWN towards the end
-            tl.to(qModel.position, {
-                y: -3, // Go further down
-                x: 5,  // Center it horizontally as it goes down
-                ease: easeType,
-                duration: 3 // Moderate duration for the final move
+                duration: 12
             });
-            // --- Remaining page animations ---
+            tl.to(qModel.position, {
+                y: -3,
+                x: 5,
+                ease: easeType,
+                duration: 5
+            });
+            tl.to(qModel.position, {
+                y: -8,
+                x: -4,
+                z: -2,
+                ease: easeType,
+                duration: 4
+            });
+            tl.to(qModel.rotation, {
+                x: 0.5,
+                z: 0.2,
+                ease: easeType,
+                duration: 4
+            }, "<");
+
+
+            // --- CHECK FOR DESKTOP BEFORE RUNNING HORIZONTAL SCROLL ---
             if (window.innerWidth > 900) {
                 const horizontalSection = document.querySelector('.horizontal-track');
                 const scrollWrapper = document.querySelector('.horizontal-scroll-wrapper');
-                let amount = horizontalSection.offsetWidth - window.innerWidth;
 
                 const horizontalTl = gsap.to(horizontalSection, {
-                    x: -amount,
+                    x: () => `-${horizontalSection.scrollWidth - scrollWrapper.offsetWidth}px`,
                     ease: "none",
                     scrollTrigger: {
                         trigger: scrollWrapper,
                         start: "top top",
-                        end: () => `+=${amount}`,
+                        end: () => `+=${horizontalSection.scrollWidth - scrollWrapper.offsetWidth}`,
                         pin: true,
                         scrub: 1,
                         invalidateOnRefresh: true,
                     }
                 });
+
 
                 gsap.to("#about .word", {
                     y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.03, ease: 'power3.out',
@@ -1211,7 +1444,7 @@ footer {
                     scrollTrigger: { containerAnimation: horizontalTl, trigger: ".cards-container", start: "left 70%" }
                 });
 
-                // --- NEW CODE: Blur out the heading as it moves left ---
+                // --- Blur out the heading as it moves left ---
                 gsap.to(".services-heading h2", {
                     opacity: 0,
                     filter: 'blur(15px)',
@@ -1219,139 +1452,170 @@ footer {
                     scrollTrigger: {
                         containerAnimation: horizontalTl,
                         trigger: "#services",
-                        start: "left 20%", // Start blurring when the section has moved past the center
-                        end: "left 5%",   // Be fully blurred and gone by the time it reaches the far left
-                        scrub: true,
+                        start: "left 20%",
+                        end: "left 5%",
+                        scrub: 1,
                     }
                 });
 
-                gsap.to("#portfolio h2 .word", {
+                 gsap.to("#portfolio h2 .word", {
                     y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.05, ease: 'power3.out',
                     scrollTrigger: { containerAnimation: horizontalTl, trigger: "#portfolio", start: "left 70%" }
                 });
 
+                gsap.to("#marquee1 .portfolio-track", {
+                    xPercent: -30,
+                    ease: "none",
+                    scrollTrigger: {
+                        containerAnimation: horizontalTl,
+                        trigger: "#portfolio",
+                        start: "left right",
+                        end: "right left",
+                        scrub: 1.5
+                    }
+                });
+                gsap.to("#marquee2 .portfolio-track", {
+                    xPercent: 30,
+                    ease: "none",
+                    scrollTrigger: {
+                        containerAnimation: horizontalTl,
+                        trigger: "#portfolio",
+                        start: "left right",
+                        end: "right left",
+                        scrub: 1.5
+                    }
+                });
+
+
+            } else {
+                gsap.utils.toArray('#about .word, #services .word, #portfolio .word').forEach(word => {
+                    gsap.to(word, {
+                        y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.03, ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: word.closest('section'),
+                            start: "top 80%"
+                        }
+                    });
+                });
+
+                gsap.to(".service-card", {
+                    y: 0, opacity: 1, stagger: 0.15, duration: 0.8, ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: ".cards-container",
+                        start: "top 80%"
+                    }
+                });
+
+                gsap.to("#marquee1 .portfolio-track", {
+                    xPercent: -20, ease: "none",
+                    scrollTrigger: { trigger: "#portfolio", start: "top bottom", end: "bottom top", scrub: 1 }
+                });
+                gsap.to("#marquee2 .portfolio-track", {
+                    xPercent: 20, ease: "none",
+                    scrollTrigger: { trigger: "#portfolio", start: "top bottom", end: "bottom top", scrub: 1 }
+                });
             }
 
-            gsap.to("#marquee1 .portfolio-track", {
-                xPercent: -50, ease: "none",
-                scrollTrigger: { trigger: ".horizontal-scroll-wrapper", start: "bottom bottom", end: "bottom top", scrub: 1 }
-            });
-            gsap.to("#marquee2 .portfolio-track", {
-                xPercent: 50, ease: "none",
-                scrollTrigger: { trigger: ".horizontal-scroll-wrapper", start: "bottom bottom", end: "bottom top", scrub: 1 }
-            });
 
-
-
+            // --- Projects Section ---
             const projectsTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#projects",
                     start: "top top",
                     end: "+=100%",
                     pin: true,
-                    scrub: 1.5,
+                    scrub: 3.5,
                 }
             });
 
-            // NEW: Add animation to fade out the heading
-            // We add it at position '0' so it starts at the same time as the bento items
             projectsTl.to("#projects h2", {
                 opacity: 0,
-                scale: 0.9, // Optional: slightly scale down on fade
+                scale: 0.9,
                 ease: 'power2.in',
-            }, 0); // '<' or '0' means "at the start of the timeline"
-
-            // EXISTING: Your animation for the bento items
-            // We also add this at position '0' to sync it with the heading fade-out
-            projectsTl.to(".bento-item", {
-                opacity: 1,
-                transform: 'scale(1) rotateX(0deg) translateY(0px)',
-                stagger: { amount: 0.4 },
-                ease: 'power3.out',
-            }, 0); // '<' or '0'
+            }, 0);
 
             projectsTl.to(".bento-item", {
                 opacity: 1,
                 transform: 'scale(1) rotateX(0deg) translateY(0px)',
                 stagger: { amount: 0.4 },
                 ease: 'power3.out',
+            }, 0);
+
+            // --- BLUEPRINT SECTION ---
+            const blueprintCards = document.querySelectorAll('.blueprint-block');
+            blueprintCards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
             });
-// --- BLUEPRINT SECTION ---
-const blueprintCards = document.querySelectorAll('.blueprint-block');
-blueprintCards.forEach(card => {
-    card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-    });
-});
 
-const blueprintTl = gsap.timeline({
-    scrollTrigger: {
-        trigger: "#blueprint",
-        start: "top 60%",
-    }
-});
-blueprintTl.to(".grid-line", {
-    scaleX: 1,
-    scaleY: 1,
-    duration: 1,
-    stagger: 0.1,
-    ease: "power2.inOut"
-});
-blueprintTl.to(".blueprint-block", {
-    opacity: 1,
-    y: 0,
-    duration: 1,
-    stagger: 0.2,
-    ease: "power3.out"
-}, "-=0.7");
-blueprintTl.to(".blueprint-icon", {
-    opacity: 1,
-    scale: 1,
-    duration: 0.8,
-    stagger: 0.2,
-    ease: "back.out(1.7)"
-}, "-=0.8");
-gsap.utils.toArray(".blueprint-block").forEach(block => {
-    const words = block.querySelectorAll(".word");
-    blueprintTl.to(words, {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        duration: 0.5,
-        stagger: 0.03,
-        ease: "power2.out"
-    }, "-=0.9");
-});
+            const blueprintTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#blueprint",
+                    start: "top 60%",
+                }
+            });
+            blueprintTl.to(".grid-line", {
+                scaleX: 1,
+                scaleY: 1,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power2.inOut"
+            });
+            blueprintTl.to(".blueprint-block", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            }, "-=0.7");
+            blueprintTl.to(".blueprint-icon", {
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "back.out(1.7)"
+            }, "-=0.8");
+            gsap.utils.toArray(".blueprint-block").forEach(block => {
+                const words = block.querySelectorAll(".word");
+                blueprintTl.to(words, {
+                    opacity: 1,
+                    y: 0,
+                    rotateX: 0,
+                    duration: 0.5,
+                    stagger: 0.03,
+                    ease: "power2.out"
+                }, "-=0.9");
+            });
 
-// --- THIS IS THE ANIMATION YOU KEEP ---
-// It animates the *content inside* the footer, which is correct.
-const footerTl = gsap.timeline({
-    scrollTrigger: {
-        trigger: "footer",
-        start: "top 70%", // Triggers when footer is 30% visible
-    }
-});
-footerTl.to(".footer-trace-path", {
-    strokeDashoffset: 0,
-    duration: 2,
-    ease: "power2.inOut"
-}).to(".reveal-mask", {
-    clipPath: "inset(0 0% 0 0)",
-    stagger: 0.3,
-    duration: 1.5,
-    ease: "power3.out"
-}, "-=1.5").to(".fade-in-anim", {
-    opacity: 1,
-    y: 0,
-    stagger: 0.1,
-    duration: 1,
-    ease: "power2.out"
-}, "-=1");
-}
+            // --- Footer Content Animation ---
+            const footerTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "footer",
+                    start: "top 70%",
+                }
+            });
+            footerTl.to(".footer-trace-path", {
+                strokeDashoffset: 0,
+                duration: 4,
+                ease: "power2.inOut"
+            }).to(".reveal-mask", {
+                clipPath: "inset(0 0% 0 0)",
+                stagger: 0.3,
+                duration: 1.5,
+                ease: "power3.out"
+            }, "-=1.5").to(".fade-in-anim", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 2,
+                ease: "power2.out"
+            }, "-=1");
+        }
 
         function preloadImages() {
             const images = document.querySelectorAll("img");
@@ -1390,5 +1654,5 @@ footerTl.to(".footer-trace-path", {
     </script>
 </body>
 
-</html>
+</html> 
 
