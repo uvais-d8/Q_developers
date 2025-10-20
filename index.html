@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -152,10 +152,7 @@
         }
 
         /* NEW: Class to fade in spotlights after load */
-        #hero.lights-on::before,
-        #hero.lights-on::after {
-            opacity: 1;
-        }
+
 
         #hero h1 {
             font-size: clamp(4rem, 12vw, 9rem);
@@ -442,11 +439,8 @@
             margin: 0;
             pointer-events: none;
             font-family: 'Playfair Display', serif;
-            /* <-- NEW: consistent font */
             font-weight: 800;
-            /* <-- NEW: consistent font */
             color: var(--purple);
-            color: #5E239D;
             font-size: 4.5rem;
             text-align: center;
             width: 100%;
@@ -457,7 +451,7 @@
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(3, 200px);
             gap: 20px;
-            margin-top: -20px;
+            margin-top: -20px; /* Adjust if needed based on h2 size */
             perspective: 2000px;
         }
 
@@ -468,38 +462,77 @@
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 25px;
+            padding: 30px; /* Increased padding slightly */
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             font-weight: 600;
             font-size: 1.2rem;
+
             transform-style: preserve-3d;
-            opacity: 0;
+            opacity: 0; /* Initial state for GSAP */
+            /* Initial 'deep' state for GSAP animation */
             transform: scale(0.5) rotateX(45deg) translateY(50px);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            /* <-- NEW: transition for hover */
+            /* Transition for hover effects (text, overlay) */
+            transition: box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        /* NEW: Hover effect */
+        /* MODIFIED: Hover effect - Removed transform: scale */
         .bento-item:hover {
-            transform: scale(1.03) !important;
-            /* Important to override GSAP */
-            z-index: 5;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            /* transform: scale(1.03) !important; <-- REMOVED THIS LINE */
+            z-index: 5; /* Keep item above others on hover */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
         }
-
 
         .bento-item::after {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 60%);
+            /* Transition for the gradient change on hover */
+            transition: background 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        /* Darken gradient on hover */
+        .bento-item:hover::after {
+             background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 70%);
         }
 
         .bento-text {
-            z-index: 1;
+            z-index: 1; /* Ensure text is above ::after */
+            position: relative;
+            transform: translateY(0px); /* Base position */
+            /* Transition for moving text up on hover */
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
+
+        /* Description text styles (hidden by default) */
+        .bento-desc {
+            z-index: 1; /* Ensure text is above ::after */
+            position: relative;
+            font-size: 0.95rem;
+            font-weight: 400;
+            font-family: 'Poppins', sans-serif;
+            opacity: 0; /* Hidden initially */
+            transform: translateY(20px); /* Start position below */
+             /* Transition for fade/slide effect on hover */
+            transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                        transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            max-width: 90%; /* Prevent text overflowing */
+            line-height: 1.5;
+            margin-top: 5px; /* Add a little space above description */
+        }
+
+        /* Animate header and description on hover */
+        .bento-item:hover .bento-text {
+            transform: translateY(-15px); /* Move header up */
+        }
+
+        .bento-item:hover .bento-desc {
+            opacity: 1; /* Fade in */
+            transform: translateY(0px); /* Slide up */
+        }
+
 
         .item-1 {
             grid-column: 1 / 3;
@@ -858,7 +891,11 @@
                 left: auto;
                 top: auto;
                 z-index: 1;
+                 /* Adjust font size for mobile if needed */
+                font-size: clamp(2.5rem, 8vw, 3.5rem);
+                margin-bottom: 20px; /* Add space below heading */
             }
+
 
             .item-1,
             .item-2,
@@ -896,6 +933,9 @@
             .portfolio-item {
                 width: 60vw;
                 /* Even larger on very small screens */
+            }
+             #projects h2 {
+                 font-size: clamp(2rem, 10vw, 3rem); /* Further adjust for small screens */
             }
         }
     </style>
@@ -1030,21 +1070,27 @@
             <div class="bento-grid">
                 <div class="bento-item item-1">
                     <div class="bento-text">Azure Heights</div>
+                    <p class="bento-desc">A 45-story luxury residential tower defining the city skyline.</p>
                 </div>
                 <div class="bento-item item-2">
                     <div class="bento-text">The Orchid</div>
+                    <p class="bento-desc">Exclusive gated community of 20 modern villas with private pools.</p>
                 </div>
                 <div class="bento-item item-3">
                     <div class="bento-text">Crimson Plaza</div>
+                    <p class="bento-desc">A premier commercial hub with retail spaces and corporate offices.</p>
                 </div>
                 <div class="bento-item item-4">
                     <div class="bento-text">Greenway Villas</div>
+                    <p class="bento-desc">Eco-friendly homes designed for sustainable and green living.</p>
                 </div>
                 <div class="bento-item item-5">
                     <div class="bento-text">Nexus Business Park</div>
+                    <p class="bento-desc">State-of-the-art IT park fostering innovation and collaboration.</p>
                 </div>
                 <div class="bento-item item-6">
                     <div class="bento-text">Vista Residences</div>
+                    <p class="bento-desc">Affordable apartments offering modern amenities and city views.</p>
                 </div>
             </div>
         </section>
@@ -1458,7 +1504,7 @@
                     }
                 });
 
-                 gsap.to("#portfolio h2 .word", {
+                gsap.to("#portfolio h2 .word", {
                     y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.05, ease: 'power3.out',
                     scrollTrigger: { containerAnimation: horizontalTl, trigger: "#portfolio", start: "left 70%" }
                 });
@@ -1487,25 +1533,35 @@
                 });
 
 
-            } else {
-                gsap.utils.toArray('#about .word, #services .word, #portfolio .word').forEach(word => {
-                    gsap.to(word, {
-                        y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.03, ease: 'power3.out',
+            } else { // Mobile animations (No horizontal scroll)
+                gsap.utils.toArray('#about .word, #services h2 .word, #portfolio h2 .word').forEach(word => {
+                     gsap.from(word.parentNode, { // Animate the parent line/element
+                        y: 30, opacity: 0, filter: 'blur(8px)', duration: 0.8, ease: 'power3.out',
                         scrollTrigger: {
-                            trigger: word.closest('section'),
-                            start: "top 80%"
+                            trigger: word.closest('section'), // Trigger based on the section
+                            start: "top 80%", // Start animation when section is 80% in view
                         }
                     });
                 });
 
-                gsap.to(".service-card", {
-                    y: 0, opacity: 1, stagger: 0.15, duration: 0.8, ease: 'power2.out',
+                 gsap.from(".about-subheading, .about-text", { // Animate these as blocks
+                    y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.2,
+                     scrollTrigger: {
+                        trigger: "#about",
+                        start: "top 70%",
+                    }
+                });
+
+
+                gsap.from(".service-card", { // Use 'from' for fade/slide up
+                    y: 50, opacity: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out',
                     scrollTrigger: {
                         trigger: ".cards-container",
                         start: "top 80%"
                     }
                 });
 
+                // Keep marquee animations for mobile
                 gsap.to("#marquee1 .portfolio-track", {
                     xPercent: -20, ease: "none",
                     scrollTrigger: { trigger: "#portfolio", start: "top bottom", end: "bottom top", scrub: 1 }
@@ -1518,30 +1574,87 @@
 
 
             // --- Projects Section ---
+            // ======================================================
+            // === MODIFIED GSAP ANIMATION FOR SCROLL TRACKING ===
+            // ======================================================
             const projectsTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#projects",
                     start: "top top",
-                    end: "+=100%",
+                    end: "+=120%", // Adjust pin duration as needed
                     pin: true,
-                    scrub: 3.5,
+                    scrub: 1, // Directly link animation to scroll
                 }
             });
 
+            // Fade out heading at the start
             projectsTl.to("#projects h2", {
                 opacity: 0,
                 scale: 0.9,
-                ease: 'power2.in',
-            }, 0);
+                ease: 'power1.in', // Ease the fade out
+            }, 0); // Start at the beginning of the timeline
 
+            // Animate items from 'deep' to 'flat' synced with scroll
             projectsTl.to(".bento-item", {
                 opacity: 1,
-                transform: 'scale(1) rotateX(0deg) translateY(0px)',
-                stagger: { amount: 0.4 },
-                ease: 'power3.out',
-            }, 0);
+                transform: 'scale(1) rotateX(0deg) translateY(0px)', // Target state
+                stagger: { amount: 0.5 }, // Stagger animation start slightly
+                ease: "none", // Linear progress tied to scroll
+            }, 0); // Start at the beginning of the timeline
+            // ======================================================
 
             // --- BLUEPRINT SECTION ---
+            // Fade-in animations for blueprint blocks on mobile/desktop
+            gsap.from(".blueprint-block", {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: "#blueprint",
+                    start: "top 70%", // Start animation earlier
+                }
+            });
+            // You might not need the blueprintTl timeline anymore if you just want simple fade-ins
+            // Commenting out the old blueprintTl for clarity
+            /*
+            const blueprintCards = document.querySelectorAll('.blueprint-block');
+             blueprintCards.forEach(card => {
+                 card.addEventListener('mousemove', e => {
+                     const rect = card.getBoundingClientRect();
+                     const x = e.clientX - rect.left;
+                     const y = e.clientY - rect.top;
+                     card.style.setProperty('--mouse-x', `${x}px`);
+                     card.style.setProperty('--mouse-y', `${y}px`);
+                 });
+             });
+
+             const blueprintTl = gsap.timeline({
+                 scrollTrigger: {
+                     trigger: "#blueprint",
+                     start: "top 60%",
+                 }
+             });
+             blueprintTl.to(".grid-line", { // Consider removing grid lines if not needed
+                 scaleX: 1,
+                 scaleY: 1,
+                 duration: 1,
+                 stagger: 0.1,
+                 ease: "power2.inOut"
+             });
+            // ... rest of old blueprintTl
+            */
+
+        // --- BLUEPRINT SECTION ---
+        
+
+
+
+
+
+
+       // --- BLUEPRINT SECTION ---
             const blueprintCards = document.querySelectorAll('.blueprint-block');
             blueprintCards.forEach(card => {
                 card.addEventListener('mousemove', e => {
@@ -1650,9 +1763,9 @@
         }
 
         initialize();
-
     </script>
 </body>
 
-</html> 
+</html>
+
 
