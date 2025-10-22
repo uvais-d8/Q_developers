@@ -16,6 +16,8 @@
             --light-purple: #8A4BCE;
             --electric-purple: #7f5af0;
             --dark-gray: #16161a;
+            --black-bg: #0a0a0a;
+            /* Added for clarity */
         }
 
         /* --- Basic Setup & Typography --- */
@@ -31,6 +33,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
+            /* Start with white, but background-controller will handle it */
             background-color: var(--cool-white);
             color: var(--dark-gray);
             overflow-x: hidden;
@@ -66,19 +69,43 @@
             flex-direction: column;
             justify-content: center;
             z-index: 1;
+            /* Sections are transparent to show underlying fixed backgrounds */
+            background-color: transparent;
         }
 
-        /* --- Backgrounds & Canvas --- */
+        #light-rays-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -3;
+            background-color: var(--black-bg);
+        }
+
+        #light-rays-background canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            mix-blend-mode: screen;
+        }
+
         .background-controller {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            background-color: #0a0a0a;
             z-index: -2;
+            /* Sits on top of black bg, behind 3D */
+            opacity: 0;
+            /* Starts transparent */
+            will-change: opacity;
+            background-color: var(--cool-white);
+            /* <--- ADD THIS LINE */
         }
 
+        /* 3D Canvas */
         #three-canvas {
             position: fixed;
             top: 0;
@@ -86,9 +113,13 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            /* Sits on top of white bg */
             outline: none;
+            pointer-events: none;
+            /* Make sure it doesn't block interactions */
         }
 
+        /* Optional Blur Overlay */
         .blur-overlay {
             position: fixed;
             top: 0;
@@ -96,9 +127,11 @@
             width: 100%;
             height: 100vh;
             background-color: rgba(244, 244, 249, 0.1);
+            /* Example color */
             backdrop-filter: blur(0px);
             opacity: 0;
             z-index: 0;
+            /* Above 3D, below content */
             pointer-events: none;
             will-change: backdrop-filter, opacity;
         }
@@ -133,6 +166,8 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+
+            background-color: transparent !important;
         }
 
         #hero h1 {
@@ -140,7 +175,8 @@
             font-weight: 800;
             line-height: 1;
             color: var(--cool-white);
-            mix-blend-mode: difference;
+            /* White text */
+            /* Removed mix-blend-mode */
             z-index: 2;
             position: relative;
         }
@@ -154,7 +190,8 @@
 
         .hero-description {
             color: var(--cool-white);
-            mix-blend-mode: difference;
+            /* White text */
+            /* Removed mix-blend-mode */
             font-size: clamp(1rem, 2vw, 1.2rem);
             max-width: 600px;
             margin: 30px auto 40px;
@@ -166,6 +203,7 @@
 
         .hero-description .word {
             display: inline-block;
+            /* Use parent's settings */
             opacity: 0;
             filter: blur(8px);
             transform: translateY(30px);
@@ -173,29 +211,144 @@
 
         .hero-cta {
             opacity: 0;
+            /* Keep initial animation state */
             transform: translateY(20px);
+            /* Keep initial animation state */
             display: inline-block;
-            padding: 14px 32px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: var(--cool-white);
-            text-decoration: none;
+            padding: 15px 35px;
+            /* Slightly adjusted padding */
+            border-radius: 50px;
+            /* Essential for drop shape */
             font-weight: 500;
             font-family: 'Poppins', sans-serif;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            z-index: 2;
+            color: rgba(255, 255, 255, 0.9);
+            /* Slightly muted white */
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            /* Soft text shadow */
+            text-decoration: none;
             position: relative;
+            /* Needed for pseudo-elements */
+            z-index: 2;
+            overflow: hidden;
+            /* Clip pseudo-elements */
+            border: none;
+            /* Remove border, rely on light/shadow */
+            cursor: pointer;
+            transition: all 0.45s cubic-bezier(0.165, 0.84, 0.44, 1);
+            /* Slightly slower, smoother ease */
+
+            /* --- Base: Slightly tinted glass with strong blur --- */
+            background-color: rgba(255, 255, 255, 0.05);
+            /* Very subtle base */
+            backdrop-filter: blur(25px) saturate(140%);
+            -webkit-backdrop-filter: blur(25px) saturate(140%);
+
+            /* --- Shadows for Volume --- */
+            box-shadow:
+                inset 0 -3px 5px rgba(0, 0, 0, 0.08),
+                /* Inner bottom shadow */
+                inset 0 1px 1px rgba(255, 255, 255, 0.25),
+                /* Inner top highlight */
+                0px 15px 40px rgba(0, 0, 0, 0.18);
+            /* Soft outer shadow */
         }
+
+        /* --- Main Highlight Pseudo-element (like light reflection) --- */
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            /* Start slightly above */
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            /* Soft, wide radial gradient for a diffuse highlight */
+            background: radial-gradient(ellipse at center top,
+                    rgba(255, 255, 255, 0.4) 0%,
+                    rgba(255, 255, 255, 0) 65%
+                    /* Fade out more gradually */
+                );
+            border-radius: 50%;
+            /* Circular */
+            filter: blur(8px);
+            /* Soften the highlight significantly */
+            opacity: 0.7;
+            transition: all 0.45s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 1;
+            /* Above background, below text */
+        }
+
+        /* --- Subtle Edge Shine Pseudo-element --- */
+        .hero-cta::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50px;
+            /* Very faint border gradient */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* Inset shadow to give a slight edge definition */
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+            /* Make sure it doesn't interfere with clicks */
+            z-index: 1;
+        }
+
 
         .hero-cta:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(0px) scale(1.05) !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            /* Slightly brighter */
+            box-shadow:
+                inset 0 -3px 5px rgba(0, 0, 0, 0.1),
+                inset 0 1.5px 1.5px rgba(255, 255, 255, 0.35),
+                0px 18px 45px rgba(0, 0, 0, 0.22);
+            transform: translateY(-4px) scale(1.05) !important;
+            color: white;
         }
 
+        .hero-cta:hover::before {
+            opacity: 0.9;
+            /* More visible highlight */
+            background: radial-gradient(ellipse at center top,
+                    rgba(255, 255, 255, 0.55) 0%,
+                    rgba(255, 255, 255, 0) 60%);
+            filter: blur(6px);
+            /* Slightly sharper */
+            transform: scale(1.1);
+            /* Expand highlight slightly */
+        }
+
+        .hero-cta:hover::after {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+
         .hero-cta:active {
+            background-color: rgba(255, 255, 255, 0.03);
+            /* Dimmer base */
+            box-shadow:
+                inset 0 -2px 3px rgba(0, 0, 0, 0.08),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2),
+                0px 8px 20px rgba(0, 0, 0, 0.15);
             transform: translateY(0px) scale(1.02) !important;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .hero-cta:active::before {
+            opacity: 0.5;
+            background: radial-gradient(ellipse at center top,
+                    rgba(255, 255, 255, 0.3) 0%,
+                    rgba(255, 255, 255, 0) 70%);
+            filter: blur(10px);
+            /* More diffuse when pressed */
+            transform: scale(0.95);
+            /* Shrink highlight slightly */
+        }
+
+        .hero-cta:active::after {
+            border-color: rgba(255, 255, 255, 0.08);
         }
 
         /* --- HORIZONTAL SCROLL WRAPPER --- */
@@ -207,6 +360,7 @@
         .horizontal-track {
             display: flex;
             width: 400%;
+            /* Adjust based on number of horizontal sections */
             will-change: transform;
         }
 
@@ -216,6 +370,7 @@
             flex-shrink: 0;
             padding: 0 8%;
             background-color: transparent;
+            /* Keep transparent */
         }
 
         /* --- About Section (Horizontal) --- */
@@ -237,7 +392,7 @@
         #about h2 {
             font-size: clamp(3rem, 6vw, 4.5rem);
             white-space: nowrap;
-            mix-blend-mode: difference;
+            /* Removed mix-blend-mode */
             color: var(--purple);
         }
 
@@ -251,6 +406,7 @@
 
         .about-text {
             margin-bottom: 1.5em;
+            color: var(--dark-gray);
         }
 
         /* --- Services Section (Horizontal) --- */
@@ -295,10 +451,14 @@
             flex-grow: 1;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            /* Set initial state for GSAP if animating */
+            opacity: 0;
+            transform: translateY(50px);
         }
 
         .service-card:hover {
-            transform: translateY(-10px) scale(1.05) !important;
+            transform: translateY(40px) scale(1.05) !important;
+            /* Adjust if using GSAP */
             border-color: rgba(94, 35, 157, 0.3);
         }
 
@@ -322,6 +482,7 @@
             align-items: center;
             overflow: hidden;
             position: relative;
+            /* Removed white bg, will be handled by background-controller */
         }
 
         #portfolio h2 {
@@ -354,6 +515,8 @@
             height: 100%;
             width: 15%;
             z-index: 2;
+            pointer-events: none;
+            /* Allow interaction with elements behind */
         }
 
         .portfolio-marquee::before {
@@ -395,7 +558,7 @@
 
         /* --- Signature Projects Section (Bento Grid) --- */
         #projects {
-            background-color: transparent;
+            /* Removed white bg, handled by background-controller */
             position: relative;
         }
 
@@ -526,7 +689,8 @@
             grid-row: 3 / 4;
             background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
         }
-        
+
+        /* Testimonials section needs explicit background */
         #testimonials {
             background-color: var(--cool-white);
             overflow: hidden;
@@ -570,13 +734,17 @@
             color: var(--light-purple);
         }
 
+
         .footer-wrapper {
             position: relative;
+            /* Give wrapper white bg */
+            background-color: var(--cool-white);
         }
 
         #blueprint {
             position: relative;
-            background-color: var(--cool-white);
+            /* Blueprint sits visually inside footer wrapper, keep transparent */
+            background-color: transparent;
             z-index: 2;
         }
 
@@ -632,7 +800,8 @@
             bottom: 0;
             z-index: 1;
             padding: 120px 8% 50px;
-            background-color: var(--cool-white);
+            /* Footer sits visually inside footer wrapper, keep transparent */
+            background-color: transparent;
             color: var(--dark-gray);
             overflow: hidden;
         }
@@ -698,7 +867,7 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(127, 90, 240, 0.5);
         }
-        
+
         .footer-contact-button:active {
             transform: translateY(-1px) scale(0.98);
         }
@@ -787,9 +956,28 @@
                 width: 100%;
                 height: auto;
                 min-height: 100vh;
-                background-color: transparent;
+                /* Explicitly set white bg for stacked sections */
+                background-color: var(--cool-white);
                 padding: 120px 8%;
             }
+
+            /* Keep hero transparent on mobile */
+            #hero {
+                background-color: transparent !important;
+            }
+
+            /* Add white bg back to these sections on mobile */
+            #projects,
+            #blueprint,
+            .footer-wrapper {
+                background-color: var(--cool-white);
+            }
+
+            /* Footer itself remains transparent within its wrapper */
+            footer {
+                background-color: transparent;
+            }
+
 
             #portfolio {
                 padding: 120px 0;
@@ -837,13 +1025,20 @@
             .footer-cta p {
                 margin: 0 auto 30px;
             }
+
+            /* Mobile fade needs solid background */
+            .portfolio-marquee::before {
+                background: linear-gradient(to right, var(--cool-white), transparent);
+            }
+
+            .portfolio-marquee::after {
+                background: linear-gradient(to left, var(--cool-white), transparent);
+            }
         }
 
         @media (max-width: 768px) {
-            section {
-                padding: 80px 5%;
-            }
 
+            section,
             .horizontal-track>section {
                 padding: 80px 5%;
             }
@@ -925,8 +1120,12 @@
 </head>
 
 <body>
+    <div id="light-rays-background"></div>
+
     <div class="background-controller"></div>
+
     <canvas id="three-canvas"></canvas>
+
     <div class="blur-overlay"></div>
 
     <div class="loader">Loading...</div>
@@ -934,8 +1133,7 @@
     <main>
         <section id="hero">
             <h1 data-splitting>Q DEVELOPERS</h1>
-            <p class="hero-description" data-splitting>Crafting Calicut's skyline with a commitment to quality and
-                innovation. Your vision, built to last. 🏗️</p>
+            <p class="hero-description" data-splitting>Your vision, built to last. 🏗️</p>
             <a href="#contact" class="hero-cta">Start Your Project</a>
         </section>
 
@@ -961,20 +1159,21 @@
                             <div class="service-card">
                                 <h3>Architectural Design 📐</h3>
                                 <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                                <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                                <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
+                                <p>Collaborative approach ensuring your vision guides every line drawn.</p>
+                                <p>Focus on creating spaces that enhance living and working environments.</p>
                             </div>
                             <div class="service-card">
                                 <h3>Construction Works 🛠️</h3>
                                 <p>End-to-end services with a focus on quality materials and superior craft.</p>
-                                <p>End-to-end services with a focus on quality materials and superior craft.</p>
-                                <p>End-to-end services with a focus on quality materials and superior craft.</p>
+                                <p>Experienced teams delivering projects with precision and care.</p>
+                                <p>Adherence to strict timelines and safety standards.</p>
                             </div>
                             <div class="service-card">
                                 <h3>Project Management 📋</h3>
-                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
-                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
-                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
+                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.
+                                </p>
+                                <p>Transparent communication and meticulous planning throughout the project.</p>
+                                <p>Seamless coordination of all aspects from conception to completion.</p>
                             </div>
                         </div>
                     </div>
@@ -983,42 +1182,58 @@
                 <section id="portfolio">
                     <div class="portfolio-marquee" id="marquee1">
                         <div class="portfolio-track">
-                             <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
                         </div>
                     </div>
                     <div class="portfolio-marquee" id="marquee2">
                         <div class="portfolio-track">
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Interior"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Interior"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Interior"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Minimalist House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                            <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Interior"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern Home Exterior"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Minimalist House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern Interior"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern Home Exterior"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Minimalist House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern House"></div>
+                            <div class="portfolio-item"><img
+                                    src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    alt="Modern Interior"></div>
                         </div>
                     </div>
                     <h2 data-splitting>Our Portfolio.</h2>
@@ -1056,54 +1271,44 @@
                 </div>
             </div>
         </section>
-
-     
+ 
         <div class="footer-wrapper">
             <section id="blueprint">
                 <div class="blueprint-content">
                     <div class="blueprint-block">
-                        <div class="blueprint-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <div class="blueprint-icon"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
                                 <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" />
                                 <circle cx="12" cy="12" r="3" />
-                            </svg>
-                        </div>
+                            </svg> </div>
                         <h3>Our Vision 🔭</h3>
-                        <p>We see beyond structures; we envision
-                            landmarks. Our philosophy is to merge
-                            groundbreaking design with sustainable practices,
-                            creating spaces that inspire communities for
-                            generations to come.</p>
+                        <p>We see beyond structures; we envision landmarks. Our philosophy is to merge groundbreaking
+                            design with sustainable practices, creating spaces that inspire communities for generations
+                            to come.</p>
                     </div>
-
                     <div class="blueprint-block">
-                        <div class="blueprint-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <div class="blueprint-icon"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
                                 <path d="M12 6V21M12 6L9 9M12 6L15 9" />
                                 <path d="M20.39 12.39L18 14.78M18 14.78L15.61 17.17M18 14.78L20.39 17.17" />
                                 <path d="M3.61 12.39L6 14.78M6 14.78L8.39 17.17M6 14.78L3.61 17.17" />
-                            </svg>
-                        </div>
+                            </svg> </div>
                         <h3>The Process ⚙️</h3>
-                        <p>Precision is our principle. From the initial
-                            sketch to the final fixture, every stage is
-                            meticulously planned and executed with cutting-edge
-                            technology and transparent communication.</p>
+                        <p>Precision is our principle. From the initial sketch to the final fixture, every stage is
+                            meticulously planned and executed with cutting-edge technology and transparent
+                            communication.</p>
                     </div>
-
                     <div class="blueprint-block">
-                        <div class="blueprint-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <div class="blueprint-icon"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
                                 <path d="M2 20h20" />
                                 <path d="M4 17.5V11a2 2 0 012-2h12a2 2 0 012 2v6.5" />
                                 <path d="M8 11V7a4 4 0 014-4h0a4 4 0 014 4v4" />
-                            </svg>
-                        </div>
+                            </svg> </div>
                         <h3>Execution 🏆</h3>
-                        <p>Our commitment is to tangible excellence.
-                            We transform complex blueprints into reality,
-                            delivering projects that stand as a testament to
-                            superior craftsmanship and unwavering quality.</p>
+                        <p>Our commitment is to tangible excellence. We transform complex blueprints into reality,
+                            delivering projects that stand as a testament to superior craftsmanship and unwavering
+                            quality.</p>
                     </div>
                 </div>
             </section>
@@ -1116,9 +1321,8 @@
                 <div class="footer-grid">
                     <div class="footer-cta">
                         <h2 class="reveal-mask">Build The Future.</h2>
-                        <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your
-                            vision to life. We're
-                            ready to build the next landmark. 🤝</p>
+                        <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your vision to life.
+                            We're ready to build the next landmark. 🤝</p>
                         <a href="mailto:contact@qdevelopers.com" class="footer-contact-button fade-in-anim">Get In
                             Touch</a>
                     </div>
@@ -1166,20 +1370,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/split-type"></script>
+
     <script type="importmap">
     {
         "imports": {
+            "ogl": "https://cdn.skypack.dev/ogl@0.0.92",
             "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
         }
     }
     </script>
+
     <script type="module">
+        // Q Developers imports
         import * as THREE from 'three';
+
+        // Light Rays imports
+        import {
+            Renderer as OGLRenderer,
+            Program as OGLProgram,
+            Triangle as OGLTriangle,
+            Mesh as OGLMesh
+        } from 'ogl';
 
         gsap.registerPlugin(ScrollTrigger);
         const loader = document.querySelector('.loader');
 
+        // Smooth Scrolling Setup
         const lenis = new Lenis({ lerp: 0.07, smoothWheel: true });
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
@@ -1187,9 +1404,17 @@
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
+        // --- START LIGHT RAYS HELPER FUNCTIONS ---
+        const hexToRgb = hex => { /* ... (hex conversion code remains the same) ... */ const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255] : [1, 1, 1]; };
+        const getAnchorAndDir = (origin, w, h) => { /* ... (anchor/dir code remains the same) ... */ const outside = 0.2; switch (origin) { case 'top-left': return { anchor: [0, -outside * h], dir: [0, 1] }; case 'top-right': return { anchor: [w, -outside * h], dir: [0, 1] }; case 'left': return { anchor: [-outside * w, 0.5 * h], dir: [1, 0] }; case 'right': return { anchor: [(1 + outside) * w, 0.5 * h], dir: [-1, 0] }; case 'bottom-left': return { anchor: [0, (1 + outside) * h], dir: [0, -1] }; case 'bottom-center': return { anchor: [0.5 * w, (1 + outside) * h], dir: [0, -1] }; case 'bottom-right': return { anchor: [w, (1 + outside) * h], dir: [0, -1] }; default: return { anchor: [0.5 * w, -outside * h], dir: [0, 1] }; } };
+        // --- END LIGHT RAYS HELPER FUNCTIONS ---
+
+
+        // Q Developers scene variables
         let scene, camera, renderer, qModel, cone1, cone2;
 
         function initThree() {
+            // ... (Your existing initThree code remains exactly the same) ...
             const canvas = document.querySelector('#three-canvas');
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1197,13 +1422,10 @@
             renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
             scene.add(ambientLight);
-
             const spotLight1 = new THREE.SpotLight(0xffffff, 40, 20, Math.PI * 0.15, 0.5, 1);
             spotLight1.position.set(8, 6, 8);
             spotLight1.castShadow = true;
@@ -1212,185 +1434,103 @@
             spotLight1.shadow.camera.near = 0.5;
             spotLight1.shadow.camera.far = 30;
             scene.add(spotLight1);
-
             const spotLight2 = new THREE.SpotLight(0xffffff, 15, 20, Math.PI * 0.15, 0.5, 1);
             spotLight2.position.set(-8, 3, 6);
             scene.add(spotLight2);
-
             const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
             const shadowPlaneGeo = new THREE.PlaneGeometry(30, 30);
             const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowMaterial);
             shadowPlane.position.z = -1;
             shadowPlane.receiveShadow = true;
             scene.add(shadowPlane);
-
             createQModel();
-
             if (qModel) {
                 spotLight1.target = qModel;
                 spotLight2.target = qModel;
                 scene.add(spotLight1.target);
                 scene.add(spotLight2.target);
             }
-
             const coneGeo = new THREE.ConeGeometry(3, 15, 32, 1, true);
-            coneGeo.translate(0, 7.5, 0); 
-            const coneMat = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.08,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-
+            coneGeo.translate(0, 7.5, 0);
+            const coneMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08, blending: THREE.AdditiveBlending, depthWrite: false });
             cone1 = new THREE.Mesh(coneGeo, coneMat);
             cone1.position.copy(spotLight1.position);
             scene.add(cone1);
-
             cone2 = new THREE.Mesh(coneGeo, coneMat.clone());
             cone2.position.copy(spotLight2.position);
             scene.add(cone2);
-
             const animate = () => {
                 if (cone1 && qModel) cone1.lookAt(qModel.position);
                 if (cone2 && qModel) cone2.lookAt(qModel.position);
-
                 renderer.render(scene, camera);
                 requestAnimationFrame(animate);
             };
             animate();
-
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                ScrollTrigger.refresh(true);
+                ScrollTrigger.refresh(true); // Refresh ScrollTrigger on resize
             });
         }
 
         function createQModel() {
-            const rotationAngle = -Math.PI / 4;
-            const outerCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5, 0, Math.PI * 2, false, rotationAngle);
-            const innerCurve = new THREE.EllipseCurve(0, 0, 0.8, 0.8, 0, Math.PI * 2, false, rotationAngle);
-            const oShape = new THREE.Shape(outerCurve.getPoints(128));
-            const holePath = new THREE.Path(innerCurve.getPoints(128));
-            oShape.holes.push(holePath);
-            const tailShape = new THREE.Shape();
-            const innerRadius = 0.8, outerRadius = 1.5;
-            const p1 = { x: innerRadius * 0.6, y: -innerRadius * 0.6 };
-            const p2 = { x: outerRadius * 1.3, y: -outerRadius * 1.3 };
-            const p3 = { x: p2.x - 0.4, y: p2.y + 0.1 };
-            const p4 = { x: p1.x - 0.3, y: p1.y + 0.05 };
-            tailShape.moveTo(p1.x, p1.y); tailShape.lineTo(p2.x, p2.y); tailShape.lineTo(p3.x, p3.y); tailShape.lineTo(p4.x, p4.y);
+            // ... (Your existing createQModel code remains exactly the same) ...
+            const rotationAngle = -Math.PI / 4; const outerCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5, 0, Math.PI * 2, false, rotationAngle); const innerCurve = new THREE.EllipseCurve(0, 0, 0.8, 0.8, 0, Math.PI * 2, false, rotationAngle); const oShape = new THREE.Shape(outerCurve.getPoints(128)); const holePath = new THREE.Path(innerCurve.getPoints(128)); oShape.holes.push(holePath); const tailShape = new THREE.Shape(); const innerRadius = 0.8, outerRadius = 1.5; const p1 = { x: innerRadius * 0.6, y: -innerRadius * 0.6 }; const p2 = { x: outerRadius * 1.3, y: -outerRadius * 1.3 }; const p3 = { x: p2.x - 0.4, y: p2.y + 0.1 }; const p4 = { x: p1.x - 0.3, y: p1.y + 0.05 }; tailShape.moveTo(p1.x, p1.y); tailShape.lineTo(p2.x, p2.y); tailShape.lineTo(p3.x, p3.y); tailShape.lineTo(p4.x, p4.y); const extrudeSettings = { depth: 0.7, bevelEnabled: true, bevelSegments: 5, steps: 2, bevelSize: 0.1, bevelThickness: 0.1 }; const geometry = new THREE.ExtrudeGeometry([oShape, tailShape], extrudeSettings); geometry.center(); const material = new THREE.MeshStandardMaterial({ color: new THREE.Color("#5E239D"), metalness: 0.3, roughness: 0.6 }); qModel = new THREE.Mesh(geometry, material); qModel.castShadow = true; scene.add(qModel);
+        }
 
-            const extrudeSettings = { depth: 0.7, bevelEnabled: true, bevelSegments: 5, steps: 2, bevelSize: 0.1, bevelThickness: 0.1 };
-            const geometry = new THREE.ExtrudeGeometry([oShape, tailShape], extrudeSettings);
-            geometry.center();
-
-            const material = new THREE.MeshStandardMaterial({
-                color: new THREE.Color("#5E239D"),
-                metalness: 0.3,
-                roughness: 0.6
-            });
-            qModel = new THREE.Mesh(geometry, material);
-            qModel.castShadow = true;
-            scene.add(qModel);
+        function initLightRays() {
+            // ... (Your existing initLightRays code remains exactly the same) ...
+            const config = { raysOrigin: "top-center", raysColor: "#ffff", raysSpeed: 1.5, lightSpread: 0.8, rayLength: 1.2, followMouse: true, mouseInfluence: 0.1, noiseAmount: 0.1, distortion: 0.05, pulsating: false, fadeDistance: 1.0, saturation: 1.0, }; const lightRaysVert = ` attribute vec2 position; varying vec2 vUv; void main() { vUv = position * 0.5 + 0.5; gl_Position = vec4(position, 0.0, 1.0); }`; const lightRaysFrag = `precision highp float; uniform float iTime; uniform vec2 iResolution; uniform vec2 rayPos; uniform vec2 rayDir; uniform vec3 raysColor; uniform float raysSpeed; uniform float lightSpread; uniform float rayLength; uniform float pulsating; uniform float fadeDistance; uniform float saturation; uniform vec2 mousePos; uniform float mouseInfluence; uniform float noiseAmount; uniform float distortion; varying vec2 vUv; float noise(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123); } float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA, float seedB, float speed) { vec2 sourceToCoord = coord - raySource; vec2 dirNorm = normalize(sourceToCoord); float cosAngle = dot(dirNorm, rayRefDirection); float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2; float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001)); float distance = length(sourceToCoord); float maxDistance = iResolution.x * rayLength; float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0); float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0); float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0; float baseStrength = clamp( (0.45 + 0.15 * sin(distortedAngle * seedA + iTime * speed)) + (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed)), 0.0, 1.0 ); return baseStrength * lengthFalloff * fadeFalloff * spreadFactor * pulse; } void mainImage(out vec4 fragColor, in vec2 fragCoord) { vec2 coord = vec2(fragCoord.x, iResolution.y - fragCoord.y); vec2 finalRayDir = rayDir; if (mouseInfluence > 0.0) { vec2 mouseScreenPos = mousePos * iResolution.xy; vec2 mouseDirection = normalize(mouseScreenPos - rayPos); finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence)); } vec4 rays1 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349, 1.5 * raysSpeed); vec4 rays2 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed); fragColor = rays1 * 0.5 + rays2 * 0.4; if (noiseAmount > 0.0) { float n = noise(coord * 0.01 + iTime * 0.1); fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n); } float brightness = 1.0 - (coord.y / iResolution.y); fragColor.x *= 0.1 + brightness * 0.8; fragColor.y *= 0.3 + brightness * 0.6; fragColor.z *= 0.5 + brightness * 0.5; if (saturation != 1.0) { float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114)); fragColor.rgb = mix(vec3(gray), fragColor.rgb, saturation); } fragColor.rgb *= raysColor; } void main() { vec4 color; mainImage(color, gl_FragCoord.xy); gl_FragColor = color; }`; const container = document.getElementById('light-rays-background'); if (!container) { console.error('LightRays container not found!'); return; } let oglRenderer, oglUniforms, oglMesh, oglAnimationId; let mouse = { x: 0.5, y: 0.5 }; let smoothMouse = { x: 0.5, y: 0.5 }; let updatePlacement; let handleMouseMove; oglRenderer = new OGLRenderer({ dpr: Math.min(window.devicePixelRatio, 2), alpha: true }); const gl = oglRenderer.gl; gl.canvas.style.width = '100%'; gl.canvas.style.height = '100%'; container.appendChild(gl.canvas); oglUniforms = { iTime: { value: 0 }, iResolution: { value: [1, 1] }, rayPos: { value: [0, 0] }, rayDir: { value: [0, 1] }, raysColor: { value: hexToRgb(config.raysColor) }, raysSpeed: { value: config.raysSpeed }, lightSpread: { value: config.lightSpread }, rayLength: { value: config.rayLength }, pulsating: { value: config.pulsating ? 1.0 : 0.0 }, fadeDistance: { value: config.fadeDistance }, saturation: { value: config.saturation }, mousePos: { value: [0.5, 0.5] }, mouseInfluence: { value: config.mouseInfluence }, noiseAmount: { value: config.noiseAmount }, distortion: { value: config.distortion } }; const geometry = new OGLTriangle(gl); const program = new OGLProgram(gl, { vertex: lightRaysVert, fragment: lightRaysFrag, uniforms: oglUniforms }); oglMesh = new OGLMesh(gl, { geometry, program }); updatePlacement = () => { if (!container || !oglRenderer) return; oglRenderer.dpr = Math.min(window.devicePixelRatio, 2); const { clientWidth: wCSS, clientHeight: hCSS } = container; oglRenderer.setSize(wCSS, hCSS); const dpr = oglRenderer.dpr; const w = wCSS * dpr; const h = hCSS * dpr; oglUniforms.iResolution.value = [w, h]; const { anchor, dir } = getAnchorAndDir(config.raysOrigin, w, h); oglUniforms.rayPos.value = anchor; oglUniforms.rayDir.value = dir; }; const loop = (t) => { if (!oglRenderer) return; oglUniforms.iTime.value = t * 0.001; if (config.followMouse && config.mouseInfluence > 0.0) { const smoothing = 0.92; smoothMouse.x = smoothMouse.x * smoothing + mouse.x * (1 - smoothing); smoothMouse.y = smoothMouse.y * smoothing + mouse.y * (1 - smoothing); oglUniforms.mousePos.value = [smoothMouse.x, smoothMouse.y]; } try { oglRenderer.render({ scene: oglMesh }); oglAnimationId = requestAnimationFrame(loop); } catch (error) { console.warn('WebGL rendering error (LightRays):', error); } }; if (config.followMouse) { handleMouseMove = (e) => { if (!container) return; const rect = container.getBoundingClientRect(); mouse.x = (e.clientX - rect.left) / rect.width; mouse.y = (e.clientY - rect.top) / rect.height; }; window.addEventListener('mousemove', handleMouseMove); } window.addEventListener('resize', updatePlacement); updatePlacement(); oglAnimationId = requestAnimationFrame(loop);
         }
 
         function initAnimations() {
             const splitTargets = document.querySelectorAll("[data-splitting]");
             splitTargets.forEach(target => { new SplitType(target, { types: 'words, lines' }); });
 
-            gsap.from(qModel.scale, {
-                x: 0.1, y: 0.1, z: 0.1,
-                duration: 2.5,
-                ease: 'power3.out'
-            });
+            // Q Model Scale In
+            gsap.from(qModel.scale, { x: 0.1, y: 0.1, z: 0.1, duration: 2.5, ease: 'power3.out' });
 
-            gsap.to(camera.position, {
-                z: 4.5,
-                scrollTrigger: {
-                    trigger: '#hero',
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1
-                }
-            });
+            // Camera Zoom during Hero Scroll
+            gsap.to(camera.position, { z: 4.5, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
 
+            // Hero Text & CTA Animation
             const heroTl = gsap.timeline();
-            heroTl.to("#hero h1 .word, .hero-description .word", {
-                opacity: 1, filter: 'blur(0px)', y: 0,
-                duration: 1.2, stagger: 0.06,
-                ease: 'power3.out'
-            })
+            heroTl.to("#hero h1 .word, .hero-description .word", { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1.2, stagger: 0.06, ease: 'power3.out' })
                 .to("#hero h1", { scale: 1.05, duration: 0.8, ease: 'power2.out', repeat: 1, yoyo: true }, "-=1.2")
-                .to(".hero-cta", {
-                    opacity: 1, y: 0,
-                    duration: 1, ease: 'power3.out'
-                }, "-=1");
+                .to(".hero-cta", { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, "-=1");
 
+            // --- THIS IS THE KEY ANIMATION for background change ---
             gsap.to(".background-controller", {
-                opacity: 0,
-                ease: "power1.out",
+                opacity: 1, // Fade IN the white background
+                ease: "power1.inOut",
                 scrollTrigger: {
-                    trigger: "body",
-                    start: "top top",
-                    end: "+=50%",
-                    scrub: 1
+                    trigger: "#hero",      // Start animation based on the hero section
+                    start: "bottom 90%", // Start fading when hero bottom is 90% from viewport top
+                    end: "bottom 40%",   // Be fully white when hero bottom is 40% from viewport top (Adjust %)
+                    scrub: 1             // Smoothly link to scroll
                 }
             });
+            // --- END Background Animation ---
 
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: 'body',
-                    start: 'top top',
-                    end: 'bottom bottom',
-                    scrub: 1
-                }
-            });
+            // Q Model Scroll Animation Timeline
+            const tl = gsap.timeline({ scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 1 } });
             const easeType = 'power1.inOut';
+            tl.to(qModel.rotation, { y: Math.PI * 2, ease: 'none', duration: 1 }, 0);
+            tl.to(qModel.position, { x: -5, ease: 'power2.out', duration: 3 }, 0);
+            tl.to(qModel.position, { x: 5, ease: easeType, duration: 12 });
+            tl.to(qModel.position, { y: -3, x: 5, ease: easeType, duration: 5 });
+            tl.to(qModel.position, { y: -8, x: -4, z: -2, ease: easeType, duration: 4 });
+            tl.to(qModel.rotation, { x: 0.5, z: 0.2, ease: easeType, duration: 4 }, "<");
 
-            tl.to(qModel.rotation, {
-                y: Math.PI * 2,
-                ease: 'none',
-                duration: 1
-            }, 0); 
-            tl.to(qModel.position, {
-                x: -5,
-                ease: 'power2.out',
-                duration: 3
-            }, 0); 
-            tl.to(qModel.position, {
-                x: 5,
-                ease: easeType,
-                duration: 12
-            });
-            tl.to(qModel.position, {
-                y: -3,
-                x: 5,
-                ease: easeType,
-                duration: 5
-            });
-            tl.to(qModel.position, {
-                y: -8,
-                x: -4,
-                z: -2,
-                ease: easeType,
-                duration: 4
-            });
-            tl.to(qModel.rotation, {
-                x: 0.5,
-                z: 0.2,
-                ease: easeType,
-                duration: 4
-            }, "<");
-
-            // --- DESKTOP ANIMATIONS ---
+            // --- DESKTOP HORIZONTAL SCROLL ANIMATIONS ---
             if (window.innerWidth > 900) {
                 const horizontalSection = document.querySelector('.horizontal-track');
                 const scrollWrapper = document.querySelector('.horizontal-scroll-wrapper');
-                
+                const sections = gsap.utils.toArray(".horizontal-track > section"); // Get sections for accurate width
+
                 const horizontalTl = gsap.to(horizontalSection, {
+                    // Calculate scroll distance more reliably
                     x: () => `-${horizontalSection.scrollWidth - scrollWrapper.offsetWidth}px`,
                     ease: "none",
                     scrollTrigger: {
@@ -1398,262 +1538,106 @@
                         start: "top top",
                         pin: true,
                         scrub: 1,
-                        end: () => `+=${horizontalSection.scrollWidth - scrollWrapper.offsetWidth + 2000}`,
+                        // Calculate end point more reliably
+                        end: () => `+=${horizontalSection.scrollWidth - scrollWrapper.offsetWidth}`,
                         invalidateOnRefresh: true
                     }
                 });
 
-                gsap.to("#about .word", {
-                    y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.03, ease: 'power3.out',
-                    scrollTrigger: { containerAnimation: horizontalTl, trigger: "#about", start: "left 80%" }
-                });
+                // Animate About text
+                gsap.to("#about .word", { y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.03, ease: 'power3.out', scrollTrigger: { containerAnimation: horizontalTl, trigger: "#about", start: "left 80%" } });
 
-                gsap.set('.cards-container', { position: 'absolute', right: '8%', transform: 'translateX(100%)', opacity: 0 });
-                gsap.set('.service-card', { y: 50, opacity: 0 });
+                // Animate Services Section
+                gsap.set('.cards-container', { position: 'absolute', right: '8%', xPercent: 100, opacity: 0 }); // Correct initial state
+                gsap.set('.service-card', { y: 50, opacity: 0 }); // Keep initial state
 
                 const servicesTl = gsap.timeline({
                     scrollTrigger: {
                         containerAnimation: horizontalTl,
                         trigger: "#services",
-                        start: "left 60%", 
-                        end: "right 70%", 
-                        scrub: true,
+                        start: "left 60%", // Start slightly earlier
+                        end: "right 80%", // End slightly later
+                        scrub: 1, // Use 1 for smoother scrubbing
                     }
                 });
 
                 servicesTl
-                    .to(".services-heading", { xPercent: -50, ease: "power1.inOut" })
-                    .fromTo(".cards-container", { xPercent: 100, opacity: 0 }, { xPercent: -50, opacity: 1, ease: "power2.out" })
-                    .add("card2_starts", "-=0.3")
-                    .add("card3_starts", "-=0.1")
-                    .staggerFromTo(".service-card", 0.5, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'back.out(1.7)' }, 0.2, "-=0.5")
-                    .to(".blur-overlay", { 
-                        opacity: 1, 
-                        backdropFilter: 'blur(5px)', 
-                        ease: 'power1.inOut' 
-                    }, "card2_starts")
-                    .to(".blur-overlay", { 
-                        opacity: 0, 
-                        backdropFilter: 'blur(0px)', 
-                        ease: 'power1.inOut' 
-                    }, "card3_starts");
+                    .to(".services-heading", { xPercent: -60, ease: "power1.inOut" }, 0) // Move heading further left
+                    // Animate container into position first
+                    .to(".cards-container", { xPercent: 0, opacity: 1, ease: "power2.out" }, 0.1) // Start slightly after heading
+                    // Then stagger in cards
+                    .to(".service-card", {
+                        y: 0,
+                        opacity: 1,
+                        stagger: 0.2,
+                        ease: 'power2.out', // Smoother ease
+                        duration: 0.6
+                    }, 0.3); // Start after container is mostly visible
 
 
-                gsap.to(".services-heading h2", {
-                    opacity: 0,
-                    filter: 'blur(15px)',
-                    ease: 'power1.in',
-                    scrollTrigger: {
-                        containerAnimation: horizontalTl,
-                        trigger: "#services",
-                        start: "left 20%",
-                        end: "left 5%",
-                        scrub: 1,
-                    }
-                });
+                // Fade out Services heading
+                gsap.to(".services-heading h2", { opacity: 0, filter: 'blur(15px)', ease: 'power1.in', scrollTrigger: { containerAnimation: horizontalTl, trigger: "#services", start: "left 30%", end: "left 10%", scrub: 1 } });
 
-                gsap.to("#portfolio h2 .word", {
-                    y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.05, ease: 'power3.out',
-                    scrollTrigger: { containerAnimation: horizontalTl, trigger: "#portfolio", start: "left 70%" }
-                });
-                gsap.to("#marquee1 .portfolio-track", {
-                    xPercent: -50, ease: "none",
-                    scrollTrigger: {
-                        containerAnimation: horizontalTl, trigger: "#portfolio",
-                        start: "left right", end: "right left", scrub: 1.5
-                    }
-                });
-                gsap.to("#marquee2 .portfolio-track", {
-                    xPercent: 0, ease: "none",
-                    scrollTrigger: {
-                        containerAnimation: horizontalTl, trigger: "#portfolio",
-                        start: "left right", end: "right left", scrub: 1.5
-                    }
-                });
+                // Animate Portfolio heading
+                gsap.to("#portfolio h2 .word", { y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.05, ease: 'power3.out', scrollTrigger: { containerAnimation: horizontalTl, trigger: "#portfolio", start: "left 70%" } });
 
-            } else { // --- MOBILE ANIMATIONS ---
-                gsap.utils.toArray('#services h2 .word').forEach(word => {
-                    gsap.from(word.parentNode, {
-                        y: 30, opacity: 0, filter: 'blur(8px)', duration: 0.8, ease: 'power3.out',
-                        scrollTrigger: {
-                            trigger: word.closest('section'),
-                            start: "top 80%",
-                        }
-                    });
-                });
+                // Marquee Animations
+                gsap.to("#marquee1 .portfolio-track", { xPercent: -30, ease: "none", scrollTrigger: { containerAnimation: horizontalTl, trigger: "#portfolio", start: "left right", end: "right left", scrub: 1.5 } });
+                gsap.to("#marquee2 .portfolio-track", { xPercent: 30, ease: "none", scrollTrigger: { containerAnimation: horizontalTl, trigger: "#portfolio", start: "left right", end: "right left", scrub: 1.5 } });
 
-                gsap.from("#about .word", {
-                    y: 30, opacity: 0, filter: 'blur(8px)', duration: 0.8, ease: 'power3.out', stagger: 0.05,
-                    scrollTrigger: {
-                        trigger: "#about",
-                        start: "top 80%",
-                    }
+            } else { // --- MOBILE VERTICAL ANIMATIONS ---
+                gsap.utils.toArray('#about .word, #services h2 .word, #portfolio h2 .word, #testimonials h2 .word').forEach(word => {
+                    gsap.from(word.parentNode, { y: 30, opacity: 0, filter: 'blur(8px)', duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: word.closest('section'), start: "top 80%" } });
                 });
-
-                gsap.from(".service-card", {
-                    y: 50, opacity: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out',
-                    scrollTrigger: {
-                        trigger: ".cards-container",
-                        start: "top 80%"
-                    }
-                });
-                
-                const mobilePortfolioTl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: "#portfolio",
-                        start: "top top",
-                        pin: true,
-                        scrub: 1,
-                        end: "+=2000"
-                    }
-                });
-                mobilePortfolioTl.from("#portfolio h2 .word", { y: 30, opacity: 0, filter: 'blur(8px)', stagger: 0.1 })
-                    .to("#marquee1 .portfolio-track", { xPercent: -50 }, 0)
-                    .to("#marquee2 .portfolio-track", { xPercent: 0 }, 0);
+                gsap.from(".about-subheading, .about-text", { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.2, scrollTrigger: { trigger: "#about", start: "top 70%" } });
+                gsap.from(".service-card", { y: 50, opacity: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: ".cards-container", start: "top 80%" } });
+                // Mobile Marquee needs standard ScrollTrigger
+                gsap.to("#marquee1 .portfolio-track", { xPercent: -20, ease: "none", scrollTrigger: { trigger: "#portfolio", start: "top bottom", end: "bottom top", scrub: 1 } });
+                gsap.to("#marquee2 .portfolio-track", { xPercent: 20, ease: "none", scrollTrigger: { trigger: "#portfolio", start: "top bottom", end: "bottom top", scrub: 1 } });
             }
 
-            const projectsTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: "#projects",
-                    start: "top top",
-                    end: "+=120%",
-                    pin: true,
-                    scrub: 1,
-                }
-            });
-            projectsTl.to("#projects h2", {
-                opacity: 0,
-                scale: 0.9,
-                ease: 'power1.in',
-            }, 0);
-            projectsTl.to(".bento-item", {
-                opacity: 1,
-                transform: 'scale(1) rotateX(0deg) translateY(0px)',
-                stagger: { amount: 0.5 },
-                ease: "none",
-            }, 0);
-            
+            // Projects Bento Grid Animation (Same for Desktop/Mobile)
+            const projectsTl = gsap.timeline({ scrollTrigger: { trigger: "#projects", start: "top top", end: "+=120%", pin: true, scrub: 1 } });
+            projectsTl.to("#projects h2", { opacity: 0, scale: 0.9, ease: 'power1.in' }, 0);
+            projectsTl.to(".bento-item", { opacity: 1, transform: 'scale(1) rotateX(0deg) translateY(0px)', stagger: { amount: 0.5 }, ease: "none" }, 0);
+
+            // Testimonial Slider (Auto-play, independent of scroll)
+            // Ensure you have duplicate slides in HTML for seamless loop
             const slides = gsap.utils.toArray(".testimonial-slide");
-            const totalSlides = slides.length / 2;
-
-            gsap.set(".testimonial-slider", { xPercent: 0 });
-
-            gsap.to(".testimonial-slider", {
-                xPercent: -100 * totalSlides,
-                duration: 15 * totalSlides,
-                ease: "none",
-                repeat: -1,
-                modifiers: {
-                    xPercent: gsap.utils.wrap(-100 * totalSlides, 0)
-                }
-            });
-     gsap.from(".blueprint-block", {
-                opacity: 0,
-                y: 50,
-                duration: 1,
-                stagger: 0.2,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: "#blueprint",
-                    start: "top 70%", // Start animation earlier
-                }
-            });
-
-       // --- BLUEPRINT SECTION ---
-            const blueprintCards = document.querySelectorAll('.blueprint-block');
-            blueprintCards.forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
+            const totalSlides = slides.length / 2; // Divide by 2 because of duplicates
+            if (totalSlides > 0) { // Check if slides exist
+                gsap.set(".testimonial-slider", { xPercent: 0 }); // Initial position
+                gsap.to(".testimonial-slider", {
+                    xPercent: -100 * totalSlides,
+                    duration: 15 * totalSlides, // Adjust duration per slide
+                    ease: "none",
+                    repeat: -1,
+                    // Use wrap modifier for seamless loop
+                    modifiers: {
+                        xPercent: gsap.utils.wrap(-100 * totalSlides, 0)
+                    }
                 });
-            });
+            }
 
-            const blueprintTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: "#blueprint",
-                    start: "top 60%",
-                }
-            });
-            blueprintTl.to(".grid-line", {
-                scaleX: 1,
-                scaleY: 1,
-                duration: 1,
-                stagger: 0.1,
-                ease: "power2.inOut"
-            });
-            blueprintTl.to(".blueprint-block", {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: "power3.out"
-            }, "-=0.7");
-            blueprintTl.to(".blueprint-icon", {
-                opacity: 1,
-                scale: 1,
-                duration: 0.8,
-                stagger: 0.2,
-                ease: "back.out(1.7)"
-            }, "-=0.8");
-            gsap.utils.toArray(".blueprint-block").forEach(block => {
-                const words = block.querySelectorAll(".word");
-                blueprintTl.to(words, {
-                    opacity: 1,
-                    y: 0,
-                    rotateX: 0,
-                    duration: 0.5,
-                    stagger: 0.03,
-                    ease: "power2.out"
-                }, "-=0.9");
-            });
-            // gsap.from(".blueprint-block", {
-            //     opacity: 0, y: 50, duration: 1, stagger: 0.2, ease: "power3.out",
-            //     scrollTrigger: {
-            //         trigger: "#blueprint",
-            //         start: "top 70%",
-            //     }
-            // });
 
-             const footerContentTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: "footer",
-                    start: "top 80%",
-                }
-            });
-            footerContentTl.to("footer .reveal-mask", {
-                clipPath: 'inset(0 0% 0 0)',
-                duration: 1.5,
-                stagger: 0.2,
-                ease: 'power4.out'
-            });
-            footerContentTl.to("footer .fade-in-anim", {
-                opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out'
-            }, "-=1.2");
-            footerContentTl.to(".footer-trace-path", {
-                strokeDashoffset: 0,
-                duration: 3,
-                ease: 'power1.inOut'
-            }, "-=1.5");
+             
+            // Footer Animation (Same for Desktop/Mobile)
+            const footerContentTl = gsap.timeline({ scrollTrigger: { trigger: "footer", start: "top 80%" } }); // Trigger slightly later
+            footerContentTl.to("footer .reveal-mask", { clipPath: 'inset(0 0% 0 0)', duration: 1.5, stagger: 0.2, ease: 'power4.out' });
+            footerContentTl.to("footer .fade-in-anim", { opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out' }, "-=1.2");
+            footerContentTl.to(".footer-trace-path", { strokeDashoffset: 0, duration: 3, ease: 'power1.inOut' }, "-=1.5");
         }
 
+        // --- Initialize ---
         window.addEventListener('load', () => {
             initThree();
+            initLightRays();
             initAnimations();
             loader.classList.add('hidden');
-            ScrollTrigger.refresh();
+            ScrollTrigger.refresh(); // Refresh ScrollTrigger after everything is loaded
         });
+
     </script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
