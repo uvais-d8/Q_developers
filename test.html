@@ -73,7 +73,7 @@
         }
 
         /* --- Backgrounds & Canvas --- */
-
+        
         /* ADDED: Light Rays Background (Bottom Layer) */
         #light-rays-background {
             position: fixed;
@@ -89,10 +89,9 @@
             width: 100%;
             height: 100%;
             display: block;
-            mix-blend-mode: screen;
-            /* Blends rays with black bg */
+            mix-blend-mode: screen; /* Blends rays with black bg */
         }
-
+        
         /* MODIFIED: Background Controller (Middle Layer) */
         .background-controller {
             position: fixed;
@@ -101,8 +100,8 @@
             width: 100%;
             height: 100vh;
             /* This is the white bg that fades IN */
-            background-color: var(--cool-white);
-            z-index: -2;
+            background-color: var(--cool-white); 
+            z-index: -2; 
             /* Starts transparent to show light rays */
             opacity: 0;
             will-change: opacity;
@@ -115,11 +114,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            /* Sits on top of background-controller */
+            z-index: -1; /* Sits on top of background-controller */
             outline: none;
-            pointer-events: none;
-            /* Allows clicking through */
+            pointer-events: none; /* Allows clicking through */
         }
 
         .blur-overlay {
@@ -682,99 +679,65 @@
             z-index: 3;
         }
 
-        /* --- NEW: Light Ray Animation --- */
-        @keyframes pulseRay {
-            0% {
-                transform: translateX(-50%) translateY(-60%) scale(0.8);
-                opacity: 0.7;
-            }
-
-            50% {
-                transform: translateX(-50%) translateY(-60%) scale(1.2);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateX(-50%) translateY(-60%) scale(0.8);
-                opacity: 0.7;
-            }
-        }
-
-        /* --- UPDATED: Footer --- */
-        /* --- UPDATED: Footer (Hero-Style) --- */
         .footer-wrapper {
             position: relative;
-            /* KEY CHANGE: Make the wrapper transparent.
-       This allows the fixed 3D model and light rays (z-index: -1, -3) 
-       to show through. 
-     */
+            /* This wrapper needs a white background */
+            background-color: var(--cool-white);
+        }
+
+        /* --- REMOVED: Blueprint Section --- */
+
+        /* --- Footer --- */
+        footer {
+            padding: 120px 8% 50px;
+            /* Footer itself is transparent inside its wrapper */
             background-color: transparent;
-            color: #EAEAEA;
+            color: var(--dark-gray);
             overflow: hidden;
-            /* z-index is removed to let content inside control stacking */
-            /* ADDED: Ensure it stacks above the pinned #stacked-cards section's bg */
+            position: relative;
             z-index: 1;
         }
 
-        /* REMOVED: @keyframes pulseRay
-  REMOVED: .footer-wrapper::before
-  (We are now using the REAL light rays from the hero)
-*/
-
-        footer {
-            /* --- MODIFICATION 1: Adjusted padding --- */
-            padding: 80px 8%;
-            /* Kept horizontal padding, reduced vertical to allow centering */
-
-            /* --- MODIFICATION 2: Added fullscreen and centering --- */
-            min-height: 100vh;
-            /* Make footer at least full viewport height */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            /* Vertically center all content */
-
-            background-color: transparent;
-            color: #EAEAEA;
-            overflow: hidden;
-            position: relative;
-            z-index: 2;
+        .footer-trace-svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
         }
 
-        /* --- Grid Structure (Already Centered) --- */
+        .footer-trace-path {
+            stroke: var(--electric-purple);
+            stroke-width: 1.5;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+        }
+
         .footer-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 80px;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 80px;
-        }
-
-        /* --- Hero CTA (Already Centered) --- */
-        .footer-cta {
-            display: flex;
-            flex-direction: column;
+            grid-template-columns: 1fr 2fr;
+            gap: 100px;
             align-items: center;
         }
 
         .footer-cta h2 {
-            font-size: clamp(4rem, 10vw, 7rem);
+            font-size: clamp(3rem, 8vw, 6rem);
             font-weight: 800;
+            color: var(--dark-gray);
             line-height: 1;
-            color: var(--cool-white);
-            /* MODIFIED: Removed mix-blend-mode */
-            z-index: 2;
-            position: relative;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(127, 90, 240, 0.2);
         }
 
         .footer-cta p {
             font-size: 1.2rem;
-            max-width: 550px;
+            max-width: 400px;
             margin-bottom: 30px;
-            margin-left: auto;
-            margin-right: auto;
-            color: rgba(234, 234, 234, 0.7);
+            color: rgba(22, 22, 26, 0.7);
         }
 
         .footer-contact-button {
@@ -801,20 +764,16 @@
             transform: translateY(-1px) scale(0.98);
         }
 
-        /* --- Links Grid (Already Centered) --- */
         .footer-links-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 40px;
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: left;
         }
 
         .footer-section h4 {
             font-size: 1rem;
             margin-bottom: 15px;
-            color: var(--cool-white);
+            color: var(--dark-gray);
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
@@ -830,7 +789,7 @@
 
         .footer-section a {
             text-decoration: none;
-            color: rgba(234, 234, 234, 0.7);
+            color: rgba(22, 22, 26, 0.7);
             transition: color 0.3s ease;
         }
 
@@ -838,19 +797,15 @@
             color: var(--electric-purple);
         }
 
-        /* --- Footer Bottom (Already Styled) --- */
         .footer-bottom {
             padding-top: 50px;
-            margin-top: 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.9rem;
-            color: rgba(234, 234, 234, 0.5);
-            /* --- MODIFICATION 3: Added width --- */
-            width: 100%;
-            /* Ensures it spans the full width */
+            color: rgba(22, 22, 26, 0.5);
         }
 
         .footer-socials {
@@ -861,7 +816,7 @@
         .footer-socials a svg {
             width: 24px;
             height: 24px;
-            fill: var(--cool-white);
+            fill: var(--dark-gray);
             opacity: 0.6;
             transition: all 0.3s;
         }
@@ -964,15 +919,6 @@
 
             .footer-cta p {
                 margin: 0 auto 30px;
-            }
-
-            /* On mobile, give footer its black bg since model is hidden */
-            .footer-wrapper {
-                background-color: var(--black-bg);
-            }
-
-            footer {
-                background-color: var(--black-bg);
             }
         }
 
@@ -1109,12 +1055,9 @@
                             </div>
                             <div class="service-card">
                                 <h3>Project Management 📋</h3>
-                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.
-                                </p>
-                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.
-                                </p>
-                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.
-                                </p>
+                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
+                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
+                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
                             </div>
                         </div>
                     </div>
@@ -1133,7 +1076,7 @@
                                     src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
                                     alt="Modern House"></div>
                             <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    src="httpsfoo://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
                                     alt="Modern House"></div>
                             <div class="portfolio-item"><img
                                     src="https://images.unsplash.com/photo-1558036117-15d82a90b9b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
@@ -1160,7 +1103,7 @@
                                     src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
                                     alt="Modern House"></div>
                             <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    src="httpsD://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
                                     alt="Modern House"></div>
                             <div class="portfolio-item"><img
                                     src="https://images.unsplash.com/photo-1558036117-15d82a90b9b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
@@ -1175,7 +1118,7 @@
                                     src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
                                     alt="Modern Kitchen"></div>
                             <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1592595896551-89e6f1647846?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                    src="httpsDhis://images.unsplash.com/photo-1592595896551-89e6f1647846?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
                                     alt="Luxury Home"></div>
                         </div>
                     </div>
@@ -1283,8 +1226,7 @@
                 </div>
                 <div class="stacked-card card-2">
                     <h3><span class="card-icon">⏱️</span>On-Time Delivery</h3>
-                    <p>Your time is valuable. Our meticulous project management guarantees that your project is
-                        delivered
+                    <p>Your time is valuable. Our meticulous project management guarantees that your project is delivered
                         on schedule, every time, without compromise.</p>
                 </div>
                 <div class="stacked-card card-3">
@@ -1297,16 +1239,37 @@
 
         <div class="footer-wrapper">
             <footer>
+                <svg class="footer-trace-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
+                    <path class="footer-trace-path"
+                        d="M1100 350 Q 750 350 750 200 T 400 50 Q 200 50 100 150 T -100 350" />
+                </svg>
                 <div class="footer-grid">
                     <div class="footer-cta">
                         <h2 class="reveal-mask">Build The Future.</h2>
                         <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your
                             vision to life. We're
                             ready to build the next landmark. 🤝</p>
-                        <a href="mailto:contact@qdevelopers.com" class="hero-cta">Get In
+                        <a href="mailto:contact@qdevelopers.com" class="footer-contact-button fade-in-anim">Get In
                             Touch</a>
                     </div>
-
+                    <div class="footer-links-grid">
+                        <div class="footer-section">
+                            <h4 class="reveal-mask">Company</h4>
+                            <ul>
+                                <li class="fade-in-anim"><a href="#about">About Us</a></li>
+                                <li class="fade-in-anim"><a href="#projects">Projects</a></li>
+                                <li class="fade-in-anim"><a href="#">Careers</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h4 class="reveal-mask">Services</h4>
+                            <ul>
+                                <li class="fade-in-anim"><a href="#services">Architecture</a></li>
+                                <li class="fade-in-anim"><a href="#services">Construction</a></li>
+                                <li class="fade-in-anim"><a href="#services">Management</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="footer-bottom">
                     <p class="fade-in-anim">&copy; 2025 Q Developers | Calicut, Kerala.</p>
@@ -1321,7 +1284,7 @@
                             </svg></a>
                         <a href="#" class="fade-in-anim" title="Instagram"><svg viewBox="0 0 24 24">
                                 <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919 4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
                             </svg></a>
                     </div>
                 </div>
@@ -1478,9 +1441,6 @@
             qModel = new THREE.Mesh(geometry, material);
             qModel.castShadow = true;
             scene.add(qModel);
-
-            // --- *** MODIFICATION 1: SET BASE SCALE ("small for all time") *** ---
-            qModel.scale.set(0.8, 0.8, 0.8);
         }
 
         // --- ADDED: Light Rays Initialization Function ---
@@ -1492,7 +1452,6 @@
             const splitTargets = document.querySelectorAll("[data-splitting]");
             splitTargets.forEach(target => { new SplitType(target, { types: 'words, lines' }); });
 
-            // This .from() tween will animate FROM 0.1 TO the new base scale of 0.8
             gsap.from(qModel.scale, {
                 x: 0.1, y: 0.1, z: 0.1,
                 duration: 2.5,
@@ -1527,13 +1486,12 @@
                 opacity: 1, // Fade IN the white background
                 ease: "power1.inOut",
                 scrollTrigger: {
-                    trigger: "#hero",    // Start animation based on the hero section
+                    trigger: "#hero",      // Start animation based on the hero section
                     start: "bottom 90%", // Start fading when hero bottom is 90% from viewport top
                     end: "bottom 40%",   // Be fully white when hero bottom is 40% from viewport top
-                    scrub: 1          // Smoothly link to scroll
+                    scrub: 1             // Smoothly link to scroll
                 }
             });
-
             // --- End of modification ---
 
             const tl = gsap.timeline({
@@ -1544,42 +1502,40 @@
                     scrub: 1
                 }
             });
-
-            // --- *** MODIFICATION 2: Changed all eases to power2.inOut for smoothness *** ---
-            const easeType = 'power2.inOut'; // <-- SMOOTHER EASE
+            const easeType = 'power1.inOut';
 
             tl.to(qModel.rotation, {
                 y: Math.PI * 2,
-                ease: 'none', // Keep 'none' for a constant rotation
+                ease: 'none',
                 duration: 1
             }, 0);
             tl.to(qModel.position, {
                 x: -5,
-                ease: easeType, // <-- MODIFIED
+                ease: 'power2.out',
                 duration: 3
             }, 0);
             tl.to(qModel.position, {
                 x: 5,
-                ease: easeType, // <-- MODIFIED
+                ease: easeType,
                 duration: 12
             });
             tl.to(qModel.position, {
                 y: -3,
                 x: 5,
-                ease: easeType, // <-- MODIFIED
+                ease: easeType,
                 duration: 5
             });
             tl.to(qModel.position, {
                 y: -8,
                 x: -4,
                 z: -2,
-                ease: easeType, // <-- MODIFIED
+                ease: easeType,
                 duration: 4
             });
             tl.to(qModel.rotation, {
                 x: 0.5,
                 z: 0.2,
-                ease: easeType, // <-- MODIFIED
+                ease: easeType,
                 duration: 4
             }, "<");
 
@@ -1620,9 +1576,8 @@
                     }
                 });
 
-                // --- *** MODIFICATION 3: Changed eases to power2.inOut for smoothness *** ---
                 servicesTl
-                    .to(".services-heading", { xPercent: -50, ease: "power2.inOut" }) // <-- MODIFIED
+                    .to(".services-heading", { xPercent: -50, ease: "power1.inOut" })
                     .fromTo(".cards-container", { xPercent: 100, opacity: 0 }, { xPercent: -50, opacity: 1, ease: "power2.out" })
                     .add("card2_starts", "-=0.3")
                     .add("card3_starts", "-=0.1")
@@ -1630,17 +1585,17 @@
                     .to(".blur-overlay", {
                         opacity: 1,
                         backdropFilter: 'blur(5px)',
-                        ease: 'power2.inOut' // <-- MODIFIED
+                        ease: 'power1.inOut'
                     }, "card2_starts")
                     .to([".services-heading", ".cards-container"], {
                         opacity: 0,
                         filter: 'blur(10px)',
-                        ease: 'power2.inOut' // <-- MODIFIED
+                        ease: 'power1.in'
                     })
                     .to(".blur-overlay", {
                         opacity: 0,
                         backdropFilter: 'blur(0px)',
-                        ease: 'power2.inOut' // <-- MODIFIED
+                        ease: 'power1.out'
                     }, "<");
 
                 // --- PORTFOLIO HEADING ANIMATION (IN) ---
@@ -1823,12 +1778,11 @@
             stackedCardsTl.add("pause", "+=1.0"); // Wait for 1.0 "time" units (Longer pause)
 
             // Animate heading out
-            // --- *** MODIFICATION 4: Changed ease for smoothness *** ---
             stackedCardsTl.to("#stacked-cards h2", {
                 opacity: 0,
                 y: -30,
                 filter: 'blur(8px)',
-                ease: 'power2.inOut' // <-- MODIFIED
+                ease: 'power1.in'
             }, "pause");
 
             // --- CHANGED: Animate cards "un-stacking" one by one with more rotation/direction ---
@@ -1862,59 +1816,25 @@
                 ease: cardOutEase
             }, `pause+=${cardOutStagger * 2}`); // Stagger exit
 
+            // --- BLUEPRINT & FOOTER ANIMATIONS ---
+            // --- REMOVED: Blueprint JS ---
 
-            // --- *** MODIFICATION 5 (START): Footer Animations *** ---
-            // --- FADE OUT WHITE BG, REVEAL BLACK BG FOR FOOTER ---
-            gsap.to(".background-controller", {
-                opacity: 0, // Fade OUT the white background
-                ease: "power1.inOut",
+            // --- FOOTER REVEAL ANIMATION ---
+            gsap.from(".footer-wrapper", {
+                yPercent: 100,
+                duration: 1.2,
+                ease: 'power3.out',
                 scrollTrigger: {
-                    trigger: ".footer-wrapper", // Trigger based on the footer
-                    start: "top 80%",      // Start fading out when footer is 80% from top
-                    end: "top 50%",        // Fully faded out when footer is 50% from top
-                    scrub: 1
+                    trigger: ".footer-wrapper",
+                    start: "top 95%",
+                    toggleActions: "play none none reverse"
                 }
             });
-
-            // --- Footer 3D Model Animation ---
-            const footerModelTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: ".footer-wrapper", // Trigger when the footer wrapper comes into view
-                    start: "top 80%",      // Start animating when wrapper top is 80% from viewport top
-                    end: "bottom bottom",    // End animation when wrapper bottom hits viewport bottom
-                    scrub: 1,              // Link to scroll
-                }
-            });
-
-            // Animate the model to a centered, final position
-            footerModelTl.to(qModel.position, {
-                x: 0,
-                y: 0, // Centered vertically in the viewport
-                z: 2.5, // MODIFIED: Keeps it in front of the camera (z=4.5)
-                ease: 'power2.inOut' // MODIFIED
-            }, 0); // Start at the beginning of the timeline
-
-            // --- MODIFIED: Animate scale to "medium" size (back to base scale) ---
-            footerModelTl.to(qModel.scale, {
-                x: 0.5, // MODIFIED: Set to 80% (new base scale)
-                y: 0.5,
-                z: 0.5,
-                ease: 'power2.inOut' // MODIFIED
-            }, 0); // Animate at the same time as position
-
-            // Animate the rotation to a final, presentable angle
-            footerModelTl.to(qModel.rotation, {
-                x: 0.2,
-                y: Math.PI * 4, // A final "hero" rotation
-                z: 0,
-                ease: 'power2.inOut' // MODIFIED
-            }, 0); // Start at the beginning of the timeline
-            // --- *** MODIFICATION 5 (END) *** ---
 
             const footerContentTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "footer",
-                    start: "top 80%", // This is good
+                    start: "top 80%",
                 }
             });
             footerContentTl.to("footer .reveal-mask", {
@@ -1926,14 +1846,20 @@
             footerContentTl.to("footer .fade-in-anim", {
                 opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out'
             }, "-=1.2");
+            footerContentTl.to(".footer-trace-path", {
+                strokeDashoffset: 0,
+                duration: 3,
+                ease: 'power1.inOut'
+            }, "-=1.5");
         }
+
         window.addEventListener('load', () => {
-
+            
             // --- MODIFIED: Added initLightRays() ---
-            initThree();     // Init 3D Q-Logo
-            initLightRays(); // Init OGL Light Rays
+            initThree();      // Init 3D Q-Logo
+            initLightRays();  // Init OGL Light Rays
             initAnimations(); // Init All GSAP Animations
-
+            
             loader.classList.add('hidden');
             ScrollTrigger.refresh();
         });
