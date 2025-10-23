@@ -268,6 +268,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            background-color: var(--cool-white);
         }
 
         #about h2,
@@ -304,6 +305,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background-color: var(--cool-white);
         }
 
         .services-content-wrapper {
@@ -365,7 +367,9 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: hidden;  
+            background-color: var(--cool-white);
+            
             position: relative;
         }
 
@@ -467,7 +471,7 @@
 
         /* --- Signature Projects Section (Bento Grid) --- */
         #projects {
-            background-color: transparent;
+             background-color: var(--cool-white);
             position: relative;
         }
 
@@ -914,6 +918,7 @@
             #portfolio {
                 padding: 120px 8%;
                 /* Re-hide marquees on mobile if not needed */
+                background-color: var(--cool-white);
                 overflow: hidden;
             }
 
@@ -1557,39 +1562,17 @@
             const easeType = 'power2.inOut'; // <-- SMOOTHER EASE
 
             tl.to(qModel.rotation, {
-                y: Math.PI * 2,
+                y: Math.PI * 4,
                 ease: 'none', // Keep 'none' for a constant rotation
                 duration: 3
             }, 0);
             tl.to(qModel.position, {
-                x: -5,
+                x: 0,
+                Y: 0,
                 ease: easeType, // <-- MODIFIED
                 duration: 5
             }, 0);
-            tl.to(qModel.position, {
-                x: 5,
-                ease: easeType, // <-- MODIFIED
-                duration: 12
-            });
-            tl.to(qModel.position, {
-                y: -3,
-                x: 5,
-                ease: easeType, // <-- MODIFIED
-                duration: 5
-            });
-            tl.to(qModel.position, {
-                y: -8,
-                x: -4,
-                z: -2,
-                ease: easeType, // <-- MODIFIED
-                duration: 4
-            });
-            tl.to(qModel.rotation, {
-                x: 0.5,
-                z: 0.2,
-                ease: easeType, // <-- MODIFIED
-                duration: 4
-            }, "<");
+            
 
             // --- DESKTOP ANIMATIONS ---
             if (window.innerWidth > 900) {
