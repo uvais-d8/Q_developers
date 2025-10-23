@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/joypixels/8.0.6/joypixels.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/joypixels/8.0.6/joypixels.min.js"></script>
     <title>Q Developers | Construction Company in Calicut</title>
     <style>
         /* ------------------------- */
@@ -37,12 +39,18 @@
             color: var(--dark-gray);
             overflow-x: hidden;
         }
-
+.hero-head{
+      font-family: 'Cormorant Garamond', serif;
+            font-weight: 800;
+            color: var(--purple);
+}
         h1,
         h2,
         h3 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 800;
+            /* font-family: 'Cormorant Garamond', serif; */
+          
+            /* font-family: 'Playfair Display', serif; */
+             font-weight: 800;
             color: var(--purple);
         }
 
@@ -271,6 +279,7 @@
         }
 
         #about h2 {
+             
             font-size: clamp(3rem, 6vw, 4.5rem);
             white-space: nowrap;
             /* MODIFIED: Removed mix-blend-mode */
@@ -370,8 +379,7 @@
             z-index: 10;
             margin: 0;
             pointer-events: none;
-            font-family: 'Playfair Display', serif;
-            font-weight: 800;
+             font-weight: 800;
             color: var(--purple);
             font-size: 4.5rem;
             text-align: center;
@@ -470,8 +478,7 @@
             transform: translate(-50%, -50%);
             z-index: 10;
             margin: 0;
-            pointer-events: none;
-            font-family: 'Playfair Display', serif;
+            pointer-events: none; 
             font-weight: 800;
             color: var(--purple);
             font-size: 4.5rem;
@@ -615,15 +622,16 @@
         }
 
         .cards-stack-wrapper {
-            position: relative;
-            width: 400px;
-            /* Max-width */
-            height: 500px;
-            /* Height */
-            max-width: 90vw;
-            max-height: 70vh;
-        }
-
+    position: relative;
+    width: 400px;
+    /* Max-width */
+    height: 400px; /* MODIFIED: Reduced height */
+    /* Height */
+    max-width: 90vw;
+    /* ALSO adjust max-height if needed, perhaps make it smaller than 70vh */
+    max-height: 60vh; /* MODIFIED: Reduced max-height */
+    margin-top: 20px;
+}
         .stacked-card {
             position: absolute;
             width: 100%;
@@ -1071,7 +1079,7 @@
 
     <main>
         <section id="hero">
-            <h1 data-splitting>Q DEVELOPERS</h1>
+            <h1 class="hero-head" data-splitting>Q DEVELOPERS</h1>
             <p class="hero-description" data-splitting>Your vision, built to last ✨ </p>
             <a href="#contact" class="hero-cta">Start Your Project</a>
         </section>
@@ -1551,12 +1559,12 @@
             tl.to(qModel.rotation, {
                 y: Math.PI * 2,
                 ease: 'none', // Keep 'none' for a constant rotation
-                duration: 1
+                duration: 3
             }, 0);
             tl.to(qModel.position, {
                 x: -5,
                 ease: easeType, // <-- MODIFIED
-                duration: 3
+                duration: 5
             }, 0);
             tl.to(qModel.position, {
                 x: 5,
@@ -1936,6 +1944,7 @@
 
             loader.classList.add('hidden');
             ScrollTrigger.refresh();
+            joypixels.run();
         });
     </script>
 </body>
