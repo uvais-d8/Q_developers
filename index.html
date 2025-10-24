@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/joypixels/8.0.6/joypixels.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/joypixels/8.0.6/joypixels.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/joypixels/8.0.6/joypixels.min.js"></script>
     <title>Q Developers | Construction Company in Calicut</title>
     <style>
@@ -39,18 +39,20 @@
             color: var(--dark-gray);
             overflow-x: hidden;
         }
-.hero-head{
-      font-family: 'Cormorant Garamond', serif;
+
+        .hero-head {
+            font-family: 'Cormorant Garamond', serif;
             font-weight: 800;
             color: var(--purple);
-}
+        }
+
         h1,
         h2,
         h3 {
             /* font-family: 'Cormorant Garamond', serif; */
-          
+
             /* font-family: 'Playfair Display', serif; */
-             font-weight: 800;
+            font-weight: 800;
             color: var(--purple);
         }
 
@@ -280,7 +282,7 @@
         }
 
         #about h2 {
-             
+
             font-size: clamp(3rem, 6vw, 4.5rem);
             white-space: nowrap;
             /* MODIFIED: Removed mix-blend-mode */
@@ -361,103 +363,80 @@
             max-width: 100%;
         }
 
-        /* --- Portfolio Section (Horizontal Marquee) --- */
+        /* --- START REPLACED PORTFOLIO CSS --- */
+
+        /* This is the new grid layout for the portfolio panel */
         #portfolio {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: grid;
+            /* Override the base panel's display */
+            grid-template-rows: 1fr auto 1fr;
+            /* Top row, middle heading, bottom row */
             align-items: center;
-            overflow: hidden;  
+            justify-items: center;
+            padding: 2rem 0;
             background-color: var(--cool-white);
-            
-            position: relative;
+            /* Use the site's bg color */
+            overflow: hidden;
         }
 
-        #portfolio h2 {
-            /* This is now the main heading that sticks */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /* Will be controlled by GSAP */
+        /* This is the sticky heading, now a grid item */
+        .portfolio-heading {
+            /* grid-row: 2; */
+            /* Place it in the middle row */
             z-index: 10;
-            margin: 0;
-            pointer-events: none;
-             font-weight: 800;
-            color: var(--purple);
             font-size: 4.5rem;
-            text-align: center;
+            /* Matched to your other h2 */
+            font-weight: 800;
+            margin: 0;
+            color: var(--purple);
+            text-transform: uppercase;
+        }
+
+        /* This is the wrapper for the rows */
+        .portfolio-marquee-wrapper {
             width: 100%;
+            /* margin: 20px 0; */
             opacity: 0;
-            /* GSAP will animate this */
+            /* Hide initially for the animation */
             will-change: transform, opacity;
         }
 
-        /* ADDED: Styles for Marquees */
-        .portfolio-marquee {
-            width: 100vw;
-            position: absolute;
-            left: 0;
-            /* margin: 4vh 0; */
-            /* Removed margin */
-            opacity: 0;
-            /* GSAP will animate this */
-            will-change: transform, opacity;
+        #portfolio-row1-wrapper {
+            grid-row: 1;
+            /* Place in the top row */
+            align-self: end;
+            /* Push to the bottom of its cell */
         }
 
-        #marquee1 {
-            top: 10%;
-            /* Position top marquee further up */
+        #portfolio-row2-wrapper {
+            grid-row: 3;
+            /* Place in the bottom row */
+            align-self: start;
+            /* Push to the top of its cell */
         }
 
-        #marquee2 {
-            bottom: 10%;
-            /* Position bottom marquee further down */
-        }
-
-        .portfolio-marquee::before,
-        .portfolio-marquee::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            height: 100%;
-            width: 20%;
-            /* Widened the fade effect */
-            z-index: 2;
-        }
-
-        .portfolio-marquee::before {
-            left: 0;
-            /* Removed glassmorphism effect */
-            background: linear-gradient(to right, var(--cool-white) 20%, transparent);
-            /* backdrop-filter: blur(8px); */
-        }
-
-        .portfolio-marquee::after {
-            right: 0;
-            /* Removed glassmorphism effect */
-            background: linear-gradient(to left, var(--cool-white) 20%, transparent);
-            /* backdrop-filter: blur(8px); */
-        }
-
-        .portfolio-track {
+        /* --- Gallery Internals --- */
+        .portfolio-marquee-track {
             display: flex;
             width: fit-content;
             will-change: transform;
         }
 
-        #marquee2 .portfolio-track {
-            transform: translateX(-50%);
-            /* Start position for right-to-left scroll */
+        .portfolio-marquee-content {
+            display: flex;
+            /* gap: 20px; */
+            padding-left: 20px;
         }
 
-        .portfolio-item {
+        .portfolio-marquee-content .portfolio-item {
+            /* Use the existing portfolio-item class */
             width: 25vw;
             flex-shrink: 0;
             padding: 0 15px;
         }
 
-        .portfolio-item img {
+        .portfolio-marquee-content .portfolio-item img {
+            /* Use the existing portfolio-item img styles */
             width: 100%;
             height: 35vh;
             object-fit: cover;
@@ -465,13 +444,15 @@
             transition: transform 0.5s ease;
         }
 
-        .portfolio-item:hover img {
+        .portfolio-marquee-content .portfolio-item:hover img {
             transform: scale(1.05);
         }
 
+        /* --- END REPLACED PORTFOLIO CSS --- */
+
         /* --- Signature Projects Section (Bento Grid) --- */
         #projects {
-             background-color: var(--cool-white);
+            background-color: var(--cool-white);
             position: relative;
         }
 
@@ -482,7 +463,7 @@
             transform: translate(-50%, -50%);
             z-index: 10;
             margin: 0;
-            pointer-events: none; 
+            pointer-events: none;
             font-weight: 800;
             color: var(--purple);
             font-size: 4.5rem;
@@ -626,16 +607,19 @@
         }
 
         .cards-stack-wrapper {
-    position: relative;
-    width: 400px;
-    /* Max-width */
-    height: 400px; /* MODIFIED: Reduced height */
-    /* Height */
-    max-width: 90vw;
-    /* ALSO adjust max-height if needed, perhaps make it smaller than 70vh */
-    max-height: 60vh; /* MODIFIED: Reduced max-height */
-    margin-top: 20px;
-}
+            position: relative;
+            width: 400px;
+            /* Max-width */
+            height: 400px;
+            /* MODIFIED: Reduced height */
+            /* Height */
+            max-width: 90vw;
+            /* ALSO adjust max-height if needed, perhaps make it smaller than 70vh */
+            max-height: 60vh;
+            /* MODIFIED: Reduced max-height */
+            margin-top: 20px;
+        }
+
         .stacked-card {
             position: absolute;
             width: 100%;
@@ -719,7 +703,7 @@
             /* KEY CHANGE: Make the wrapper transparent.
        This allows the fixed 3D model and light rays (z-index: -1, -3) 
        to show through. 
-     */
+   */
             background-color: transparent;
             color: #EAEAEA;
             overflow: hidden;
@@ -922,19 +906,44 @@
                 overflow: hidden;
             }
 
-            #portfolio h2 {
+            /* --- MODIFIED: Target new .portfolio-heading --- */
+            #portfolio .portfolio-heading {
                 /* On mobile, heading is not sticky */
                 position: relative;
                 transform: none;
                 opacity: 1;
                 /* Make visible by default */
                 font-size: clamp(2.5rem, 8vw, 3.5rem);
+                /* --- ADDED: Reset grid positioning --- */
+                grid-row: auto; 
             }
 
-            /* Hide marquees on mobile */
-            .portfolio-marquee {
-                display: none;
+            /* --- MODIFIED: Show marquees on mobile but adjust layout --- */
+            #portfolio {
+                display: flex; /* Change from grid to flex */
+                flex-direction: column;
             }
+            .portfolio-marquee-wrapper {
+                opacity: 0; /* Will be faded in by mobile JS */
+                position: relative;
+                width: 100vw; /* Span full width */
+                margin: 40px 0;
+            }
+            .portfolio-marquee-content .portfolio-item {
+                width: 60vw; /* Make mobile items larger */
+                height: 30vh;
+            }
+             .portfolio-marquee-content .portfolio-item img {
+                height: 100%;
+            }
+            #portfolio-row1-wrapper {
+                 align-self: auto;
+            }
+            #portfolio-row2-wrapper {
+                align-self: auto;
+            }
+            /* --- END MODIFICATION --- */
+
 
             .horizontal-scroll-wrapper {
                 height: auto !important;
@@ -1002,7 +1011,8 @@
                 padding: 80px 5%;
             }
 
-            #portfolio h2 {
+            /* --- MODIFIED: Target new .portfolio-heading --- */
+            #portfolio .portfolio-heading {
                 position: relative;
                 transform: none;
                 left: auto;
@@ -1133,127 +1143,62 @@
                     </div>
                 </section>
 
-                <section id="portfolio">
-                    <div class="portfolio-marquee" id="marquee1">
-                        <div class="portfolio-track">
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1558036117-15d82a90b9b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Interior Design"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Living Room"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1572120360610-d971b9d7767c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="House Exterior"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Kitchen"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1592595896551-89e6f1647846?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Luxury Home"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1598228723793-52759bba239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1558036117-15d82a90b9b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Interior Design"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Living Room"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1572120360610-d971b9d7767c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="House Exterior"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Kitchen"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1592595896551-89e6f1647846?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Luxury Home"></div>
-                        </div>
-                    </div>
-                    <div class="portfolio-marquee" id="marquee2">
-                        <div class="portfolio-track">
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Home Exterior"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Minimalist House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Interior"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Futuristic House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1613977257363-276750382343?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="White Villa"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1613977257363-276750382343?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Poolside House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1628744431533-5568b2f2d558?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Architecture"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1617853757431-13880eda629e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Desert House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Home Exterior"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Minimalist House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Interior"></div>
-                            <div class="portfolio-item"><img
-                                    src="httpsall-tasks://images.unsplash.com/photo-1613490493576-7fde63acd811?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Futuristic House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1613977257363-276750382343?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="White Villa"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1613977257363-276750382343?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Poolside House"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1628744431533-5568b2f2d_558?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Modern Architecture"></div>
-                            <div class="portfolio-item"><img
-                                    src="https://images.unsplash.com/photo-1617853757431-13880eda629e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-                                    alt="Desert House"></div>
-                        </div>
-                    </div>
-                    <h2 data-splitting>Our Portfolio.</h2>
-                </section>
+                <section id="portfolio" class="horizontal-panel">
 
-            </div>
+                    <h2 class="portfolio-heading" data-splitting>Our Portfolio.</h2>
+
+                    <div class="portfolio-marquee-wrapper" id="portfolio-row1-wrapper">
+                        <div class="portfolio-marquee-track" id="portfolio-row1-track">
+                            <div class="portfolio-marquee-content">
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-marquee-wrapper" id="portfolio-row2-wrapper">
+                        <div class="portfolio-marquee-track" id="portfolio-row2-track">
+                            <div class="portfolio-marquee-content">
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
         </div>
 
         <section id="projects">
@@ -1371,7 +1316,13 @@
         gsap.registerPlugin(ScrollTrigger);
         const loader = document.querySelector('.loader');
 
-        const lenis = new Lenis({ lerp: 0.07, smoothWheel: true });
+        // =====================================================
+        // ================== MODIFICATION =====================
+        // =====================================================
+        // Slower, smoother lerp (FROM FILE 2)
+        const lenis = new Lenis({ lerp: 0.05, smoothWheel: true });
+        // =====================================================
+
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
         lenis.on('scroll', ScrollTrigger.update);
@@ -1501,224 +1452,195 @@
             const config = { raysOrigin: "top-center", raysColor: "#ffff", raysSpeed: 1.5, lightSpread: 0.8, rayLength: 1.2, followMouse: true, mouseInfluence: 0.1, noiseAmount: 0.1, distortion: 0.05, pulsating: false, fadeDistance: 1.0, saturation: 1.0, }; const lightRaysVert = ` attribute vec2 position; varying vec2 vUv; void main() { vUv = position * 0.5 + 0.5; gl_Position = vec4(position, 0.0, 1.0); }`; const lightRaysFrag = `precision highp float; uniform float iTime; uniform vec2 iResolution; uniform vec2 rayPos; uniform vec2 rayDir; uniform vec3 raysColor; uniform float raysSpeed; uniform float lightSpread; uniform float rayLength; uniform float pulsating; uniform float fadeDistance; uniform float saturation; uniform vec2 mousePos; uniform float mouseInfluence; uniform float noiseAmount; uniform float distortion; varying vec2 vUv; float noise(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123); } float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA, float seedB, float speed) { vec2 sourceToCoord = coord - raySource; vec2 dirNorm = normalize(sourceToCoord); float cosAngle = dot(dirNorm, rayRefDirection); float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2; float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001)); float distance = length(sourceToCoord); float maxDistance = iResolution.x * rayLength; float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0); float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0); float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0; float baseStrength = clamp( (0.45 + 0.15 * sin(distortedAngle * seedA + iTime * speed)) + (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed)), 0.0, 1.0 ); return baseStrength * lengthFalloff * fadeFalloff * spreadFactor * pulse; } void mainImage(out vec4 fragColor, in vec2 fragCoord) { vec2 coord = vec2(fragCoord.x, iResolution.y - fragCoord.y); vec2 finalRayDir = rayDir; if (mouseInfluence > 0.0) { vec2 mouseScreenPos = mousePos * iResolution.xy; vec2 mouseDirection = normalize(mouseScreenPos - rayPos); finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence)); } vec4 rays1 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349, 1.5 * raysSpeed); vec4 rays2 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed); fragColor = rays1 * 0.5 + rays2 * 0.4; if (noiseAmount > 0.0) { float n = noise(coord * 0.01 + iTime * 0.1); fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n); } float brightness = 1.0 - (coord.y / iResolution.y); fragColor.x *= 0.1 + brightness * 0.8; fragColor.y *= 0.3 + brightness * 0.6; fragColor.z *= 0.5 + brightness * 0.5; if (saturation != 1.0) { float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114)); fragColor.rgb = mix(vec3(gray), fragColor.rgb, saturation); } fragColor.rgb *= raysColor; } void main() { vec4 color; mainImage(color, gl_FragCoord.xy); gl_FragColor = color; }`; const container = document.getElementById('light-rays-background'); if (!container) { console.error('LightRays container not found!'); return; } let oglRenderer, oglUniforms, oglMesh, oglAnimationId; let mouse = { x: 0.5, y: 0.5 }; let smoothMouse = { x: 0.5, y: 0.5 }; let updatePlacement; let handleMouseMove; oglRenderer = new OGLRenderer({ dpr: Math.min(window.devicePixelRatio, 2), alpha: true }); const gl = oglRenderer.gl; gl.canvas.style.width = '100%'; gl.canvas.style.height = '100%'; container.appendChild(gl.canvas); oglUniforms = { iTime: { value: 0 }, iResolution: { value: [1, 1] }, rayPos: { value: [0, 0] }, rayDir: { value: [0, 1] }, raysColor: { value: hexToRgb(config.raysColor) }, raysSpeed: { value: config.raysSpeed }, lightSpread: { value: config.lightSpread }, rayLength: { value: config.rayLength }, pulsating: { value: config.pulsating ? 1.0 : 0.0 }, fadeDistance: { value: config.fadeDistance }, saturation: { value: config.saturation }, mousePos: { value: [0.5, 0.5] }, mouseInfluence: { value: config.mouseInfluence }, noiseAmount: { value: config.noiseAmount }, distortion: { value: config.distortion } }; const geometry = new OGLTriangle(gl); const program = new OGLProgram(gl, { vertex: lightRaysVert, fragment: lightRaysFrag, uniforms: oglUniforms }); oglMesh = new OGLMesh(gl, { geometry, program }); updatePlacement = () => { if (!container || !oglRenderer) return; oglRenderer.dpr = Math.min(window.devicePixelRatio, 2); const { clientWidth: wCSS, clientHeight: hCSS } = container; oglRenderer.setSize(wCSS, hCSS); const dpr = oglRenderer.dpr; const w = wCSS * dpr; const h = hCSS * dpr; oglUniforms.iResolution.value = [w, h]; const { anchor, dir } = getAnchorAndDir(config.raysOrigin, w, h); oglUniforms.rayPos.value = anchor; oglUniforms.rayDir.value = dir; }; const loop = (t) => { if (!oglRenderer) return; oglUniforms.iTime.value = t * 0.001; if (config.followMouse && config.mouseInfluence > 0.0) { const smoothing = 0.92; smoothMouse.x = smoothMouse.x * smoothing + mouse.x * (1 - smoothing); smoothMouse.y = smoothMouse.y * smoothing + mouse.y * (1 - smoothing); oglUniforms.mousePos.value = [smoothMouse.x, smoothMouse.y]; } try { oglRenderer.render({ scene: oglMesh }); oglAnimationId = requestAnimationFrame(loop); } catch (error) { console.warn('WebGL rendering error (LightRays):', error); } }; if (config.followMouse) { handleMouseMove = (e) => { if (!container) return; const rect = container.getBoundingClientRect(); mouse.x = (e.clientX - rect.left) / rect.width; mouse.y = (e.clientY - rect.top) / rect.height; }; window.addEventListener('mousemove', handleMouseMove); } window.addEventListener('resize', updatePlacement); updatePlacement(); oglAnimationId = requestAnimationFrame(loop);
         }
 
+        // =================================================================
+        // ================== REPLACED ANIMATION FUNCTION ==================
+        // =================================================================
+        // This entire function is from File 2 to support the new
+        // portfolio section and the smoother master timeline.
+        
         function initAnimations() {
+            // Splitting text for animations
             const splitTargets = document.querySelectorAll("[data-splitting]");
             splitTargets.forEach(target => { new SplitType(target, { types: 'words, lines' }); });
 
-            // This .from() tween will animate FROM 0.1 TO the new base scale of 0.8
+            // --- 1. HERO & 3D MODEL ANIMATIONS ---
             gsap.from(qModel.scale, {
                 x: 0.1, y: 0.1, z: 0.1,
-                duration: 2.5,
+                duration: 3.5, // MODIFIED: Slower
                 ease: 'power3.out'
             });
-
             gsap.to(camera.position, {
                 z: 4.5,
                 scrollTrigger: {
                     trigger: '#hero',
                     start: 'top top',
                     end: 'bottom top',
-                    scrub: 1
+                    scrub: 2.5 // MODIFIED: Smoother
                 }
             });
-
             const heroTl = gsap.timeline();
             heroTl.to("#hero h1 .word, .hero-description .word", {
                 opacity: 1, filter: 'blur(0px)', y: 0,
-                duration: 1.2, stagger: 0.06,
+                duration: 1.8, // MODIFIED: Slower
+                stagger: 0.08, // MODIFIED: Slower
                 ease: 'power3.out'
             })
-                .to("#hero h1", { scale: 1.05, duration: 0.8, ease: 'power2.out', repeat: 1, yoyo: true }, "-=1.2")
+                .to("#hero h1", { scale: 1.05, duration: 1.2, ease: 'power2.out', repeat: 1, yoyo: true }, "-=1.5") // MODIFIED
                 .to(".hero-cta", {
                     opacity: 1, y: 0,
-                    duration: 1, ease: 'power3.out'
-                }, "-=1");
+                    duration: 1.5, // MODIFIED: Slower
+                    ease: 'power3.out'
+                }, "-=1.2"); // MODIFIED
 
-            // --- MODIFIED: Replaced background animation ---
-            // This now fades IN the white background over the light rays
+            // Fade in white background
             gsap.to(".background-controller", {
-                opacity: 1, // Fade IN the white background
+                opacity: 1,
                 ease: "power1.inOut",
                 scrollTrigger: {
-                    trigger: "#hero",    // Start animation based on the hero section
-                    start: "bottom 90%", // Start fading when hero bottom is 90% from viewport top
-                    end: "bottom 40%",   // Be fully white when hero bottom is 40% from viewport top
-                    scrub: 1          // Smoothly link to scroll
+                    trigger: "#hero",
+                    start: "bottom 90%",
+                    end: "bottom 40%",
+                    scrub: 2 // MODIFIED: Smoother
                 }
             });
 
-            // --- End of modification ---
-
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: 'body',
-                    start: 'top top',
-                    end: 'bottom bottom',
-                    scrub: 1
-                }
-            });
-
-            // --- *** MODIFICATION 2: Changed all eases to power2.inOut for smoothness *** ---
-            const easeType = 'power2.inOut'; // <-- SMOOTHER EASE
-
-            tl.to(qModel.rotation, {
-                y: Math.PI * 4,
-                ease: 'none', // Keep 'none' for a constant rotation
-                duration: 3
-            }, 0);
-            tl.to(qModel.position, {
-                x: 0,
-                Y: 0,
-                ease: easeType, // <-- MODIFIED
-                duration: 5
-            }, 0);
-            
-
-            // --- DESKTOP ANIMATIONS ---
+            // --- 2. NEW MASTER HORIZONTAL SCROLL TIMELINE ---
             if (window.innerWidth > 900) {
-                const horizontalSection = document.querySelector('.horizontal-track');
-                const scrollWrapper = document.querySelector('.horizontal-scroll-wrapper');
+                const horizontalTrack = document.querySelector(".horizontal-track");
+                const panels = gsap.utils.toArray(".horizontal-track > section"); // Gets [#about, #services, #portfolio]
 
-                // ADDED: Extra 2000px of scroll for the portfolio animation
-                const horizontalTl = gsap.to(horizontalSection, {
-                    x: () => `-${horizontalSection.scrollWidth - scrollWrapper.offsetWidth}px`,
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: scrollWrapper,
-                        start: "top top",
-                        pin: true,
-                        scrub: 1,
-                        end: () => `+=${horizontalSection.scrollWidth - scrollWrapper.offsetWidth + 2000}`,
-                        invalidateOnRefresh: true
-                    }
-                });
+                const masterTimeline = gsap.timeline();
 
-                gsap.to("#about .word", {
+                // --- Part 1: "Sticky" About Section ---
+                masterTimeline.to(horizontalTrack, {
+                    duration: 2.0 // MODIFIED: Slower
+                }, "about");
+
+                // Animate #about content *during* its sticky time
+                masterTimeline.to("#about .word", {
                     y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.03, ease: 'power3.out',
-                    scrollTrigger: { containerAnimation: horizontalTl, trigger: "#about", start: "left 80%" }
+                    duration: 1.5 // MODIFIED: Slower
+                }, "about");
+
+                // --- Part 2: Move track to Services section ---
+                masterTimeline.to(horizontalTrack, {
+                    x: () => -panels[0].offsetWidth, // Moves to -100vw
+                    ease: "none",
+                    duration: 1
                 });
 
+                // --- Part 3: "Sticky" Services Section ---
+                masterTimeline.to(horizontalTrack, {
+                    duration: 2.5 // MODIFIED: Slower
+                }, "services");
+
+                // We create a sub-timeline for the complex services animation
+                const servicesTl = gsap.timeline();
                 gsap.set('.cards-container', { position: 'absolute', right: '8%', transform: 'translateX(100%)', opacity: 0 });
                 gsap.set('.service-card', { y: 50, opacity: 0 });
 
-                const servicesTl = gsap.timeline({
-                    scrollTrigger: {
-                        containerAnimation: horizontalTl,
-                        trigger: "#services",
-                        start: "left 60%",
-                        end: "right 60%",
-                        scrub: true,
-                    }
-                });
-
-                // --- *** MODIFICATION 3: Changed eases to power2.inOut for smoothness *** ---
                 servicesTl
-                    .to(".services-heading", { xPercent: -50, ease: "power2.inOut" }) // <-- MODIFIED
+                    .to(".services-heading", { xPercent: -50, ease: "power2.inOut" })
                     .fromTo(".cards-container", { xPercent: 100, opacity: 0 }, { xPercent: -50, opacity: 1, ease: "power2.out" })
                     .add("card2_starts", "-=0.3")
                     .add("card3_starts", "-=0.1")
-                    .staggerFromTo(".service-card", 0.5, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'back.out(1.7)' }, 0.2, "-=0.5")
-                    .to(".blur-overlay", {
-                        opacity: 1,
-                        backdropFilter: 'blur(5px)',
-                        ease: 'power2.inOut' // <-- MODIFIED
-                    }, "card2_starts")
-                    .to([".services-heading", ".cards-container"], {
-                        opacity: 0,
-                        filter: 'blur(10px)',
-                        ease: 'power2.inOut' // <-- MODIFIED
-                    })
-                    .to(".blur-overlay", {
-                        opacity: 0,
-                        backdropFilter: 'blur(0px)',
-                        ease: 'power2.inOut' // <-- MODIFIED
-                    }, "<");
+                    .staggerFromTo(".service-card", 0.8, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'back.out(1.7)' }, 0.2, "-=0.5") // MODIFIED: Slower
+                    .to(".blur-overlay", { opacity: 1, backdropFilter: 'blur(5px)', ease: 'power2.inOut' }, "card2_starts")
+                    .to([".services-heading", ".cards-container"], { opacity: 0, filter: 'blur(10px)', ease: 'power2.inOut' })
+                    .to(".blur-overlay", { opacity: 0, backdropFilter: 'blur(0px)', ease: 'power2.inOut' }, "<");
 
-                // --- PORTFOLIO HEADING ANIMATION (IN) ---
-                gsap.fromTo("#portfolio h2",
-                    { xPercent: 100, opacity: 0 },
-                    {
-                        xPercent: -50, // Stays at transform: translate(-50%, -50%)
-                        opacity: 1,
-                        ease: 'power2.out',
-                        scrollTrigger: {
-                            containerAnimation: horizontalTl,
-                            trigger: "#portfolio",
-                            start: "left 80%",
-                            end: "left 50%",
-                            scrub: 1,
-                        }
-                    }
-                );
+                // Add the services sub-timeline to the master timeline
+                masterTimeline.add(servicesTl, "services");
 
-                // --- PORTFOLIO MARQUEE TIMELINE ---
-                const portfolioMarqueeTl = gsap.timeline({
-                    scrollTrigger: {
-                        containerAnimation: horizontalTl,
-                        trigger: "#portfolio",
-                        start: "left 40%", // Start after heading is centered
-                        end: "right 20%", // Use the extra 2000px of scroll
-                        scrub: 1
-                    }
+                // --- Part 4: Move track to Portfolio section ---
+                masterTimeline.to(horizontalTrack, {
+                    x: () => -panels[0].offsetWidth * 2, // Moves to -200vw
+                    ease: "none",
+                    duration: 1
                 });
 
-                // 1. Reveal Marquees
-                // This animation will happen over the first 25% of the scroll duration
-                portfolioMarqueeTl.fromTo("#marquee1",
-                    { opacity: 0, yPercent: -100, xPercent: -50 },
-                    { opacity: 1, yPercent: 0, xPercent: 0, ease: 'power2.out' },
-                    0
-                );
-                portfolioMarqueeTl.fromTo("#marquee2",
-                    { opacity: 0, yPercent: 100, xPercent: 50 },
-                    { opacity: 1, yPercent: 0, xPercent: 0, ease: 'power2.out' },
-                    0
-                );
+                // --- Part 5: "Sticky" Portfolio Section (NEW LOGIC) ---
+            masterTimeline.to(horizontalTrack, {
+                // HIGHER VALUE = More scroll distance for this section
+                duration: 5.0 // MODIFIED: Increased sticky duration (e.g., from 3.0)
+            }, "portfolio");
 
-                // Add a label to mark the end of the reveal
-                portfolioMarqueeTl.add("revealDone", 0.25); // At 25% of the scrub duration
+            // Select new portfolio elements
+            const portfolioRow1Wrapper = document.getElementById("portfolio-row1-wrapper");
+            const portfolioRow2Wrapper = document.getElementById("portfolio-row2-wrapper");
+            const portfolioRow1 = document.getElementById("portfolio-row1-track");
+            const portfolioRow2 = document.getElementById("portfolio-row2-track");
 
-                // 2. Scroll Marquees (Marquee 1 to RIGHT, Marquee 2 to LEFT)
-                // The scroll animations will *start* only after the "revealDone" label
-                portfolioMarqueeTl.fromTo("#marquee1 .portfolio-track",
-                    { xPercent: -50 }, // Start at -50%
-                    { xPercent: 0, ease: "none" }, // End at 0% (Scrolls RIGHT)
-                    "revealDone" // Start scrolling after reveal
-                );
-                portfolioMarqueeTl.to("#marquee2 .portfolio-track",
-                    { xPercent: -100, ease: "none" }, // Start at -50% (from CSS), end at -100% (Scrolls LEFT)
-                    "revealDone" // Start scrolling after reveal
-                );
+            // Animate portfolio rows *during* its sticky time
+            masterTimeline.fromTo(portfolioRow1Wrapper,
+                { x: "-100%", opacity: 0 },
+                { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, // Entrance duration remains 1.2
+                "portfolio" // Start at "portfolio" label
+            );
+            masterTimeline.to(portfolioRow1, {
+                x: () => -(portfolioRow1.scrollWidth - portfolioRow1.clientWidth),
+                ease: "none",
+                // Make this the sticky duration (5.0) minus the entrance duration (1.2)
+                duration: 3.8 // MODIFIED: Increased track scroll duration (e.g., from 1.8)
+            }, "portfolio+=1.2"); // Start time remains offset by entrance duration
 
-            } else { // --- MOBILE ANIMATIONS ---
+            // Row 2 Wrapper comes from the RIGHT
+            masterTimeline.fromTo(portfolioRow2Wrapper,
+                { x: "100%", opacity: 0 }, // Start from the right
+                { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, // Entrance duration remains 1.2
+                "portfolio"
+            );
+
+            // Row 2 Track scrolls from END to START (opposite direction)
+            masterTimeline.fromTo(portfolioRow2,
+                { x: () => -(portfolioRow2.scrollWidth - portfolioRow2.clientWidth) }, // Start from the end
+                {
+                    x: 0, // Animate to the beginning
+                    ease: "none",
+                     // Make this the sticky duration (5.0) minus the entrance duration (1.2)
+                    duration: 3.8 // MODIFIED: Increased track scroll duration (e.g., from 1.8)
+                },
+                "portfolio+=1.2" // Start time remains offset by entrance duration
+            );
+
+             // --- Part 6: Main ScrollTrigger ---
+             // You might want to slightly increase the 'end' value if you made the sticky duration much longer
+             ScrollTrigger.create({
+                 animation: masterTimeline,
+                 trigger: '.horizontal-scroll-wrapper',
+                 pin: true,
+                 scrub: 3, // Keep scrub smooth
+                 end: "+=12000", // MODIFIED: Potentially increase if needed
+                 invalidateOnRefresh: true
+             });
+
+            } else {
+                // --- MOBILE ANIMATIONS ---
                 gsap.utils.toArray('#services h2 .word').forEach(word => {
                     gsap.from(word.parentNode, {
-                        y: 30, opacity: 0, filter: 'blur(8px)', duration: 0.8, ease: 'power3.out',
+                        y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', // MODIFIED
                         scrollTrigger: {
                             trigger: word.closest('section'),
                             start: "top 80%",
                         }
                     });
                 });
-
                 gsap.from("#about .word", {
-                    y: 30, opacity: 0, filter: 'blur(8px)', duration: 0.8, ease: 'power3.out', stagger: 0.05,
+                    y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', stagger: 0.05, // MODIFIED
                     scrollTrigger: {
                         trigger: "#about",
                         start: "top 80%",
                     }
                 });
-
                 gsap.from(".service-card", {
-                    y: 50, opacity: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out',
+                    y: 50, opacity: 0, stagger: 0.15, duration: 1.2, ease: 'power2.out', // MODIFIED
                     scrollTrigger: {
                         trigger: ".cards-container",
                         start: "top 80%"
                     }
                 });
-
                 // --- PORTFOLIO HEADING ANIMATION (MOBILE) ---
-                gsap.from("#portfolio h2", {
+                gsap.from("#portfolio .portfolio-heading", { // MODIFIED: Target new class
                     xPercent: 50,
                     opacity: 0,
                     ease: 'power2.out',
@@ -1726,19 +1648,65 @@
                         trigger: "#portfolio",
                         start: "top 70%",
                         end: "top 40%",
-                        scrub: 1,
+                        scrub: 2, // MODIFIED
                     }
                 });
+                
+                // --- NEW PORTFOLIO MOBILE ANIMATIONS ---
+                gsap.to(".portfolio-marquee-wrapper", {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1.5, // MODIFIED
+                    stagger: 0.2,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: "#portfolio",
+                        start: "top 60%"
+                    }
+                });
+                
+                // --- MOBILE TRACK SCROLL (MODIFIED) ---
+                // We duplicate the content for a seamless loop on mobile
+                document.querySelectorAll(".portfolio-marquee-content").forEach(track => {
+                    track.innerHTML += track.innerHTML;
+                });
+
+                gsap.to("#portfolio-row1-track", {
+                    xPercent: -50, 
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: "body", // Global scroll
+                        start: "top top",
+                        end: "bottom bottom",
+                        scrub: 4 // MODIFIED: Slower scrub
+                    }
+                });
+
+                gsap.fromTo("#portfolio-row2-track",
+                    { xPercent: -50 }, 
+                    {
+                        xPercent: 0,   
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: "body", // Global scroll
+                            start: "top top",
+                            end: "bottom bottom",
+                            scrub: 4 // MODIFIED: Slower scrub
+                        }
+                    }
+                );
             }
+
+            // --- 3. ALL OTHER ANIMATIONS ---
 
             // --- PROJECTS SECTION ---
             const projectsTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#projects",
                     start: "top top",
-                    end: "+=120%",
+                    end: "+=150%", // MODIFIED
                     pin: true,
-                    scrub: 1,
+                    scrub: 2.5, // MODIFIED
                 }
             });
             projectsTl.to("#projects h2", {
@@ -1749,175 +1717,161 @@
             projectsTl.to(".bento-item", {
                 opacity: 1,
                 transform: 'scale(1) rotateX(0deg) translateY(0px)',
-                stagger: { amount: 0.5 },
+                stagger: { amount: 0.8 }, // MODIFIED
                 ease: "none",
             }, 0);
 
-            // --- REMOVED: Testimonials JS ---
-
-            // --- ADDED: STACKED CARDS SECTION ---
+            // --- STACKED CARDS SECTION ---
             const stackedCardsTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#stacked-cards",
                     start: "top top",
-                    end: "+=2500", // 2500px of scroll
+                    end: "+=3500", // MODIFIED
                     pin: true,
-                    scrub: 1,
+                    scrub: 2.5, // MODIFIED
                 }
             });
-
-            // Animate heading in
             stackedCardsTl.from("#stacked-cards h2 .word", {
-                y: 30, opacity: 0, filter: 'blur(8px)', stagger: 0.05,
+                y: 30, opacity: 0, filter: 'blur(8px)', stagger: 0.08, // MODIFIED
                 ease: 'power3.out'
             });
-
-            // --- CHANGED: Animate cards in, "fanning" from the bottom ---
-            const cardInEase = 'back.out(1.4)'; // Use a 'back' ease for a nice pop
-            const cardInTime = 1; // Slightly longer duration
-            const cardInStagger = 0.2; // Time between each card
-
-            // Set initial state for cards
+            const cardInEase = 'back.out(1.4)';
+            const cardInTime = 1.3; // MODIFIED
+            const cardInStagger = 0.3; // MODIFIED
             gsap.set(".card-1", { yPercent: 120, xPercent: -10, opacity: 0, rotate: -8, scale: 0.8, filter: 'blur(5px)' });
             gsap.set(".card-2", { yPercent: 120, xPercent: 0, opacity: 0, rotate: 0, scale: 0.8, filter: 'blur(5px)' });
             gsap.set(".card-3", { yPercent: 120, xPercent: 10, opacity: 0, rotate: 8, scale: 0.8, filter: 'blur(5px)' });
-
-            // Bottom card (card-1) animates in
             stackedCardsTl.to(".card-1", {
                 yPercent: 0, xPercent: 0, opacity: 1, rotate: 0,
-                scale: 0.9, // Lands at 90% scale
+                scale: 0.9,
                 filter: 'blur(0px)',
                 ease: cardInEase,
                 duration: cardInTime
-            }, "-=0.5"); // Start slightly before heading finishes
-
-            // Middle card (card-2) animates in
+            }, "-=0.8"); // MODIFIED
             stackedCardsTl.to(".card-2", {
                 yPercent: 0, xPercent: 0, opacity: 1, rotate: 0,
-                scale: 0.95, // Lands at 95% scale
+                scale: 0.95,
                 filter: 'blur(0px)',
                 ease: cardInEase,
                 duration: cardInTime
-            }, `-=${cardInTime - cardInStagger}`); // Staggered start
-
-            // Top card (card-3) animates in
+            }, `-=${cardInTime - cardInStagger}`);
             stackedCardsTl.to(".card-3", {
                 yPercent: 0, xPercent: 0, opacity: 1, rotate: 0,
-                scale: 1, // Lands at 100% scale
+                scale: 1,
                 filter: 'blur(0px)',
                 ease: cardInEase,
                 duration: cardInTime
-            }, `-=${cardInTime - cardInStagger}`); // Staggered start
-
-
-            // Add a pause in the middle
-            stackedCardsTl.add("pause", "+=1.0"); // Wait for 1.0 "time" units (Longer pause)
-
-            // Animate heading out
-            // --- *** MODIFICATION 4: Changed ease for smoothness *** ---
+            }, `-=${cardInTime - cardInStagger}`);
+            stackedCardsTl.add("pause", "+=1.5"); // MODIFIED
             stackedCardsTl.to("#stacked-cards h2", {
                 opacity: 0,
                 y: -30,
                 filter: 'blur(8px)',
-                ease: 'power2.inOut' // <-- MODIFIED
+                ease: 'power2.inOut'
             }, "pause");
-
-            // --- CHANGED: Animate cards "un-stacking" one by one with more rotation/direction ---
-            const cardOutEase = 'power2.inOut'; // Smoother ease
-            const cardOutStagger = 0.3; // How much to wait between each card leaving (Slower)
-
-            stackedCardsTl.to(".card-3", { // Top card
-                xPercent: 150, // Fly right
+            const cardOutEase = 'power2.inOut';
+            const cardOutStagger = 0.3;
+            stackedCardsTl.to(".card-3", {
+                xPercent: 150,
                 yPercent: -50,
-                rotate: 25, // More rotation
+                rotate: 25,
                 opacity: 0,
                 filter: 'blur(10px)',
                 ease: cardOutEase
             }, "pause");
-
-            stackedCardsTl.to(".card-2", { // Middle card
-                xPercent: -150, // Fly left
+            stackedCardsTl.to(".card-2", {
+                xPercent: -150,
                 yPercent: -20,
-                rotate: -25, // More rotation
+                rotate: -25,
                 opacity: 0,
                 filter: 'blur(10px)',
                 ease: cardOutEase
-            }, `pause+=${cardOutStagger}`); // Stagger exit
-
-            stackedCardsTl.to(".card-1", { // Bottom card
-                xPercent: 120, // Fly right (less than top)
-                yPercent: 30, // Fly slightly down
+            }, `pause+=${cardOutStagger}`);
+            stackedCardsTl.to(".card-1", {
+                xPercent: 120,
+                yPercent: 30,
                 rotate: 15,
                 opacity: 0,
                 filter: 'blur(10px)',
                 ease: cardOutEase
-            }, `pause+=${cardOutStagger * 2}`); // Stagger exit
+            }, `pause+=${cardOutStagger * 2}`);
 
-
-            // --- *** MODIFICATION 5 (START): Footer Animations *** ---
-            // --- FADE OUT WHITE BG, REVEAL BLACK BG FOR FOOTER ---
+            // --- FOOTER ANIMATIONS ---
             gsap.to(".background-controller", {
-                opacity: 0, // Fade OUT the white background
+                opacity: 0,
                 ease: "power1.inOut",
                 scrollTrigger: {
-                    trigger: ".footer-wrapper", // Trigger based on the footer
-                    start: "top 80%",      // Start fading out when footer is 80% from top
-                    end: "top 50%",        // Fully faded out when footer is 50% from top
-                    scrub: 1
+                    trigger: ".footer-wrapper",
+                    start: "top 80%",
+                    end: "top 50%",
+                    scrub: 2 // MODIFIED
                 }
             });
 
-            // --- Footer 3D Model Animation ---
             const footerModelTl = gsap.timeline({
                 scrollTrigger: {
-                    trigger: ".footer-wrapper", // Trigger when the footer wrapper comes into view
-                    start: "top 80%",      // Start animating when wrapper top is 80% from viewport top
-                    end: "bottom bottom",    // End animation when wrapper bottom hits viewport bottom
-                    scrub: 1,              // Link to scroll
+                    trigger: ".footer-wrapper",
+                    start: "top 80%",
+                    end: "bottom bottom",
+                    scrub: 2.5, // MODIFIED
                 }
             });
-
-            // Animate the model to a centered, final position
             footerModelTl.to(qModel.position, {
                 x: 0,
-                y: 0, // Centered vertically in the viewport
-                z: 2.5, // MODIFIED: Keeps it in front of the camera (z=4.5)
-                ease: 'power2.inOut' // MODIFIED
-            }, 0); // Start at the beginning of the timeline
-
-            // --- MODIFIED: Animate scale to "medium" size (back to base scale) ---
+                y: 0,
+                z: 2.5,
+                ease: 'power2.inOut'
+            }, 0);
             footerModelTl.to(qModel.scale, {
-                x: 0.5, // MODIFIED: Set to 80% (new base scale)
+                x: 0.5,
                 y: 0.5,
                 z: 0.5,
-                ease: 'power2.inOut' // MODIFIED
-            }, 0); // Animate at the same time as position
-
-            // Animate the rotation to a final, presentable angle
+                ease: 'power2.inOut'
+            }, 0);
             footerModelTl.to(qModel.rotation, {
                 x: 0.2,
-                y: Math.PI * 4, // A final "hero" rotation
+                y: Math.PI * 2,
                 z: 0,
-                ease: 'power2.inOut' // MODIFIED
-            }, 0); // Start at the beginning of the timeline
-            // --- *** MODIFICATION 5 (END) *** ---
+                ease: 'power2.inOut'
+            }, 0);
 
             const footerContentTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "footer",
-                    start: "top 80%", // This is good
+                    start: "top 80%",
                 }
             });
             footerContentTl.to("footer .reveal-mask", {
                 clipPath: 'inset(0 0% 0 0)',
-                duration: 1.5,
+                duration: 2.0, // MODIFIED
                 stagger: 0.2,
                 ease: 'power4.out'
             });
             footerContentTl.to("footer .fade-in-anim", {
-                opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out'
-            }, "-=1.2");
+                opacity: 1, y: 0, duration: 1.5, stagger: 0.1, ease: 'power3.out' // MODIFIED
+            }, "-=1.5"); // MODIFIED
+
+            // --- FINAL 3D MODEL ROTATION ---
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: 'body',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 2.5 // MODIFIED
+                }
+            });
+            tl.to(qModel.rotation, {
+                ease: 'none',
+                duration: 4 // MODIFIED
+            }, 0);
+            tl.to(qModel.position, {
+                x: 0,
+                Y: 0,
+                ease: 'power2.inOut',
+                duration: 6 // MODIFIED
+            }, 0);
         }
+
         window.addEventListener('load', () => {
 
             // --- MODIFIED: Added initLightRays() ---
