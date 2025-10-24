@@ -381,7 +381,7 @@
 
         /* This is the sticky heading, now a grid item */
         .portfolio-heading {
-            /* grid-row: 2; */
+            grid-row: 2;
             /* Place it in the middle row */
             z-index: 10;
             font-size: 4.5rem;
@@ -395,7 +395,7 @@
         /* This is the wrapper for the rows */
         .portfolio-marquee-wrapper {
             width: 100%;
-            /* margin: 20px 0; */
+            margin: 20px 0;
             opacity: 0;
             /* Hide initially for the animation */
             will-change: transform, opacity;
@@ -424,7 +424,7 @@
 
         .portfolio-marquee-content {
             display: flex;
-            /* gap: 20px; */
+            gap: 10px;
             padding-left: 20px;
         }
 
@@ -451,103 +451,188 @@
         /* --- END REPLACED PORTFOLIO CSS --- */
 
         /* --- Signature Projects Section (Bento Grid) --- */
+        /* --- UPDATED: Signature Projects Section (Floating Items) --- */
         #projects {
             background-color: var(--cool-white);
             position: relative;
+            /* Crucial for absolute positioning children */
+            overflow: hidden;
+            /* Hide parts of items if they go off-screen */
+            /* Ensure it takes full viewport height for pinning */
+            min-height: 100vh;
+            display: flex;
+            /* Keep flex for centering content initially */
+            align-items: center;
+            justify-content: center;
         }
 
         #projects h2 {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
+            /* Changed from absolute, GSAP will handle position */
             z-index: 10;
             margin: 0;
             pointer-events: none;
             font-weight: 800;
             color: var(--purple);
-            font-size: 4.5rem;
+            font-size: clamp(3rem, 8vw, 4.5rem);
+            /* Adjusted clamp */
             text-align: center;
-            width: 100%;
+            opacity: 0;
+            /* Start hidden, GSAP will fade in */
+            transform: scale(1.2);
+            /* Start slightly larger */
+            /* We'll animate this with GSAP */
+            will-change: opacity, transform;
         }
 
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(3, 200px);
-            gap: 20px;
-            margin-top: -20px;
-            perspective: 2000px;
-        }
-
-        .bento-item {
-            border-radius: 20px;
+        .project-item {
+            position: absolute;
+            /* Positioned relative to #projects */
+            width: 20vw;
+            /* Adjust width as needed */
+            height: 30vh;
+            /* Adjust height as needed */
+            max-width: 250px;
+            /* Max size */
+            max-height: 300px;
+            /* Max size */
+            border-radius: 15px;
+            /* Softer corners */
             overflow: hidden;
-            position: relative;
             background-size: cover;
             background-position: center;
+            background-image: var(--bg-image);
+            /* Use variable from HTML */
             color: white;
-            padding: 30px;
+            padding: 20px;
+            /* Reduced padding */
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            font-weight: 600;
-            font-size: 1.2rem;
-            transform-style: preserve-3d;
+            /* Initial state for GSAP animation */
             opacity: 0;
-            transform: scale(0.5) rotateX(45deg) translateY(50px);
-            transition: box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transform: scale(0.1) translate(0, 0);
+            /* Start very small and centered */
+            will-change: transform, opacity;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            /* Smooth CSS transition for hover */
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+                box-shadow 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+                z-index 0s 0s;
+            /* Z-index changes instantly */
         }
 
-        .bento-item:hover {
+        /* Define initial floating positions (adjust percentages as desired) */
+        .item-1 {
+            top: 15%;
+            left: 10%;
+        }
+
+        .item-2 {
+            top: 25%;
+            left: 70%;
+        }
+
+        .item-3 {
+            top: 60%;
+            left: 5%;
+        }
+
+        .item-4 {
+            top: 65%;
+            left: 60%;
+        }
+
+        .item-5 {
+            top: 50%;
+            left: 80%;
+        }
+
+        .item-6 {
+            top: 5%;
+            left: 40%;
+        }
+
+        .item-7 {
+            top: 69%;
+            left: 30%;
+        }
+
+        .item-8 {
+            top: 35%;
+            left: 40%;
+        }
+
+        .project-item:hover {
             z-index: 5;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            /* Bring hovered item to front */
+            transform: scale(1.05) !important;
+            /* Scale up slightly on hover - !important overrides GSAP */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .bento-item::after {
+        /* Gradient overlay */
+        .project-item::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 60%);
-            transition: background 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 70%);
+            transition: background 0.4s ease;
+            opacity: 0;
+            /* Fade in overlay only on hover */
+            transition: opacity 0.4s ease;
         }
 
-        .bento-item:hover::after {
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 70%);
+        .project-item:hover::after {
+            opacity: 1;
+            /* Show gradient on hover */
         }
 
-        .bento-text {
-            z-index: 1;
+        .project-text,
+        .project-desc {
             position: relative;
-            transform: translateY(0px);
-            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            /* Keep text above gradient */
+            z-index: 1;
+            opacity: 0;
+            /* Hidden initially */
+            transform: translateY(15px);
+            /* Start slightly down */
+            transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+            /* Delayed transition */
         }
 
-        .bento-desc {
-            z-index: 1;
-            position: relative;
-            font-size: 0.95rem;
+        .project-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            /* Adjust size */
+            margin-bottom: 5px;
+        }
+
+        .project-desc {
+            font-size: 0.85rem;
+            /* Adjust size */
             font-weight: 400;
             font-family: 'Poppins', sans-serif;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
-                transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            max-width: 90%;
-            line-height: 1.5;
-            margin-top: 5px;
+            line-height: 1.4;
+            max-width: 100%;
+            /* Ensure it fits */
         }
 
-        .bento-item:hover .bento-text {
-            transform: translateY(-15px);
-        }
-
-        .bento-item:hover .bento-desc {
+        /* Show text on hover */
+        .project-item:hover .project-text,
+        .project-item:hover .project-desc {
             opacity: 1;
-            transform: translateY(0px);
+            transform: translateY(0);
         }
 
         .item-1 {
+            grid-column: 1 / 3;
+            grid-row: 1 / 3;
+            background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-8 {
             grid-column: 1 / 3;
             grid-row: 1 / 3;
             background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
@@ -572,12 +657,18 @@
         }
 
         .item-5 {
+            grid-column: 1 / 2;
+            grid-row: 3 / 4;
+            background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-6 {
             grid-column: 2 / 4;
             grid-row: 3 / 4;
             background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
         }
 
-        .item-6 {
+        .item-7 {
             grid-column: 4 / 5;
             grid-row: 3 / 4;
             background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
@@ -915,33 +1006,43 @@
                 /* Make visible by default */
                 font-size: clamp(2.5rem, 8vw, 3.5rem);
                 /* --- ADDED: Reset grid positioning --- */
-                grid-row: auto; 
+                grid-row: auto;
             }
 
             /* --- MODIFIED: Show marquees on mobile but adjust layout --- */
             #portfolio {
-                display: flex; /* Change from grid to flex */
+                display: flex;
+                /* Change from grid to flex */
                 flex-direction: column;
             }
+
             .portfolio-marquee-wrapper {
-                opacity: 0; /* Will be faded in by mobile JS */
+                opacity: 0;
+                /* Will be faded in by mobile JS */
                 position: relative;
-                width: 100vw; /* Span full width */
+                width: 100vw;
+                /* Span full width */
                 margin: 40px 0;
             }
+
             .portfolio-marquee-content .portfolio-item {
-                width: 60vw; /* Make mobile items larger */
+                width: 60vw;
+                /* Make mobile items larger */
                 height: 30vh;
             }
-             .portfolio-marquee-content .portfolio-item img {
+
+            .portfolio-marquee-content .portfolio-item img {
                 height: 100%;
             }
+
             #portfolio-row1-wrapper {
-                 align-self: auto;
+                align-self: auto;
             }
+
             #portfolio-row2-wrapper {
                 align-self: auto;
             }
+
             /* --- END MODIFICATION --- */
 
 
@@ -1028,13 +1129,22 @@
             }
 
             #projects h2 {
-                position: relative;
-                transform: none;
-                left: auto;
-                top: auto;
-                z-index: 1;
-                font-size: clamp(2.5rem, 8vw, 3.5rem);
-                margin-bottom: 20px;
+                position: absolute;
+                /* Keep it fixed in the center */
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                /* Center it */
+                z-index: 10;
+                margin: 0;
+                pointer-events: none;
+                font-weight: 800;
+                color: var(--purple);
+                font-size: clamp(3rem, 8vw, 4.5rem);
+                text-align: center;
+                width: 80%;
+                /* Prevent text wrapping on smaller screens if needed */
+                /* Removed opacity and initial transform - it will be visible by default */
             }
 
             /* This ensures projects section has a white bg on mobile */
@@ -1197,37 +1307,43 @@
 
                             </div>
                         </div>
-                    </section>
-                </div>
+                </section>
+            </div>
         </div>
 
         <section id="projects">
             <h2 data-splitting>Signature Projects.</h2>
-            <div class="bento-grid">
-                <div class="bento-item item-1">
-                    <div class="bento-text">Azure Heights</div>
-                    <p class="bento-desc">A 45-story luxury residential tower defining the city skyline.</p>
-                </div>
-                <div class="bento-item item-2">
-                    <div class="bento-text">The Orchid</div>
-                    <p class="bento-desc">Exclusive gated community of 20 modern villas with private pools.</p>
-                </div>
-                <div class="bento-item item-3">
-                    <div class="bento-text">Crimson Plaza</div>
-                    <p class="bento-desc">A premier commercial hub with retail spaces and corporate offices.</p>
-                </div>
-                <div class="bento-item item-4">
-                    <div class="bento-text">Greenway Villas</div>
-                    <p class="bento-desc">Eco-friendly homes designed for sustainable and green living.</p>
-                </div>
-                <div class="bento-item item-5">
-                    <div class="bento-text">Nexus Business Park</div>
-                    <p class="bento-desc">State-of-the-art IT park fostering innovation and collaboration.</p>
-                </div>
-                <div class="bento-item item-6">
-                    <div class="bento-text">Vista Residences</div>
-                    <p class="bento-desc">Affordable apartments offering modern amenities and city views.</p>
-                </div>
+            <div class="project-item item-1" style="--bg-image: url('...');">
+                <div class="project-text">New Project Alpha</div>
+                <p class="project-desc">Description for the seventh project goes here.</p>
+            </div>
+            <div class="project-item item-2" style="--bg-image: url('...');">
+                <div class="project-text">New Project Alpha</div>
+                <p class="project-desc">Description for the seventh project goes here.</p>
+            </div>
+            <div class="project-item item-3" style="--bg-image: url('...');">
+                <div class="project-text">New Project Alpha</div>
+                <p class="project-desc">Description for the seventh project goes here.</p>
+            </div>
+            <div class="project-item item-4" style="--bg-image: url('...');">
+                <div class="project-text">New Project Alpha</div>
+                <p class="project-desc">Description for the seventh project goes here.</p>
+            </div>
+            <div class="project-item item-5" style="--bg-image: url('...');">
+                <div class="project-text">New Project Alpha</div>
+                <p class="project-desc">Description for the seventh project goes here.</p>
+            </div>
+            <div class="project-item item-6" style="--bg-image: url('...');">
+                <div class="project-text">New Project Alpha</div>
+                <p class="project-desc">Description for the seventh project goes here.</p>
+            </div>
+            <div class="project-item item-7" style="--bg-image: url('NEW_IMAGE_URL_7');">
+                <div class="project-text">New Project Alpha</div>
+                <p class="project-desc">Description for the seventh project goes here.</p>
+            </div>
+            <div class="project-item item-8" style="--bg-image: url('NEW_IMAGE_URL_8');">
+                <div class="project-text">Project Beta</div>
+                <p class="project-desc">Description for the eighth amazing project.</p>
             </div>
         </section>
 
@@ -1457,7 +1573,7 @@
         // =================================================================
         // This entire function is from File 2 to support the new
         // portfolio section and the smoother master timeline.
-        
+
         function initAnimations() {
             // Splitting text for animations
             const splitTargets = document.querySelectorAll("[data-splitting]");
@@ -1560,59 +1676,55 @@
                 });
 
                 // --- Part 5: "Sticky" Portfolio Section (NEW LOGIC) ---
-            masterTimeline.to(horizontalTrack, {
-                // HIGHER VALUE = More scroll distance for this section
-                duration: 5.0 // MODIFIED: Increased sticky duration (e.g., from 3.0)
-            }, "portfolio");
+                masterTimeline.to(horizontalTrack, {
+                    duration: 3.0 // MODIFIED: Slower
+                }, "portfolio");
 
-            // Select new portfolio elements
-            const portfolioRow1Wrapper = document.getElementById("portfolio-row1-wrapper");
-            const portfolioRow2Wrapper = document.getElementById("portfolio-row2-wrapper");
-            const portfolioRow1 = document.getElementById("portfolio-row1-track");
-            const portfolioRow2 = document.getElementById("portfolio-row2-track");
+                // Select new portfolio elements
+                const portfolioRow1Wrapper = document.getElementById("portfolio-row1-wrapper");
+                const portfolioRow2Wrapper = document.getElementById("portfolio-row2-wrapper");
+                const portfolioRow1 = document.getElementById("portfolio-row1-track");
+                const portfolioRow2 = document.getElementById("portfolio-row2-track");
 
-            // Animate portfolio rows *during* its sticky time
-            masterTimeline.fromTo(portfolioRow1Wrapper,
-                { x: "-100%", opacity: 0 },
-                { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, // Entrance duration remains 1.2
-                "portfolio" // Start at "portfolio" label
-            );
-            masterTimeline.to(portfolioRow1, {
-                x: () => -(portfolioRow1.scrollWidth - portfolioRow1.clientWidth),
-                ease: "none",
-                // Make this the sticky duration (5.0) minus the entrance duration (1.2)
-                duration: 3.8 // MODIFIED: Increased track scroll duration (e.g., from 1.8)
-            }, "portfolio+=1.2"); // Start time remains offset by entrance duration
-
-            // Row 2 Wrapper comes from the RIGHT
-            masterTimeline.fromTo(portfolioRow2Wrapper,
-                { x: "100%", opacity: 0 }, // Start from the right
-                { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, // Entrance duration remains 1.2
-                "portfolio"
-            );
-
-            // Row 2 Track scrolls from END to START (opposite direction)
-            masterTimeline.fromTo(portfolioRow2,
-                { x: () => -(portfolioRow2.scrollWidth - portfolioRow2.clientWidth) }, // Start from the end
-                {
-                    x: 0, // Animate to the beginning
+                // Animate portfolio rows *during* its sticky time
+                masterTimeline.fromTo(portfolioRow1Wrapper,
+                    { x: "-100%", opacity: 0 },
+                    { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, // MODIFIED: Slower
+                    "portfolio" // Start at "portfolio" label
+                );
+                masterTimeline.to(portfolioRow1, {
+                    x: () => -(portfolioRow1.scrollWidth - portfolioRow1.clientWidth),
                     ease: "none",
-                     // Make this the sticky duration (5.0) minus the entrance duration (1.2)
-                    duration: 3.8 // MODIFIED: Increased track scroll duration (e.g., from 1.8)
-                },
-                "portfolio+=1.2" // Start time remains offset by entrance duration
-            );
+                    duration: 1.8 // MODIFIED: Slower (3.0 total - 1.2 entrance)
+                }, "portfolio+=1.2"); // MODIFIED
 
-             // --- Part 6: Main ScrollTrigger ---
-             // You might want to slightly increase the 'end' value if you made the sticky duration much longer
-             ScrollTrigger.create({
-                 animation: masterTimeline,
-                 trigger: '.horizontal-scroll-wrapper',
-                 pin: true,
-                 scrub: 3, // Keep scrub smooth
-                 end: "+=12000", // MODIFIED: Potentially increase if needed
-                 invalidateOnRefresh: true
-             });
+                // Row 2 Wrapper comes from the RIGHT
+                masterTimeline.fromTo(portfolioRow2Wrapper,
+                    { x: "100%", opacity: 0 }, // Start from the right
+                    { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, // MODIFIED: Slower
+                    "portfolio"
+                );
+
+                // Row 2 Track scrolls from END to START (opposite direction)
+                masterTimeline.fromTo(portfolioRow2,
+                    { x: () => -(portfolioRow2.scrollWidth - portfolioRow2.clientWidth) }, // Start from the end
+                    {
+                        x: 0, // Animate to the beginning
+                        ease: "none",
+                        duration: 1.8 // MODIFIED: Slower (3.0 total - 1.2 entrance)
+                    },
+                    "portfolio+=1.2" // MODIFIED
+                );
+
+                // --- Part 6: Main ScrollTrigger ---
+                ScrollTrigger.create({
+                    animation: masterTimeline,
+                    trigger: '.horizontal-scroll-wrapper',
+                    pin: true,
+                    scrub: 3, // MODIFIED: Smoother
+                    end: "+=10000", // MODIFIED: Longer scroll
+                    invalidateOnRefresh: true
+                });
 
             } else {
                 // --- MOBILE ANIMATIONS ---
@@ -1651,7 +1763,7 @@
                         scrub: 2, // MODIFIED
                     }
                 });
-                
+
                 // --- NEW PORTFOLIO MOBILE ANIMATIONS ---
                 gsap.to(".portfolio-marquee-wrapper", {
                     opacity: 1,
@@ -1664,7 +1776,7 @@
                         start: "top 60%"
                     }
                 });
-                
+
                 // --- MOBILE TRACK SCROLL (MODIFIED) ---
                 // We duplicate the content for a seamless loop on mobile
                 document.querySelectorAll(".portfolio-marquee-content").forEach(track => {
@@ -1672,26 +1784,26 @@
                 });
 
                 gsap.to("#portfolio-row1-track", {
-                    xPercent: -50, 
+                    xPercent: -50,
                     ease: "none",
                     scrollTrigger: {
                         trigger: "body", // Global scroll
                         start: "top top",
                         end: "bottom bottom",
-                        scrub: 4 // MODIFIED: Slower scrub
+                        scrub: 10 // MODIFIED: Slower scrub
                     }
                 });
 
                 gsap.fromTo("#portfolio-row2-track",
-                    { xPercent: -50 }, 
+                    { xPercent: -50 },
                     {
-                        xPercent: 0,   
+                        xPercent: 0,
                         ease: "none",
                         scrollTrigger: {
                             trigger: "body", // Global scroll
                             start: "top top",
                             end: "bottom bottom",
-                            scrub: 4 // MODIFIED: Slower scrub
+                            scrub: 10 // MODIFIED: Slower scrub
                         }
                     }
                 );
@@ -1699,28 +1811,64 @@
 
             // --- 3. ALL OTHER ANIMATIONS ---
 
-            // --- PROJECTS SECTION ---
+            // --- UPDATED PROJECTS SECTION ---
             const projectsTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#projects",
                     start: "top top",
-                    end: "+=150%", // MODIFIED
+                    end: "+=200%", // Adjust pin duration as needed (more space for floating)
                     pin: true,
-                    scrub: 2.5, // MODIFIED
+                    scrub: 1.5, // Keep responsiveness
                 }
             });
+
+            // 1. Animate Heading In then Out
+            projectsTl.fromTo("#projects h2",
+                { opacity: 0, scale: 1.2 },
+                { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' } // Fade in and shrink slightly
+            );
             projectsTl.to("#projects h2", {
                 opacity: 0,
-                scale: 0.9,
+                scale: 0.8, // Shrink further as it fades
                 ease: 'power1.in',
-            }, 0);
-            projectsTl.to(".bento-item", {
-                opacity: 1,
-                transform: 'scale(1) rotateX(0deg) translateY(0px)',
-                stagger: { amount: 0.8 }, // MODIFIED
-                ease: "none",
-            }, 0);
+                duration: 0.6 // Faster fade out
+            }, ">0.5"); // Start fading out shortly after items start appearing
 
+            // --- UPDATED PROJECTS SECTION ---
+            // ... (timeline setup) ...
+
+            // 1. Animate Heading In then Out
+            // ... (heading animation) ...
+
+            // 2. Animate Items Floating In
+            const items = gsap.utils.toArray(".project-item"); // <--- This selects ALL elements with the class
+            projectsTl.to(items, { // <--- This animates ALL selected items
+                opacity: 1,
+                scale: 0.6,
+                rotationZ: () => gsap.utils.random(-15, 15),
+                x: () => gsap.utils.random(-30, 30),
+                y: () => gsap.utils.random(-30, 30),
+                stagger: {
+                    amount: 1.2, // You might increase this slightly if you add many items
+                    from: "random"
+                },
+                ease: "power2.out",
+                duration: 1.5
+            }, 0.3);
+
+            // 3. Add subtle continuous floating motion (optional)
+            items.forEach(item => {
+                gsap.to(item, {
+                    x: `+=${gsap.utils.random(-20, 20)}`, // Small random horizontal shift
+                    y: `+=${gsap.utils.random(-20, 20)}`, // Small random vertical shift
+                    rotationZ: `+=${gsap.utils.random(-10, 10)}`, // Small random rotation
+                    repeat: -1, // Loop forever
+                    yoyo: true, // Go back and forth
+                    ease: "sine.inOut",
+                    duration: gsap.utils.random(4, 7) // Random duration for variety
+                });
+            });
+            // --- END UPDATED PROJECTS SECTION ---
             // --- STACKED CARDS SECTION ---
             const stackedCardsTl = gsap.timeline({
                 scrollTrigger: {
@@ -1830,7 +1978,7 @@
             }, 0);
             footerModelTl.to(qModel.rotation, {
                 x: 0.2,
-                y: Math.PI * 2,
+                y: Math.PI * 4,
                 z: 0,
                 ease: 'power2.inOut'
             }, 0);
