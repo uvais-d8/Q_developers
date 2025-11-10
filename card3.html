@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Tilted Decay Cards</title>
+    <style>
+        /* --- Basic Page Styles --- */
+    
+
+        /* --- Container for the row of cards --- */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* --- Hybrid Card Styles --- */
+        .hybrid-card-figure {
+            position: relative;
+            perspective: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 300px;
+            height: 400px; /* Adjusted height for a more typical card look */
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        }
+
+        /* Mobile Alert (if needed, though the effects are mouse-driven) */
+        .hybrid-card-mobile-alert {
+            position: absolute;
+            top: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #fff;
+            display: none;
+            z-index: 10;
+        }
+
+        @media (max-width: 640px) {
+            .hybrid-card-mobile-alert {
+                display: block;
+            }
+
+            .hybrid-card-caption {
+                display: none !important;
+            }
+
+            .card-container {
+                flex-direction: column;
+                gap: 4rem;
+            }
+        }
+
+        .hybrid-card-inner {
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            width: 100%;
+            height: 100%;
+            transform: scale(1) rotateX(0deg) rotateY(0deg);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 15px;
+            overflow: hidden; /* Ensures image and overlay stay within bounds */
+        }
+
+        .hybrid-card-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 15px; /* Match inner radius */
+        }
+
+        .hybrid-card-img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            transform: translateZ(0); /* Puts the image slightly back in 3D space */
+            will-change: transform;
+            /* No direct CSS transitions on this, GSAP will manage its transforms */
+        }
+
+        .hybrid-card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end; /* Position text at bottom */
+            justify-content: flex-start; /* Position text to the left */
+            z-index: 2;
+            transform: translateZ(30px); /* Puts the overlay content in front of the image */
+            pointer-events: none; /* Allows mouse to interact with SVG behind it */
+        }
+
+        .hybrid-card-demo-text {
+            color: white;
+            font-size: 2.2rem; /* Adjusted for better visibility */
+            font-weight: bold;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+            padding: 1.5rem;
+            text-align: left;
+            line-height: 1.2;
+            will-change: transform;
+        }
+
+        .hybrid-card-caption {
+            pointer-events: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 4px;
+            background-color: #fff;
+            padding: 4px 10px;
+            font-size: 10px;
+            color: #2d2d2d;
+            z-index: 3;
+            will-change: translate, rotate, opacity;
+            opacity: 0;
+            translate: 0px 0px;
+            rotate: 0deg;
+            transition: opacity 0.4s ease, rotate 0.1s linear;
+        }
+          #services {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: var(--cool-white);
+        }
+
+        .services-content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            /* ADDED: Position relative to act as container */
+            position: relative;
+            /* Set a height to contain absolute children, 100% might be too much */
+            min-height: 600px;
+            /* Or a height that fits your cards */
+        }
+
+        .services-heading {
+            width: 100%;
+            text-align: center;
+            flex-shrink: 0;
+            /* ADDED: Position absolute */
+            position: absolute;
+        }
+
+        .services-heading h2 {
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="card-container">
+
+        <figure class="hybrid-card-figure">
+            <div class="hybrid-card-inner">
+                <svg class="hybrid-card-svg" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+                    <filter id="decayFilter1">
+                        <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="5" seed="1"
+                            stitchTiles="stitch" result="turbulence" />
+                        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="0" xChannelSelector="R"
+                            yChannelSelector="G" result="displacementMap" />
+                    </filter>
+                    <image href="https://picsum.photos/300/400?grayscale&random=1" x="0" y="0" width="300"
+                        height="400" preserveAspectRatio="xMidYMid slice" class="hybrid-card-img"
+                        filter="url(#decayFilter1)" />
+                </svg>
+                <div class="hybrid-card-overlay">
+                    <p class="hybrid-card-demo-text">
+                        Deep <br>Thoughts
+                    </p>
+                </div>
+            </div>
+            <figcaption class="hybrid-card-caption">
+                Exploring the unknown
+            </figcaption>
+        </figure>
+
+        <figure class="hybrid-card-figure">
+            <div class="hybrid-card-inner">
+                <svg class="hybrid-card-svg" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+                    <filter id="decayFilter2">
+                        <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="5" seed="2"
+                            stitchTiles="stitch" result="turbulence" />
+                        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="0" xChannelSelector="R"
+                            yChannelSelector="G" result="displacementMap" />
+                    </filter>
+                    <image href="https://picsum.photos/300/400?grayscale&random=2" x="0" y="0" width="300"
+                        height="400" preserveAspectRatio="xMidYMid slice" class="hybrid-card-img"
+                        filter="url(#decayFilter2)" />
+                </svg>
+                <div class="hybrid-card-overlay">
+                    <p class="hybrid-card-demo-text">
+                        Abstract <br>Views
+                    </p>
+                </div>
+            </div>
+            <figcaption class="hybrid-card-caption">
+                A different perspective
+            </figcaption>
+        </figure>
+
+        <figure class="hybrid-card-figure">
+            <div class="hybrid-card-inner">
+                <svg class="hybrid-card-svg" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+                    <filter id="decayFilter3">
+                        <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="5" seed="3"
+                            stitchTiles="stitch" result="turbulence" />
+                        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="0" xChannelSelector="R"
+                            yChannelSelector="G" result="displacementMap" />
+                    </filter>
+                    <image href="https://picsum.photos/300/400?grayscale&random=3" x="0" y="0" width="300"
+                        height="400" preserveAspectRatio="xMidYMid slice" class="hybrid-card-img"
+                        filter="url(#decayFilter3)" />
+                </svg>
+                <div class="hybrid-card-overlay">
+                    <p class="hybrid-card-demo-text">
+                        Digital <br>Artistry
+                    </p>
+                </div>
+            </div>
+            <figcaption class="hybrid-card-caption">
+                The future is now
+            </figcaption>
+        </figure>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Constants for Tilt Effect ---
+            const rotateAmplitude = 15; // Increased amplitude for more noticeable tilt
+            const scaleOnHover = 1.08; // Slight scale up on hover for the entire inner card
+
+            // --- Constants for Decay Effect ---
+            const maxDisplacementScale = 120; // Max scale for the displacement map
+            const displacementEase = 0.1; // Easing for the displacement map animation
+
+            // --- Select ALL hybrid cards ---
+            const cards = document.querySelectorAll('.hybrid-card-figure');
+
+            // --- Loop over each card and apply the logic ---
+            cards.forEach(figure => {
+
+                // --- Element Selectors (relative to the current card) ---
+                const inner = figure.querySelector('.hybrid-card-inner');
+                const caption = figure.querySelector('.hybrid-card-caption');
+                const displacementMap = figure.querySelector('feDisplacementMap');
+                const cardImage = figure.querySelector('.hybrid-card-img'); // The image inside the SVG
+
+                // --- State Variables (scoped to each card) ---
+                let lastMouseY = 0; // For caption rotation
+                let currentDisplacementScale = 0; // Current scale of the SVG filter
+                let isHovering = false; // To control decay effect on mouseleave
+
+                // --- Event Handlers (scoped to this card's elements) ---
+                function handleMouse(e) {
+                    if (!figure || !isHovering) return;
+
+                    const rect = figure.getBoundingClientRect();
+                    const offsetX = e.clientX - rect.left - rect.width / 2;
+                    const offsetY = e.clientY - rect.top - rect.height / 2;
+
+                    // --- 3D Tilt Effect (applied to .hybrid-card-inner) ---
+                    const rotationX = (offsetY / (rect.height / 2)) * -rotateAmplitude;
+                    const rotationY = (offsetX / (rect.width / 2)) * rotateAmplitude;
+
+                    gsap.to(inner, {
+                        duration: 0.1, // Quick transition for smooth mousemove
+                        rotateX: rotationX,
+                        rotateY: rotationY,
+                        ease: "power1.out"
+                    });
+
+                    // --- Caption Follow Effect ---
+                    const velocityY = offsetY - lastMouseY;
+                    const rotateFigcaption = -velocityY * 0.6;
+                    lastMouseY = offsetY;
+
+                    const tooltipX = e.clientX - rect.left;
+                    const tooltipY = e.clientY - rect.top;
+
+                    gsap.to(caption, {
+                        duration: 0.1,
+                        x: tooltipX,
+                        y: tooltipY,
+                        rotate: rotateFigcaption,
+                        ease: "power1.out"
+                    });
+
+                    // --- Decay/Distortion Effect (on mousemove while hovering) ---
+                    // Map mouse movement intensity to displacement scale
+                    const cursorMovementIntensity = Math.min(Math.hypot(e.movementX, e.movementY), 50); // Cap movement
+                    const targetDisplacementScale = (cursorMovementIntensity / 50) * maxDisplacementScale;
+
+                    currentDisplacementScale = gsap.utils.interpolate(currentDisplacementScale, targetDisplacementScale, displacementEase);
+                    gsap.set(displacementMap, { attr: { scale: currentDisplacementScale } });
+                }
+
+                function handleMouseEnter() {
+                    isHovering = true;
+                    if (!inner || !caption || !displacementMap) return;
+
+                    // Immediately set transitions for inner and caption for quick response
+                    inner.style.transition = 'transform 0.05s linear';
+                    caption.style.transition = 'opacity 0.2s ease, rotate 0.05s linear, translate 0s linear';
+
+                    // Scale up the inner card
+                    gsap.to(inner, {
+                        duration: 0.4,
+                        scale: scaleOnHover,
+                        ease: "power3.out"
+                    });
+
+                    // Show caption
+                    gsap.to(caption, {
+                        duration: 0.2,
+                        opacity: 1,
+                        ease: "power1.out"
+                    });
+
+                    // Start decay effect with a small initial pulse
+                    currentDisplacementScale = 30; // Initial pulse
+                    gsap.to(displacementMap, {
+                        duration: 0.6,
+                        attr: { scale: 0 }, // It will be updated by mousemove, but ensure it fades if no movement
+                        ease: "power2.out"
+                    });
+                }
+
+                function handleMouseLeave() {
+                    isHovering = false;
+                    if (!inner || !caption || !displacementMap) return;
+
+                    // Restore initial transitions for smooth spring-back
+                    inner.style.transition = 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
+                    caption.style.transition = 'opacity 0.4s ease, rotate 0.1s linear';
+
+                    // Reset inner card transforms
+                    gsap.to(inner, {
+                        duration: 0.4,
+                        scale: 1,
+                        rotateX: 0,
+                        rotateY: 0,
+                        ease: "elastic.out(1, 0.6)" // More lively spring-back
+                    });
+
+                    // Hide caption
+                    gsap.to(caption, {
+                        duration: 0.4,
+                        opacity: 0,
+                        rotate: 0,
+                        x: 0, // Reset position for next hover
+                        y: 0,
+                        ease: "power2.inOut"
+                    });
+
+                    // Decay filter smoothly returns to 0
+                    gsap.to(displacementMap, {
+                        duration: 0.8,
+                        attr: { scale: 0 },
+                        ease: "power3.out"
+                    });
+
+                    lastMouseY = 0; // Reset caption tracking
+                    currentDisplacementScale = 0; // Reset decay scale
+                }
+
+                // --- Attach Listeners (to the current card in the loop) ---
+                figure.addEventListener('mousemove', handleMouse);
+                figure.addEventListener('mouseenter', handleMouseEnter);
+                figure.addEventListener('mouseleave', handleMouseLeave);
+            });
+        });
+    </script>
+</body>
+
+</html>

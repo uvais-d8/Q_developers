@@ -13,10 +13,10 @@
         /* ------------------------- */
 
         :root {
-            --cool-white: #F4F4F9;
-            --purple: #5E239D;
-            --light-purple: #8A4BCE;
-            --electric-purple: #7f5af0;
+            --cool-white: #f4f4f9;
+            --purple: #0a0a0a;
+            --light-purple: #212121;
+            --electric-purple: #3f3f3f;
             --dark-gray: #16161a;
             --black-bg: #0a0a0a;
             /* Added from light rays code */
@@ -29,6 +29,37 @@
             box-sizing: border-box;
         }
 
+        /* --- ADD THIS: GRADUAL BLUR CSS --- */
+        .gradual-blur-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .gradual-blur-inner>div {
+            -webkit-backdrop-filter: inherit;
+            backdrop-filter: inherit;
+        }
+
+        .gradual-blur {
+            isolation: isolate;
+            pointer-events: none;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .gradual-blur-inner {
+            pointer-events: none;
+        }
+
+        @supports not (backdrop-filter: blur(1px)) {
+            .gradual-blur-inner>div {
+                background: rgba(255, 255, 255, 0.3);
+                /* Match your --cool-white bg */
+                opacity: 0.5;
+            }
+        }
+
+        /* --- END GRADUAL BLUR CSS --- */
         html {
             height: auto;
         }
@@ -42,8 +73,11 @@
 
         .hero-head {
             font-family: 'Cormorant Garamond', serif;
-            font-weight: 800;
-            color: var(--purple);
+            /* Increased the weight to the maximum (900) for bolder appearance */
+            font-weight: 900;
+            color: var(--black-bg);
+            /* Added a subtle text shadow for an attractive, lifted effect */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
         }
 
         h1,
@@ -77,8 +111,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            z-index: 1;
-            /* Sections must be transparent to see fixed backgrounds */
             background-color: transparent;
         }
 
@@ -92,7 +124,7 @@
             width: 100%;
             height: 100vh;
             z-index: -3;
-            background-color: var(--black-bg);
+            background-color: var(--white-bg);
         }
 
         #light-rays-background canvas {
@@ -118,15 +150,15 @@
             will-change: opacity;
         }
 
-        /* MODIFIED: 3D Canvas (Top Layer) */
         #three-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            /* Sits on top of background-controller */
+            /* KEPT at z-index: 2 as requested */
+            z-index: 2;
+            /* Sits on top of background-controller (-2) but behind all main content */
             outline: none;
             pointer-events: none;
             /* Allows clicking through */
@@ -168,29 +200,81 @@
             visibility: hidden;
         }
 
-        /* --- Hero Section --- */
+        /* --- Hero Section (Main Container) --- */
         #hero {
             height: 100vh;
+            /* --- CONTENT CENTERING (Flexbox) --- */
+            display: flex;
+            flex-direction: column;
+            /* Stack items vertically */
             justify-content: center;
+            /* Center content vertically */
             align-items: center;
+            /* Center content horizontally */
             text-align: center;
+            /* --- END CENTERING --- */
+
             position: relative;
+            /* Crucial for absolute positioning of ::before and <img> */
             overflow: hidden;
-            /* Hero section is transparent */
             background-color: transparent !important;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-gray);
+            overflow-x: hidden;
         }
 
+        /* --- Layer 1: Base Wallpaper (backgroundd.jpg) --- */
+        #hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            /* Lowest background layer */
+
+            background-image: url('backgroundd.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* --- Layer 2: Positioning the HTML Image (imggg.png) --- */
+        #hero img {
+            position: absolute;
+            /* Takes image out of content flow */
+            bottom: -380px;
+            /* Pins it to the bottom */
+            left: 0;
+            width: 100%;
+            /* Make it full width */
+            height: auto;
+            z-index: 3;
+            /* Sits above the wallpaper (z-index: 1) */
+        }
+
+        /* --- Layer 3: Content Z-Index (H1, P, A) --- */
+        /* This ensures all content is on top of both image layers */
+        #hero>* {
+            position: relative;
+            z-index: 4;
+            /* Highest layer for text and buttons */
+
+        }
+
+        /* --- Content Styling --- */
         #hero h1 {
-            font-size: clamp(4rem, 12vw, 9rem);
+            font-size: clamp(4rem, 11vw, 9rem);
             font-weight: 800;
             line-height: 1;
-            color: var(--cool-white);
-            /* MODIFIED: Removed mix-blend-mode */
-            z-index: 2;
+            color: var(--dark-gray);
+            z-index: 3;
             position: relative;
         }
 
         #hero .word {
+            /* Animation base styles */
             display: inline-block;
             opacity: 0;
             filter: blur(8px);
@@ -198,18 +282,19 @@
         }
 
         .hero-description {
-            color: var(--cool-white);
-            /* MODIFIED: Removed mix-blend-mode */
-            font-size: clamp(2rem, 2vw, 1.2rem);
+            color: var(--dark-gray);
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
             max-width: 600px;
             margin: 30px auto 40px;
+            /* Provides spacing from H1 and CTA */
             line-height: 1.6;
             font-weight: 400;
-            z-index: 2;
+            z-index: 4;
             position: relative;
         }
 
         .hero-description .word {
+            /* Animation base styles */
             display: inline-block;
             opacity: 0;
             filter: blur(8px);
@@ -221,17 +306,17 @@
             transform: translateY(20px);
             display: inline-block;
             padding: 14px 32px;
-            /* This CTA is designed to float on a dark/light bg */
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: var(--cool-white);
+            /* Assuming --cool-white is defined elsewhere */
             text-decoration: none;
             font-weight: 500;
             font-family: 'Poppins', sans-serif;
             border-radius: 50px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            z-index: 2;
+            z-index: 4;
             position: relative;
         }
 
@@ -248,6 +333,7 @@
         .horizontal-scroll-wrapper {
             position: relative;
             width: 100%;
+            z-index: 3;
         }
 
         .horizontal-track {
@@ -315,24 +401,36 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            gap: 5%;
+            /* ADDED: Position relative to act as container */
+            position: relative;
+            /* Set a height to contain absolute children, 100% might be too much */
+            min-height: 600px;
+            /* Or a height that fits your cards */
         }
 
         .services-heading {
             width: 100%;
             text-align: center;
             flex-shrink: 0;
+            /* ADDED: Position absolute */
+            position: absolute;
         }
 
         .services-heading h2 {
             text-align: center;
         }
 
+        /* --- Services Section (Horizontal) --- */
+        /* ... existing styles for #services ... */
+
         .cards-container {
             display: flex;
-            gap: 30px;
-            width: 65%;
+            gap: 24px;
+            /* 1. Maximize container width */
+            width: 100%;
             flex-shrink: 0;
+            position: absolute;
+            justify-content: center;
         }
 
         .service-card {
@@ -342,10 +440,15 @@
             border-radius: 20px;
             padding: 30px;
             flex-grow: 1;
+            margin: 1;
+            /* 2. Increase the base width significantly */
+            flex-basis: 900px;
+            /* <--- WIDER CARDS: Increased from 400px to 600px */
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
+        /* ... existing styles for .service-card:hover ... */
         .service-card:hover {
             transform: translateY(-10px) scale(1.05) !important;
             border-color: rgba(94, 35, 157, 0.3);
@@ -367,6 +470,8 @@
 
         /* This is the new grid layout for the portfolio panel */
         #portfolio {
+            position: relative;
+            /* <-- ADD THIS LINE */
             display: grid;
             /* Override the base panel's display */
             grid-template-rows: 1fr auto 1fr;
@@ -452,38 +557,18 @@
 
         /* --- Signature Projects Section (Floating Items) --- */
         #projects {
-            background-color: var(--cool-white); /* MODIFIED: Made transparent */
+            background-color: var(--cool-white);
+            /* MODIFIED: Made transparent */
             position: relative;
             overflow: hidden;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0; /* Remove padding if effect covers whole section */
+            padding: 0;
+            /* Remove padding if effect covers whole section */
         }
 
-        /* --- ADDED: Liquid Ether Background Container --- */
-        #liquid-ether-projects-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; /* Behind heading and items */
-            overflow: hidden;
-            touch-action: none;
-        }
-        /* --- ADDED: Copied from Liquid Ether CSS --- */
-        .liquid-ether-container { /* Renamed selector for specificity */
-             position: absolute; /* Changed to absolute */
-             top: 0;
-             left: 0;
-             overflow: hidden;
-             width: 100%;
-             height: 100%;
-             touch-action: none;
-             z-index: 0; /* Ensure it's behind content */
-        }
 
 
         #projects h2 {
@@ -522,20 +607,63 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-                        box-shadow 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-                        z-index 0s 0s;
-            z-index: 1; /* Above background */
+                box-shadow 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+                z-index 0s 0s;
+            z-index: 1;
+            /* Above background */
         }
 
         /* Define initial floating positions (adjust percentages as desired) */
-        .item-1 { top: 15%; left: 10%; background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-2 { top: 25%; left: 70%; background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-3 { top: 60%; left: 5%; background-image: url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-4 { top: 65%; left: 60%; background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-5 { top: 50%; left: 80%; background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); /* Reused */ }
-        .item-6 { top: 5%; left: 40%; background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); }
-        .item-7 { top: 69%; left: 30%; background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); /* Reused */ }
-        .item-8 { top: 35%; left: 40%; background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080'); /* Reused */ }
+        .item-1 {
+            top: 15%;
+            left: 10%;
+            background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-2 {
+            top: 25%;
+            left: 70%;
+            background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-3 {
+            top: 60%;
+            left: 5%;
+            background-image: url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-4 {
+            top: 65%;
+            left: 60%;
+            background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-5 {
+            top: 50%;
+            left: 80%;
+            background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+            /* Reused */
+        }
+
+        .item-6 {
+            top: 5%;
+            left: 40%;
+            background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+        }
+
+        .item-7 {
+            top: 69%;
+            left: 30%;
+            background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+            /* Reused */
+        }
+
+        .item-8 {
+            top: 35%;
+            left: 40%;
+            background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+            /* Reused */
+        }
 
 
         .project-item:hover {
@@ -656,15 +784,27 @@
             line-height: 1.6;
         }
 
-        .card-1 { z-index: 1; }
-        .card-2 { z-index: 2; }
-        .card-3 { z-index: 3; }
 
-        /* --- Footer --- */
+        /* Stacking order */
+        .card-1 {
+            z-index: 1;
+        }
+
+        .card-2 {
+            z-index: 3;
+        }
+
+        /* MODIFIED: Card 2 is on top */
+        .card-3 {
+            z-index: 2;
+        }
+
+        /* MODIFIED: Card 3 is behind 2 */
+
         .footer-wrapper {
             position: relative;
             background-color: transparent;
-            color: #EAEAEA;
+            color: var(--black-bg);
             overflow: hidden;
             z-index: 1;
         }
@@ -675,15 +815,16 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background-color: var(--cool-white);
             background-color: transparent;
-            color: #EAEAEA;
+            color: var(--black-bg);
             overflow: hidden;
             position: relative;
             z-index: 2;
         }
 
         .footer-grid {
-            display: grid;
+            /* ... (rest of .footer-grid is unchanged) ... */
             grid-template-columns: 1fr;
             gap: 80px;
             align-items: center;
@@ -692,43 +833,51 @@
         }
 
         .footer-cta {
+            /* ... (rest of .footer-cta is unchanged) ... */
             display: flex;
             flex-direction: column;
+            color: var(--black-bg);
+
             align-items: center;
         }
 
         .footer-cta h2 {
+            /* ... (rest of .footer-cta h2 is unchanged) ... */
             font-size: clamp(4rem, 10vw, 7rem);
             font-weight: 800;
             line-height: 1;
-            color: var(--cool-white);
+            color: var(--black-bg);
             z-index: 2;
             position: relative;
         }
 
         .footer-cta p {
+            /* ... (rest of .footer-cta p is unchanged) ... */
             font-size: 1.2rem;
             max-width: 550px;
             margin-bottom: 30px;
             margin-left: auto;
             margin-right: auto;
-            color: rgba(234, 234, 234, 0.7);
+            color: var(--black-bg);
         }
 
         /* Reusing hero-cta style for footer button */
         footer .hero-cta {
-            margin-top: 10px; /* Add some space */
+            margin-top: 10px;
+            /* Add some space */
+            color: var(--black-bg);
         }
 
         .footer-bottom {
             padding-top: 50px;
             margin-top: 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            /* 🎯 CSS CHANGE: Use a visible dark border */
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.9rem;
-            color: rgba(234, 234, 234, 0.5);
+            color: var(--black-bg);
             width: 100%;
         }
 
@@ -740,95 +889,354 @@
         .footer-socials a svg {
             width: 24px;
             height: 24px;
-            fill: var(--cool-white);
-            opacity: 0.6;
+            /* 🎯 CSS CHANGE: Set SVG fill to black theme variable */
+            fill: var(--black-bg);
+            opacity: 0.8;
             transition: all 0.3s;
         }
 
         .footer-socials a:hover svg {
             opacity: 1;
-            fill: var(--electric-purple);
+            /* 🎯 CSS CHANGE: Set hover color to dark gray */
+            fill: var(--dark-gray);
             transform: scale(1.1);
         }
 
         /* Animation utility classes */
-        .reveal-mask { clip-path: inset(0 100% 0 0); }
-        .fade-in-anim { opacity: 0; transform: translateY(15px); }
+        .reveal-mask {
+            clip-path: inset(0 100% 0 0);
+        }
+
+        .fade-in-anim {
+            opacity: 0;
+            transform: translateY(15px);
+        }
 
         /* --- Responsive Adjustments --- */
         @media (max-width: 900px) {
-            .horizontal-track { width: auto; flex-direction: column; }
+            .horizontal-track {
+                width: auto;
+                flex-direction: column;
+            }
+
             .horizontal-track>section {
-                width: 100%; height: auto; min-height: 100vh;
+                width: 100%;
+                height: auto;
+                min-height: 100vh;
                 background-color: var(--cool-white);
                 padding: 120px 8%;
             }
-            #hero { background-color: transparent !important; }
-            #portfolio { padding: 120px 8%; background-color: var(--cool-white); overflow: hidden; }
+
+            #hero {
+                background-color: transparent !important;
+            }
+
+            #portfolio {
+                padding: 120px 8%;
+                background-color: var(--cool-white);
+                overflow: hidden;
+            }
+
             #portfolio .portfolio-heading {
-                position: relative; transform: none; opacity: 1;
+                position: relative;
+                transform: none;
+                opacity: 1;
                 font-size: clamp(2.5rem, 8vw, 3.5rem);
                 grid-row: auto;
             }
-            #portfolio { display: flex; flex-direction: column; }
-            .portfolio-marquee-wrapper { opacity: 0; position: relative; width: 100vw; margin: 40px 0; }
-            .portfolio-marquee-content .portfolio-item { width: 60vw; height: 30vh; }
-            .portfolio-marquee-content .portfolio-item img { height: 100%; }
-            #portfolio-row1-wrapper, #portfolio-row2-wrapper { align-self: auto; }
-            .horizontal-scroll-wrapper { height: auto !important; }
-            #about h2 { white-space: normal; }
-            .services-content-wrapper { flex-direction: column; gap: 50px; }
-            .services-heading { width: 100%; position: relative; transform: none !important; }
-            .cards-container { position: relative; transform: none !important; opacity: 1; width: 100%; right: auto; flex-direction: column; }
-            .service-card { opacity: 1; transform: none; }
-            .footer-grid { grid-template-columns: 1fr; text-align: center; gap: 60px; }
-            .footer-cta p { margin: 0 auto 30px; }
-            .footer-wrapper, footer { background-color: var(--black-bg); }
-            /* --- ADDED: Hide Liquid Ether on Mobile --- */
-             #liquid-ether-projects-bg { display: none; }
-             #projects { background-color: var(--cool-white); /* Give it back its bg */ }
+
+            #portfolio {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .portfolio-marquee-wrapper {
+                opacity: 0;
+                position: relative;
+                width: 100vw;
+                margin: 40px 0;
+            }
+
+            .portfolio-marquee-content .portfolio-item {
+                width: 60vw;
+                height: 30vh;
+            }
+
+            .portfolio-marquee-content .portfolio-item img {
+                height: 100%;
+            }
+
+            #portfolio-row1-wrapper,
+            #portfolio-row2-wrapper {
+                align-self: auto;
+            }
+
+            .horizontal-scroll-wrapper {
+                height: auto !important;
+            }
+
+            #about h2 {
+                white-space: normal;
+            }
+
+            .services-content-wrapper {
+                flex-direction: column;
+                gap: 50px;
+            }
+
+            .services-heading {
+                width: 100%;
+                position: relative;
+                transform: none !important;
+            }
+
+            .cards-container {
+                position: relative;
+                transform: none !important;
+                opacity: 1;
+                width: 100%;
+                right: auto;
+                flex-direction: column;
+            }
+
+            .service-card {
+                opacity: 1;
+                transform: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 60px;
+            }
+
+            .footer-cta p {
+                margin: 0 auto 30px;
+            }
+
+            .footer-wrapper,
+            footer {
+                background-color: var(--cool-white);
+            }
+
+            #projects {
+                background-color: var(--cool-white);
+                /* Give it back its bg */
+            }
         }
 
         @media (max-width: 768px) {
-            section, .horizontal-track>section, #portfolio { padding: 80px 5%; }
-            #portfolio .portfolio-heading {
-                position: relative; transform: none; left: auto; top: auto;
-                margin-bottom: 0; font-size: clamp(2.5rem, 8vw, 3.5rem);
-            }
-            #projects h2 {
-                position: relative; /* Change from absolute */
-                transform: none; /* Remove centering transform */
-                margin-bottom: 40px; /* Add space below */
-                opacity: 1; /* Make visible by default */
-                scale: 1;
-                 z-index: 10;
-                 font-size: clamp(3rem, 8vw, 4.5rem);
-            }
-             .project-item {
-                 position: relative; /* Change from absolute */
-                 width: 80%; /* Make items take more width */
-                 max-width: 350px;
-                 height: 250px;
-                 margin: 15px auto; /* Center items vertically */
-                 opacity: 1; /* Make visible */
-                 transform: none; /* Reset transform */
-                 /* Remove initial position classes */
-                 top: auto;
-                 left: auto;
-             }
-             #projects {
-                 display: block; /* Change from flex */
-                 padding: 80px 5%; /* Add back padding */
-             }
 
-            .footer-bottom { flex-direction: column-reverse; gap: 30px; }
-            .footer-links-grid { grid-template-columns: 1fr; gap: 30px; }
+            section,
+            .horizontal-track>section,
+            #portfolio {
+                padding: 80px 5%;
+            }
+
+            #portfolio .portfolio-heading {
+                position: relative;
+                transform: none;
+                left: auto;
+                top: auto;
+                margin-bottom: 0;
+                font-size: clamp(2.5rem, 8vw, 3.5rem);
+            }
+
+            #projects h2 {
+                position: relative;
+                /* Change from absolute */
+                transform: none;
+                /* Remove centering transform */
+                margin-bottom: 40px;
+                /* Add space below */
+                opacity: 1;
+                /* Make visible by default */
+                scale: 1;
+                z-index: 10;
+                font-size: clamp(3rem, 8vw, 4.5rem);
+            }
+
+            .project-item {
+                position: relative;
+                /* Change from absolute */
+                width: 80%;
+                /* Make items take more width */
+                max-width: 350px;
+                height: 250px;
+                margin: 15px auto;
+                /* Center items vertically */
+                opacity: 1;
+                /* Make visible */
+                transform: none;
+                /* Reset transform */
+                /* Remove initial position classes */
+                top: auto;
+                left: auto;
+            }
+
+            #projects {
+                display: block;
+                /* Change from flex */
+                padding: 80px 5%;
+                /* Add back padding */
+            }
+
+            .footer-bottom {
+                flex-direction: column-reverse;
+                gap: 30px;
+            }
+
+            .footer-links-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
         }
-         @media (max-width: 480px) {
-             #projects h2 {
-                 font-size: clamp(2rem, 10vw, 3rem);
-             }
-         }
+
+        @media (max-width: 480px) {
+            #projects h2 {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+        }
+
+        /* --- START: Hybrid Card Styles --- */
+        /* --- Container for the row of cards --- */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* --- START: Hybrid Card Styles --- */
+
+        /* Delete .service-card, .service-card:hover, .service-card h3, .service-card p */
+        /* Add these new rules: */
+
+        .hybrid-card-figure {
+            position: relative;
+            perspective: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 300px;
+            height: 400px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            z-index: 1;
+            flex-basis: 300px;
+            flex-grow: 0;
+            flex-shrink: 1;
+        }
+
+        .hybrid-card-inner {
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            width: 100%;
+            height: 100%;
+            transform: scale(1) rotateX(0deg) rotateY(0deg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .hybrid-card-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 15px;
+        }
+
+        .hybrid-card-img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .hybrid-card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            z-index: 2;
+            transform: translateZ(30px);
+            pointer-events: none;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+        }
+
+        .hybrid-card-demo-text {
+            color: var(--cool-white);
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+            padding: 1.5rem;
+            text-align: left;
+            line-height: 1.2;
+            will-change: transform;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .hybrid-card-caption {
+            pointer-events: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 4px;
+            background-color: var(--purple);
+            padding: 4px 10px;
+            font-size: 10px;
+            color: var(--cool-white);
+            z-index: 3;
+            will-change: translate, rotate, opacity;
+            opacity: 0;
+            translate: 0px 0px;
+            rotate: 0deg;
+        }
+
+        /* Update mobile layout to work with new figures */
+        @media (max-width: 900px) {
+
+            /* Ensure cards take proper width when stacking vertically on mobile */
+            .hybrid-card-figure {
+                width: 80%;
+                max-width: 350px;
+                height: 350px;
+                margin-bottom: 30px;
+            }
+
+            .cards-container {
+                /* Overriding absolute positioning for mobile stack */
+                position: relative;
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+                padding-top: 50px;
+                transform: none !important;
+            }
+        }
+
+        /* --- New Rule to force sections OVER the Z-INDEX 2 Q Model --- */
+        .horizontal-track>section,
+        /* Targets #about, #services, #portfolio */
+        #projects,
+        #stacked-cards,
+        .footer-wrapper {
+            position: relative;
+            /* 3 is enough to sit over the Q model at z-index 2 */
+            z-index: 3;
+        }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -838,17 +1246,19 @@
 </head>
 
 <body>
-    <div id="light-rays-background"></div>
+    <!-- <div id="light-rays-background"></div> -->
     <div class="background-controller"></div>
     <canvas id="three-canvas"></canvas>
     <div class="blur-overlay"></div>
     <div class="loader">Loading...</div>
+
 
     <main>
         <section id="hero">
             <h1 class="hero-head" data-splitting>Q DEVELOPERS</h1>
             <p class="hero-description" data-splitting>Your vision, built to last ✨ </p>
             <a href="#contact" class="hero-cta">Start Your Project</a>
+            <img src="imggg.png" alt="">
         </section>
 
         <div class="horizontal-scroll-wrapper">
@@ -863,30 +1273,95 @@
                     </div>
                 </section>
 
+                <!-- (REPLACE the existing <section id="services"> block with this) -->
+
                 <section id="services">
                     <div class="services-content-wrapper">
                         <div class="services-heading">
                             <h2 data-splitting>Our Expertise.</h2>
                         </div>
                         <div class="cards-container">
-                            <div class="service-card">
-                                <h3>Architectural Design 📐</h3>
-                                <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                            <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                            <p>Innovative and sustainable designs that blend aesthetics with functionality.</p>
-                            </div>
-                            <div class="service-card">
-                                <h3>Construction Works 🛠️</h3>
-                                <p>End-to-end services with a focus on quality materials and superior craft.</p>
-                              <p>End-to-end services with a focus on quality materials and superior craft.</p>
-                              <p>End-to-end services with a focus on quality materials and superior craft.</p>
-                            </div>
-                            <div class="service-card">
-                                <h3>Project Management 📋</h3>
-                                <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
-                            <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
-                            <p>Ensuring your vision is realized on time, on budget, and to the highest standards.</p>
-                            </div>
+                            <!-- START: New Hybrid Cards -->
+                            <!-- START: Replacement for the content inside <div class="cards-container"> -->
+                            <figure class="hybrid-card-figure">
+                                <div class="hybrid-card-inner">
+                                    <svg class="hybrid-card-svg" viewBox="0 0 300 400"
+                                        preserveAspectRatio="xMidYMid slice">
+                                        <filter id="decayFilter1">
+                                            <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="5"
+                                                seed="1" stitchTiles="stitch" result="turbulence" />
+                                            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="0"
+                                                xChannelSelector="R" yChannelSelector="G" result="displacementMap" />
+                                        </filter>
+                                        <image
+                                            href="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                            x="0" y="0" width="300" height="400" preserveAspectRatio="xMidYMid slice"
+                                            class="hybrid-card-img" filter="url(#decayFilter1)" />
+                                    </svg>
+                                    <div class="hybrid-card-overlay">
+                                        <p class="hybrid-card-demo-text">
+                                            Architectural<br>Design
+                                        </p>
+                                    </div>
+                                </div>
+                                <figcaption class="hybrid-card-caption">
+                                    Innovative and sustainable designs
+                                </figcaption>
+                            </figure>
+
+                            <figure class="hybrid-card-figure">
+                                <div class="hybrid-card-inner">
+                                    <svg class="hybrid-card-svg" viewBox="0 0 300 400"
+                                        preserveAspectRatio="xMidYMid slice">
+                                        <filter id="decayFilter2">
+                                            <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="5"
+                                                seed="2" stitchTiles="stitch" result="turbulence" />
+                                            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="0"
+                                                xChannelSelector="R" yChannelSelector="G" result="displacementMap" />
+                                        </filter>
+                                        <image
+                                            href="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                            x="0" y="0" width="300" height="400" preserveAspectRatio="xMidYMid slice"
+                                            class="hybrid-card-img" filter="url(#decayFilter2)" />
+                                    </svg>
+                                    <div class="hybrid-card-overlay">
+                                        <p class="hybrid-card-demo-text">
+                                            Construction<br>Works
+                                        </p>
+                                    </div>
+                                </div>
+                                <figcaption class="hybrid-card-caption">
+                                    Superior craft and quality materials
+                                </figcaption>
+                            </figure>
+
+                            <figure class="hybrid-card-figure">
+                                <div class="hybrid-card-inner">
+                                    <svg class="hybrid-card-svg" viewBox="0 0 300 400"
+                                        preserveAspectRatio="xMidYMid slice">
+                                        <filter id="decayFilter3">
+                                            <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="5"
+                                                seed="3" stitchTiles="stitch" result="turbulence" />
+                                            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="0"
+                                                xChannelSelector="R" yChannelSelector="G" result="displacementMap" />
+                                        </filter>
+                                        <image
+                                            href="https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                            x="0" y="0" width="300" height="400" preserveAspectRatio="xMidYMid slice"
+                                            class="hybrid-card-img" filter="url(#decayFilter3)" />
+                                    </svg>
+                                    <div class="hybrid-card-overlay">
+                                        <p class="hybrid-card-demo-text">
+                                            Project<br>Management
+                                        </p>
+                                    </div>
+                                </div>
+                                <figcaption class="hybrid-card-caption">
+                                    On time, on budget, and to the highest standards
+                                </figcaption>
+                            </figure>
+                            <!-- END: Replacement for the content inside <div class="cards-container"> -->
+                            <!-- END: New Hybrid Cards -->
                         </div>
                     </div>
                 </section>
@@ -896,36 +1371,78 @@
                     <div class="portfolio-marquee-wrapper" id="portfolio-row1-wrapper">
                         <div class="portfolio-marquee-track" id="portfolio-row1-track">
                             <div class="portfolio-marquee-content">
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern House"></div>
                             </div>
                         </div>
                     </div>
                     <div class="portfolio-marquee-wrapper" id="portfolio-row2-wrapper">
                         <div class="portfolio-marquee-track" id="portfolio-row2-track">
                             <div class="portfolio-marquee-content">
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
-                                <div class="portfolio-item"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
+                                <div class="portfolio-item"><img
+                                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+                                        alt="Modern Home Exterior"></div>
                             </div>
                         </div>
                     </div>
@@ -934,7 +1451,6 @@
         </div>
 
         <section id="projects">
-            <div id="liquid-ether-projects-bg" class="liquid-ether-container"></div>
 
             <h2 data-splitting>Signature Projects.</h2>
             <div class="project-item item-1">
@@ -976,15 +1492,18 @@
             <div class="cards-stack-wrapper">
                 <div class="stacked-card card-1">
                     <h3><span class="card-icon">🏆</span>Unmatched Quality</h3>
-                    <p>We don't just build; we craft. Using only premium materials and the finest artisans, we ensure every detail is a testament to durability and excellence.</p>
+                    <p>We don't just build; we craft. Using only premium materials and the finest artisans, we ensure
+                        every detail is a testament to durability and excellence.</p>
                 </div>
                 <div class="stacked-card card-2">
                     <h3><span class="card-icon">⏱️</span>On-Time Delivery</h3>
-                    <p>Your time is valuable. Our meticulous project management guarantees that your project is delivered on schedule, every time, without compromise.</p>
+                    <p>Your time is valuable. Our meticulous project management guarantees that your project is
+                        delivered on schedule, every time, without compromise.</p>
                 </div>
                 <div class="stacked-card card-3">
                     <h3><span class="card-icon">💡</span>Innovative Design</h3>
-                    <p>Our in-house architects and designers are visionaries who blend modern aesthetics with timeless functionality, creating spaces that inspire.</p>
+                    <p>Our in-house architects and designers are visionaries who blend modern aesthetics with timeless
+                        functionality, creating spaces that inspire.</p>
                 </div>
             </div>
         </section>
@@ -994,16 +1513,26 @@
                 <div class="footer-grid">
                     <div class="footer-cta">
                         <h2 class="reveal-mask">Build The Future.</h2>
-                        <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your vision to life. We're ready to build the next landmark. 🤝</p>
+                        <p class="reveal-mask">Have a project in mind? Let's collaborate and bring your vision to life.
+                            We're ready to build the next landmark. 🤝</p>
                         <a href="mailto:contact@qdevelopers.com" class="hero-cta">Get In Touch</a>
                     </div>
                 </div>
                 <div class="footer-bottom">
                     <p class="fade-in-anim">&copy; 2025 Q Developers | Calicut, Kerala.</p>
                     <div class="footer-socials">
-                        <a href="#" class="fade-in-anim" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
-                        <a href="#" class="fade-in-anim" title="Twitter/X"><svg viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.616 1.922 2.392 3.32 4.491 3.365-1.657 1.299-3.756 2.072-6.049 1.733 1.83 1.189 4.011 1.868 6.353 1.868 7.618 0 11.922-6.425 11.5-12.274.847-.608 1.574-1.373 2.149-2.23z"/></svg></a>
-                        <a href="#" class="fade-in-anim" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919 4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg></a>
+                        <a href="#" class="fade-in-anim" title="LinkedIn"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg></a>
+                        <a href="#" class="fade-in-anim" title="Twitter/X"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.616 1.922 2.392 3.32 4.491 3.365-1.657 1.299-3.756 2.072-6.049 1.733 1.83 1.189 4.011 1.868 6.353 1.868 7.618 0 11.922-6.425 11.5-12.274.847-.608 1.574-1.373 2.149-2.23z" />
+                            </svg></a>
+                        <a href="#" class="fade-in-anim" title="Instagram"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919 4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.359 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.072-4.948-.072zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
+                            </svg></a>
                     </div>
                 </div>
             </footer>
@@ -1014,6 +1543,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/split-type"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/InertiaPlugin.min.js"></script>
     <script type="importmap">
     {
         "imports": {
@@ -1024,10 +1555,10 @@
     }
     </script>
     <script type="module">
-        // Q Developers imports
+        // -----------------------------------------------------------------
+        // 1. IMPORTS
+        // -----------------------------------------------------------------
         import * as THREE from 'three';
-
-        // ADDED: Light Rays imports
         import {
             Renderer as OGLRenderer,
             Program as OGLProgram,
@@ -1035,10 +1566,25 @@
             Mesh as OGLMesh
         } from 'ogl';
 
+        // -----------------------------------------------------------------
+        // 2. GLOBAL APP STATE & SETUP
+        // -----------------------------------------------------------------
 
+        /**
+         * Holds shared Three.js objects so managers can access them.
+         */
+        const app = {
+            scene: null,
+            camera: null,
+            renderer: null,
+            qModel: null,
+            cone1: null,
+            cone2: null
+        };
+
+        // GSAP & Lenis Setup
         gsap.registerPlugin(ScrollTrigger);
         const loader = document.querySelector('.loader');
-
         const lenis = new Lenis({ lerp: 0.05, smoothWheel: true });
 
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
@@ -1047,451 +1593,709 @@
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        // --- ADDED: START LIGHT RAYS HELPER FUNCTIONS ---
+        // -----------------------------------------------------------------
+        // 3. HELPER FUNCTIONS
+        // -----------------------------------------------------------------
+
         const hexToRgb = hex => { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255] : [1, 1, 1]; };
         const getAnchorAndDir = (origin, w, h) => { const outside = 0.2; switch (origin) { case 'top-left': return { anchor: [0, -outside * h], dir: [0, 1] }; case 'top-right': return { anchor: [w, -outside * h], dir: [0, 1] }; case 'left': return { anchor: [-outside * w, 0.5 * h], dir: [1, 0] }; case 'right': return { anchor: [(1 + outside) * w, 0.5 * h], dir: [-1, 0] }; case 'bottom-left': return { anchor: [0, (1 + outside) * h], dir: [0, -1] }; case 'bottom-center': return { anchor: [0.5 * w, (1 + outside) * h], dir: [0, -1] }; case 'bottom-right': return { anchor: [w, (1 + outside) * h], dir: [0, -1] }; default: return { anchor: [0.5 * w, -outside * h], dir: [0, 1] }; } };
-        // --- ADDED: END LIGHT RAYS HELPER FUNCTIONS ---
 
-        let scene, camera, renderer, qModel, cone1, cone2;
+        // -----------------------------------------------------------------
+        // 4. MANAGER DEFINITIONS (Code is encapsulated here)
+        // -----------------------------------------------------------------
 
-        function initThree() {
-            const canvas = document.querySelector('#three-canvas');
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 5;
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        /**
+         * Manages the Gradual Blur effect.
+         */
+        const GradualBlurManager = {
+            CURVE_FUNCTIONS: {
+                linear: p => p,
+                bezier: p => p * p * (3 - 2 * p),
+                'ease-in': p => p * p,
+                'ease-out': p => 1 - Math.pow(1 - p, 2),
+                'ease-in-out': p => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2)
+            },
+            mergeConfigs: (...configs) => configs.reduce((acc, c) => ({ ...acc, ...c }), {}),
+            getGradientDirection: position =>
+                ({
+                    top: 'to top',
+                    bottom: 'to bottom',
+                    left: 'to left',
+                    right: 'to right'
+                })[position] || 'to bottom',
 
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            /**
+             * Main function to create and inject the gradual blur effect.
+             */
+            create: function (targetSelector, props) {
+                const targetElement = document.querySelector(targetSelector);
+                if (!targetElement) {
+                    console.error('GradualBlur target not found:', targetSelector);
+                    return;
+                }
+                const DEFAULT_CONFIG = {
+                    position: 'bottom',
+                    strength: 2,
+                    height: '6rem',
+                    divCount: 5,
+                    exponential: false,
+                    zIndex: 1000,
+                    opacity: 1,
+                    curve: 'linear',
+                    target: 'parent',
+                    style: {}
+                };
+                const config = this.mergeConfigs(DEFAULT_CONFIG, props);
+                const blurDivs = [];
+                const increment = 100 / config.divCount;
+                const currentStrength = config.strength;
+                const curveFunc = this.CURVE_FUNCTIONS[config.curve] || this.CURVE_FUNCTIONS.linear;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-            scene.add(ambientLight);
-
-            const spotLight1 = new THREE.SpotLight(0xffffff, 40, 20, Math.PI * 0.15, 0.5, 1);
-            spotLight1.position.set(8, 6, 8);
-            spotLight1.castShadow = true;
-            spotLight1.shadow.mapSize.width = 1024;
-            spotLight1.shadow.mapSize.height = 1024;
-            spotLight1.shadow.camera.near = 0.5;
-            spotLight1.shadow.camera.far = 30;
-            scene.add(spotLight1);
-
-            const spotLight2 = new THREE.SpotLight(0xffffff, 15, 20, Math.PI * 0.15, 0.5, 1);
-            spotLight2.position.set(-8, 3, 6);
-            scene.add(spotLight2);
-
-            const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
-            const shadowPlaneGeo = new THREE.PlaneGeometry(30, 30);
-            const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowMaterial);
-            shadowPlane.position.z = -1;
-            shadowPlane.receiveShadow = true;
-            scene.add(shadowPlane);
-
-            createQModel();
-
-            if (qModel) {
-                spotLight1.target = qModel;
-                spotLight2.target = qModel;
-                scene.add(spotLight1.target);
-                scene.add(spotLight2.target);
-            }
-
-            const coneGeo = new THREE.ConeGeometry(3, 15, 32, 1, true);
-            coneGeo.translate(0, 7.5, 0);
-            const coneMat = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.08,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-
-            cone1 = new THREE.Mesh(coneGeo, coneMat);
-            cone1.position.copy(spotLight1.position);
-            scene.add(cone1);
-
-            cone2 = new THREE.Mesh(coneGeo, coneMat.clone());
-            cone2.position.copy(spotLight2.position);
-            scene.add(cone2);
-
-            const animate = () => {
-                if (cone1 && qModel) cone1.lookAt(qModel.position);
-                if (cone2 && qModel) cone2.lookAt(qModel.position);
-
-                renderer.render(scene, camera);
-                requestAnimationFrame(animate);
-            };
-            animate();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                ScrollTrigger.refresh(true);
-            });
-        }
-
-        function createQModel() {
-            const rotationAngle = -Math.PI / 4;
-            const outerCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5, 0, Math.PI * 2, false, rotationAngle);
-            const innerCurve = new THREE.EllipseCurve(0, 0, 0.8, 0.8, 0, Math.PI * 2, false, rotationAngle);
-            const oShape = new THREE.Shape(outerCurve.getPoints(128));
-            const holePath = new THREE.Path(innerCurve.getPoints(128));
-            oShape.holes.push(holePath);
-            const tailShape = new THREE.Shape();
-            const innerRadius = 0.8, outerRadius = 1.5;
-            const p1 = { x: innerRadius * 0.6, y: -innerRadius * 0.6 };
-            const p2 = { x: outerRadius * 1.3, y: -outerRadius * 1.3 };
-            const p3 = { x: p2.x - 0.4, y: p2.y + 0.1 };
-            const p4 = { x: p1.x - 0.3, y: p1.y + 0.05 };
-            tailShape.moveTo(p1.x, p1.y); tailShape.lineTo(p2.x, p2.y); tailShape.lineTo(p3.x, p3.y); tailShape.lineTo(p4.x, p4.y);
-
-            const extrudeSettings = { depth: 0.7, bevelEnabled: true, bevelSegments: 5, steps: 2, bevelSize: 0.1, bevelThickness: 0.1 };
-            const geometry = new THREE.ExtrudeGeometry([oShape, tailShape], extrudeSettings);
-            geometry.center();
-
-            const material = new THREE.MeshStandardMaterial({
-                color: new THREE.Color("#5E239D"),
-                metalness: 0.3,
-                roughness: 0.6
-            });
-            qModel = new THREE.Mesh(geometry, material);
-            qModel.castShadow = true;
-            scene.add(qModel);
-            qModel.scale.set(0.8, 0.8, 0.8);
-        }
-
-        // --- ADDED: Light Rays Initialization Function ---
-        function initLightRays() {
-            const config = { raysOrigin: "top-center", raysColor: "#ffff", raysSpeed: 1.5, lightSpread: 0.8, rayLength: 1.2, followMouse: true, mouseInfluence: 0.1, noiseAmount: 0.1, distortion: 0.05, pulsating: false, fadeDistance: 1.0, saturation: 1.0, }; const lightRaysVert = ` attribute vec2 position; varying vec2 vUv; void main() { vUv = position * 0.5 + 0.5; gl_Position = vec4(position, 0.0, 1.0); }`; const lightRaysFrag = `precision highp float; uniform float iTime; uniform vec2 iResolution; uniform vec2 rayPos; uniform vec2 rayDir; uniform vec3 raysColor; uniform float raysSpeed; uniform float lightSpread; uniform float rayLength; uniform float pulsating; uniform float fadeDistance; uniform float saturation; uniform vec2 mousePos; uniform float mouseInfluence; uniform float noiseAmount; uniform float distortion; varying vec2 vUv; float noise(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123); } float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA, float seedB, float speed) { vec2 sourceToCoord = coord - raySource; vec2 dirNorm = normalize(sourceToCoord); float cosAngle = dot(dirNorm, rayRefDirection); float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2; float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001)); float distance = length(sourceToCoord); float maxDistance = iResolution.x * rayLength; float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0); float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0); float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0; float baseStrength = clamp( (0.45 + 0.15 * sin(distortedAngle * seedA + iTime * speed)) + (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed)), 0.0, 1.0 ); return baseStrength * lengthFalloff * fadeFalloff * spreadFactor * pulse; } void mainImage(out vec4 fragColor, in vec2 fragCoord) { vec2 coord = vec2(fragCoord.x, iResolution.y - fragCoord.y); vec2 finalRayDir = rayDir; if (mouseInfluence > 0.0) { vec2 mouseScreenPos = mousePos * iResolution.xy; vec2 mouseDirection = normalize(mouseScreenPos - rayPos); finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence)); } vec4 rays1 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349, 1.5 * raysSpeed); vec4 rays2 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed); fragColor = rays1 * 0.5 + rays2 * 0.4; if (noiseAmount > 0.0) { float n = noise(coord * 0.01 + iTime * 0.1); fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n); } float brightness = 1.0 - (coord.y / iResolution.y); fragColor.x *= 0.1 + brightness * 0.8; fragColor.y *= 0.3 + brightness * 0.6; fragColor.z *= 0.5 + brightness * 0.5; if (saturation != 1.0) { float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114)); fragColor.rgb = mix(vec3(gray), fragColor.rgb, saturation); } fragColor.rgb *= raysColor; } void main() { vec4 color; mainImage(color, gl_FragCoord.xy); gl_FragColor = color; }`; const container = document.getElementById('light-rays-background'); if (!container) { console.error('LightRays container not found!'); return; } let oglRenderer, oglUniforms, oglMesh, oglAnimationId; let mouse = { x: 0.5, y: 0.5 }; let smoothMouse = { x: 0.5, y: 0.5 }; let updatePlacement; let handleMouseMove; oglRenderer = new OGLRenderer({ dpr: Math.min(window.devicePixelRatio, 2), alpha: true }); const gl = oglRenderer.gl; gl.canvas.style.width = '100%'; gl.canvas.style.height = '100%'; container.appendChild(gl.canvas); oglUniforms = { iTime: { value: 0 }, iResolution: { value: [1, 1] }, rayPos: { value: [0, 0] }, rayDir: { value: [0, 1] }, raysColor: { value: hexToRgb(config.raysColor) }, raysSpeed: { value: config.raysSpeed }, lightSpread: { value: config.lightSpread }, rayLength: { value: config.rayLength }, pulsating: { value: config.pulsating ? 1.0 : 0.0 }, fadeDistance: { value: config.fadeDistance }, saturation: { value: config.saturation }, mousePos: { value: [0.5, 0.5] }, mouseInfluence: { value: config.mouseInfluence }, noiseAmount: { value: config.noiseAmount }, distortion: { value: config.distortion } }; const geometry = new OGLTriangle(gl); const program = new OGLProgram(gl, { vertex: lightRaysVert, fragment: lightRaysFrag, uniforms: oglUniforms }); oglMesh = new OGLMesh(gl, { geometry, program }); updatePlacement = () => { if (!container || !oglRenderer) return; oglRenderer.dpr = Math.min(window.devicePixelRatio, 2); const { clientWidth: wCSS, clientHeight: hCSS } = container; oglRenderer.setSize(wCSS, hCSS); const dpr = oglRenderer.dpr; const w = wCSS * dpr; const h = hCSS * dpr; oglUniforms.iResolution.value = [w, h]; const { anchor, dir } = getAnchorAndDir(config.raysOrigin, w, h); oglUniforms.rayPos.value = anchor; oglUniforms.rayDir.value = dir; }; const loop = (t) => { if (!oglRenderer) return; oglUniforms.iTime.value = t * 0.001; if (config.followMouse && config.mouseInfluence > 0.0) { const smoothing = 0.92; smoothMouse.x = smoothMouse.x * smoothing + mouse.x * (1 - smoothing); smoothMouse.y = smoothMouse.y * smoothing + mouse.y * (1 - smoothing); oglUniforms.mousePos.value = [smoothMouse.x, smoothMouse.y]; } try { oglRenderer.render({ scene: oglMesh }); oglAnimationId = requestAnimationFrame(loop); } catch (error) { console.warn('WebGL rendering error (LightRays):', error); } }; if (config.followMouse) { handleMouseMove = (e) => { if (!container) return; const rect = container.getBoundingClientRect(); mouse.x = (e.clientX - rect.left) / rect.width; mouse.y = (e.clientY - rect.top) / rect.height; }; window.addEventListener('mousemove', handleMouseMove); } window.addEventListener('resize', updatePlacement); updatePlacement(); oglAnimationId = requestAnimationFrame(loop);
-        }
-
-        // =================================================================
-        // ================== Q DEVELOPERS ANIMATIONS ======================
-        // =================================================================
-        function initAnimations() {
-            const splitTargets = document.querySelectorAll("[data-splitting]");
-            splitTargets.forEach(target => { new SplitType(target, { types: 'words, lines' }); });
-
-            // --- HERO & 3D MODEL ANIMATIONS ---
-            gsap.from(qModel.scale, { x: 0.1, y: 0.1, z: 0.1, duration: 3.5, ease: 'power3.out' });
-            gsap.to(camera.position, { z: 4.5, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2.5 }});
-            const heroTl = gsap.timeline();
-            heroTl.to("#hero h1 .word, .hero-description .word", { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1.8, stagger: 0.08, ease: 'power3.out' })
-                  .to("#hero h1", { scale: 1.05, duration: 1.2, ease: 'power2.out', repeat: 1, yoyo: true }, "-=1.5")
-                  .to(".hero-cta", { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out' }, "-=1.2");
-
-            gsap.to(".background-controller", { opacity: 1, ease: "power1.inOut", scrollTrigger: { trigger: "#hero", start: "bottom 90%", end: "bottom 40%", scrub: 2 }});
-
-            // --- HORIZONTAL SCROLL TIMELINE (DESKTOP) ---
-            if (window.innerWidth > 900) {
-                const horizontalTrack = document.querySelector(".horizontal-track");
-                const panels = gsap.utils.toArray(".horizontal-track > section");
-                const masterTimeline = gsap.timeline();
-
-                masterTimeline.to(horizontalTrack, { duration: 2.0 }, "about");
-                masterTimeline.to("#about .word", { y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.03, ease: 'power3.out', duration: 1.5 }, "about");
-                masterTimeline.to(horizontalTrack, { x: () => -panels[0].offsetWidth, ease: "none", duration: 1 });
-                masterTimeline.to(horizontalTrack, { duration: 2.5 }, "services");
-
-                const servicesTl = gsap.timeline();
-                gsap.set('.cards-container', { position: 'absolute', right: '8%', transform: 'translateX(100%)', opacity: 0 });
-                gsap.set('.service-card', { y: 50, opacity: 0 });
-                servicesTl.to(".services-heading", { xPercent: -50, ease: "power2.inOut" })
-                          .fromTo(".cards-container", { xPercent: 100, opacity: 0 }, { xPercent: -50, opacity: 1, ease: "power2.out" })
-                          .add("card2_starts", "-=0.3").add("card3_starts", "-=0.1")
-                          .staggerFromTo(".service-card", 0.8, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'back.out(1.7)' }, 0.2, "-=0.5")
-                          .to(".blur-overlay", { opacity: 1, backdropFilter: 'blur(5px)', ease: 'power2.inOut' }, "card2_starts")
-                          .to([".services-heading", ".cards-container"], { opacity: 0, filter: 'blur(10px)', ease: 'power2.inOut' })
-                          .to(".blur-overlay", { opacity: 0, backdropFilter: 'blur(0px)', ease: 'power2.inOut' }, "<");
-                masterTimeline.add(servicesTl, "services");
-
-                masterTimeline.to(horizontalTrack, { x: () => -panels[0].offsetWidth * 2, ease: "none", duration: 1 });
-                masterTimeline.to(horizontalTrack, { duration: 3.0 }, "portfolio");
-
-                const portfolioRow1Wrapper = document.getElementById("portfolio-row1-wrapper");
-                const portfolioRow2Wrapper = document.getElementById("portfolio-row2-wrapper");
-                const portfolioRow1 = document.getElementById("portfolio-row1-track");
-                const portfolioRow2 = document.getElementById("portfolio-row2-track");
-
-                masterTimeline.fromTo(portfolioRow1Wrapper, { x: "-100%", opacity: 0 }, { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, "portfolio");
-                masterTimeline.to(portfolioRow1, { x: () => -(portfolioRow1.scrollWidth - portfolioRow1.clientWidth), ease: "none", duration: 1.8 }, "portfolio+=1.2");
-                masterTimeline.fromTo(portfolioRow2Wrapper, { x: "100%", opacity: 0 }, { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.2 }, "portfolio");
-                masterTimeline.fromTo(portfolioRow2, { x: () => -(portfolioRow2.scrollWidth - portfolioRow2.clientWidth) }, { x: 0, ease: "none", duration: 1.8 }, "portfolio+=1.2");
-
-                ScrollTrigger.create({ animation: masterTimeline, trigger: '.horizontal-scroll-wrapper', pin: true, scrub: 3, end: "+=10000", invalidateOnRefresh: true });
-            } else {
-                // --- MOBILE ANIMATIONS ---
-                gsap.utils.toArray('#services h2 .word').forEach(word => { gsap.from(word.parentNode, { y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: word.closest('section'), start: "top 80%" }}); });
-                gsap.from("#about .word", { y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', stagger: 0.05, scrollTrigger: { trigger: "#about", start: "top 80%" }});
-                gsap.from(".service-card", { y: 50, opacity: 0, stagger: 0.15, duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: ".cards-container", start: "top 80%" }});
-                gsap.from("#portfolio .portfolio-heading", { xPercent: 50, opacity: 0, ease: 'power2.out', scrollTrigger: { trigger: "#portfolio", start: "top 70%", end: "top 40%", scrub: 2 }});
-                gsap.to(".portfolio-marquee-wrapper", { opacity: 1, x: 0, duration: 1.5, stagger: 0.2, ease: 'power2.out', scrollTrigger: { trigger: "#portfolio", start: "top 60%" }});
-
-                document.querySelectorAll(".portfolio-marquee-content").forEach(track => { track.innerHTML += track.innerHTML; });
-                gsap.to("#portfolio-row1-track", { xPercent: -50, ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 10 }});
-                gsap.fromTo("#portfolio-row2-track", { xPercent: -50 }, { xPercent: 0, ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 10 }});
-            }
-
-            // --- PROJECTS SECTION ANIMATION (FLOATING) ---
-            if (window.innerWidth > 768) { // Only run complex animation on desktop
-                const projectsTl = gsap.timeline({
-                    scrollTrigger: { trigger: "#projects", start: "top top", end: "+=200%", pin: true, scrub: 1.5 }
-                });
-                projectsTl.fromTo("#projects h2", { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' });
-                projectsTl.to("#projects h2", { opacity: 0, scale: 0.8, ease: 'power1.in', duration: 0.6 }, ">0.5");
-
-                const items = gsap.utils.toArray(".project-item");
-                projectsTl.to(items, {
-                    opacity: 1, scale: 0.6,
-                    rotationZ: () => gsap.utils.random(-15, 15),
-                    x: () => gsap.utils.random(-30, 30),
-                    y: () => gsap.utils.random(-30, 30),
-                    stagger: { amount: 1.2, from: "random" },
-                    ease: "power2.out", duration: 1.5
-                }, 0.3);
-
-                items.forEach(item => {
-                    gsap.to(item, {
-                        x: `+=${gsap.utils.random(-20, 20)}`, y: `+=${gsap.utils.random(-20, 20)}`,
-                        rotationZ: `+=${gsap.utils.random(-10, 10)}`,
-                        repeat: -1, yoyo: true, ease: "sine.inOut",
-                        duration: gsap.utils.random(4, 7)
+                for (let i = 1; i <= config.divCount; i++) {
+                    let progress = i / config.divCount;
+                    progress = curveFunc(progress);
+                    let blurValue;
+                    if (config.exponential) {
+                        blurValue = Math.pow(2, progress * 4) * 0.0625 * currentStrength;
+                    } else {
+                        blurValue = 0.0625 * (progress * config.divCount + 1) * currentStrength;
+                    }
+                    const p1 = Math.round((increment * i - increment) * 10) / 10;
+                    const p2 = Math.round(increment * i * 10) / 10;
+                    const p3 = Math.round((increment * i + increment) * 10) / 10;
+                    const p4 = Math.round((increment * i + increment * 2) * 10) / 10;
+                    let gradient = `transparent ${p1}%, black ${p2}%`;
+                    if (p3 <= 100) gradient += `, black ${p3}%`;
+                    if (p4 <= 100) gradient += `, transparent ${p4}%`;
+                    const direction = this.getGradientDirection(config.position);
+                    const div = document.createElement('div');
+                    Object.assign(div.style, {
+                        position: 'absolute',
+                        inset: '0',
+                        maskImage: `linear-gradient(${direction}, ${gradient})`,
+                        WebkitMaskImage: `linear-gradient(${direction}, ${gradient})`,
+                        backdropFilter: `blur(${blurValue.toFixed(3)}rem)`,
+                        WebkitBackdropFilter: `blur(${blurValue.toFixed(3)}rem)`,
+                        opacity: config.opacity,
                     });
+                    blurDivs.push(div);
+                }
+                const container = document.createElement('div');
+                container.className = `gradual-blur gradual-blur-parent ${config.className || ''}`;
+                const isVertical = ['top', 'bottom'].includes(config.position);
+                const isHorizontal = ['left', 'right'].includes(config.position);
+                const isPageTarget = config.target === 'page';
+                const containerStyle = {
+                    position: isPageTarget ? 'fixed' : 'absolute',
+                    pointerEvents: 'none',
+                    opacity: 1,
+                    zIndex: isPageTarget ? config.zIndex + 100 : config.zIndex,
+                    ...config.style
+                };
+                if (isVertical) {
+                    containerStyle.height = config.height;
+                    containerStyle.width = config.width || '100%';
+                    containerStyle[config.position] = 0;
+                    containerStyle.left = 0;
+                    containerStyle.right = 0;
+                } else if (isHorizontal) {
+                    containerStyle.width = config.width || config.height;
+                    containerStyle.height = '100%';
+                    containerStyle[config.position] = 0;
+                    containerStyle.top = 0;
+                    containerStyle.bottom = 0;
+                }
+                Object.assign(container.style, containerStyle);
+                const inner = document.createElement('div');
+                inner.className = 'gradual-blur-inner';
+                blurDivs.forEach(div => inner.appendChild(div));
+                container.appendChild(inner);
+                targetElement.appendChild(container);
+            }
+        };
+
+        /**
+         * Manages the Three.js Scene (Q-Logo, lights, camera).
+         */
+        const ThreeSceneManager = {
+            init: function () {
+                const canvas = document.querySelector('#three-canvas');
+                app.scene = new THREE.Scene();
+                app.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                app.camera.position.z = 5;
+                app.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+                app.renderer.setSize(window.innerWidth, window.innerHeight);
+                app.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                app.renderer.shadowMap.enabled = true;
+                app.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+                app.scene.add(ambientLight);
+
+                const spotLight1 = new THREE.SpotLight(0xffffff, 40, 20, Math.PI * 0.15, 0.5, 1);
+                spotLight1.position.set(8, 6, 8);
+                spotLight1.castShadow = true;
+                spotLight1.shadow.mapSize.width = 1024;
+                spotLight1.shadow.mapSize.height = 1024;
+                spotLight1.shadow.camera.near = 0.5;
+                spotLight1.shadow.camera.far = 30;
+                app.scene.add(spotLight1);
+
+                const spotLight2 = new THREE.SpotLight(0xffffff, 15, 20, Math.PI * 0.15, 0.5, 1);
+                spotLight2.position.set(-8, 3, 6);
+                app.scene.add(spotLight2);
+
+                const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+                const shadowPlaneGeo = new THREE.PlaneGeometry(30, 30);
+                const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowMaterial);
+                shadowPlane.position.z = -1;
+                shadowPlane.receiveShadow = true;
+                app.scene.add(shadowPlane);
+
+                this.createQModel();
+
+                if (app.qModel) {
+                    spotLight1.target = app.qModel;
+                    spotLight2.target = app.qModel;
+                    app.scene.add(spotLight1.target);
+                    app.scene.add(spotLight2.target);
+                }
+
+                const coneGeo = new THREE.ConeGeometry(3, 15, 32, 1, true);
+                coneGeo.translate(0, 7.5, 0);
+                const coneMat = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.08,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
                 });
-            } else {
-                 // Simple fade-in for mobile projects section heading
-                 gsap.from("#projects h2", {
-                     opacity: 0, y: 30, duration: 1, ease: 'power2.out',
-                     scrollTrigger: { trigger: "#projects", start: "top 80%" }
-                 });
-                 // Simple fade-in for mobile project items
-                 gsap.from(".project-item", {
-                     opacity: 0, y: 30, stagger: 0.1, duration: 0.8, ease: 'power2.out',
-                     scrollTrigger: { trigger: "#projects", start: "top 70%" } // Adjust start point if needed
-                 });
+
+                app.cone1 = new THREE.Mesh(coneGeo, coneMat);
+                app.cone1.position.copy(spotLight1.position);
+                app.scene.add(app.cone1);
+
+                app.cone2 = new THREE.Mesh(coneGeo, coneMat.clone());
+                app.cone2.position.copy(spotLight2.position);
+                app.scene.add(app.cone2);
+
+                const animate = () => {
+                    if (app.cone1 && app.qModel) app.cone1.lookAt(app.qModel.position);
+                    if (app.cone2 && app.qModel) app.cone2.lookAt(app.qModel.position);
+                    app.renderer.render(app.scene, app.camera);
+                    requestAnimationFrame(animate);
+                };
+                animate();
+
+                window.addEventListener('resize', () => {
+                    app.camera.aspect = window.innerWidth / window.innerHeight;
+                    app.camera.updateProjectionMatrix();
+                    app.renderer.setSize(window.innerWidth, window.innerHeight);
+                    ScrollTrigger.refresh(true);
+                });
+            },
+
+            createQModel: function () {
+                const rotationAngle = -Math.PI / 4;
+                const outerCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5, 0, Math.PI * 2, false, rotationAngle);
+                const innerCurve = new THREE.EllipseCurve(0, 0, 0.8, 0.8, 0, Math.PI * 2, false, rotationAngle);
+                const oShape = new THREE.Shape(outerCurve.getPoints(128));
+                const holePath = new THREE.Path(innerCurve.getPoints(128));
+                oShape.holes.push(holePath);
+                const tailShape = new THREE.Shape();
+                const innerRadius = 0.8, outerRadius = 1.5;
+                const p1 = { x: innerRadius * 0.6, y: -innerRadius * 0.6 };
+                const p2 = { x: outerRadius * 1.3, y: -outerRadius * 1.3 };
+                const p3 = { x: p2.x - 0.4, y: p2.y + 0.1 };
+                const p4 = { x: p1.x - 0.3, y: p1.y + 0.05 };
+                tailShape.moveTo(p1.x, p1.y); tailShape.lineTo(p2.x, p2.y); tailShape.lineTo(p3.x, p3.y); tailShape.lineTo(p4.x, p4.y);
+
+                const extrudeSettings = { depth: 0.7, bevelEnabled: true, bevelSegments: 5, steps: 2, bevelSize: 0.1, bevelThickness: 0.1 };
+                const geometry = new THREE.ExtrudeGeometry([oShape, tailShape], extrudeSettings);
+                geometry.center();
+
+                // --- MODIFIED: Realistic Glass Material using MeshPhysicalMaterial ---
+                const material = new THREE.MeshPhysicalMaterial({
+                    color: new THREE.Color(0xffffff), // Base color, let environment dominate
+                    metalness: 0.0,
+                    roughness: 0.1, // Low roughness for clear, sharp reflection/refraction
+                    transmission: 1.0, // Full light transmission (glass)
+                    transparent: true,
+                    opacity: 0.9, // Slight opacity adjustment to enhance visibility
+                    ior: 1.5, // Index of Refraction for glass
+                    thickness: 0.5,
+                    envMap: app.scene.background, // MUST use the scene's background environment map
+                    envMapIntensity: 1.5 // Adjust intensity of reflections
+                });
+                // --- End of Material ---
+
+                app.qModel = new THREE.Mesh(geometry, material);
+                app.qModel.castShadow = true;
+                app.scene.add(app.qModel);
+                app.qModel.scale.set(0.8, 0.8, 0.8);
             }
 
 
-            // --- STACKED CARDS SECTION ---
-            const stackedCardsTl = gsap.timeline({ scrollTrigger: { trigger: "#stacked-cards", start: "top top", end: "+=3500", pin: true, scrub: 2.5 }});
-            stackedCardsTl.from("#stacked-cards h2 .word", { y: 30, opacity: 0, filter: 'blur(8px)', stagger: 0.08, ease: 'power3.out' });
-            const cardInEase = 'back.out(1.4)', cardInTime = 1.3, cardInStagger = 0.3;
-            gsap.set(".card-1", { yPercent: 120, xPercent: -10, opacity: 0, rotate: -8, scale: 0.8, filter: 'blur(5px)' });
-            gsap.set(".card-2", { yPercent: 120, xPercent: 0, opacity: 0, rotate: 0, scale: 0.8, filter: 'blur(5px)' });
-            gsap.set(".card-3", { yPercent: 120, xPercent: 10, opacity: 0, rotate: 8, scale: 0.8, filter: 'blur(5px)' });
-            stackedCardsTl.to(".card-1", { yPercent: 0, xPercent: 0, opacity: 1, rotate: 0, scale: 0.9, filter: 'blur(0px)', ease: cardInEase, duration: cardInTime }, "-=0.8");
-            stackedCardsTl.to(".card-2", { yPercent: 0, xPercent: 0, opacity: 1, rotate: 0, scale: 0.95, filter: 'blur(0px)', ease: cardInEase, duration: cardInTime }, `-=${cardInTime - cardInStagger}`);
-            stackedCardsTl.to(".card-3", { yPercent: 0, xPercent: 0, opacity: 1, rotate: 0, scale: 1, filter: 'blur(0px)', ease: cardInEase, duration: cardInTime }, `-=${cardInTime - cardInStagger}`);
-            stackedCardsTl.add("pause", "+=1.5");
-            stackedCardsTl.to("#stacked-cards h2", { opacity: 0, y: -30, filter: 'blur(8px)', ease: 'power2.inOut' }, "pause");
-            const cardOutEase = 'power2.inOut', cardOutStagger = 0.3;
-            stackedCardsTl.to(".card-3", { xPercent: 150, yPercent: -50, rotate: 25, opacity: 0, filter: 'blur(10px)', ease: cardOutEase }, "pause");
-            stackedCardsTl.to(".card-2", { xPercent: -150, yPercent: -20, rotate: -25, opacity: 0, filter: 'blur(10px)', ease: cardOutEase }, `pause+=${cardOutStagger}`);
-            stackedCardsTl.to(".card-1", { xPercent: 120, yPercent: 30, rotate: 15, opacity: 0, filter: 'blur(10px)', ease: cardOutEase }, `pause+=${cardOutStagger * 2}`);
 
-            // --- FOOTER ANIMATIONS ---
-            gsap.to(".background-controller", { opacity: 0, ease: "power1.inOut", scrollTrigger: { trigger: ".footer-wrapper", start: "top 80%", end: "top 50%", scrub: 2 }});
-            const footerModelTl = gsap.timeline({ scrollTrigger: { trigger: ".footer-wrapper", start: "top 80%", end: "bottom bottom", scrub: 2.5 }});
-            footerModelTl.to(qModel.position, { x: 0, y: 0, z: 2.5, ease: 'power2.inOut' }, 0);
-            footerModelTl.to(qModel.scale, { x: 0.5, y: 0.5, z: 0.5, ease: 'power2.inOut' }, 0);
-            footerModelTl.to(qModel.rotation, { x: 0.2, y: Math.PI * 4, z: 0, ease: 'power2.inOut' }, 0);
-
-            const footerContentTl = gsap.timeline({ scrollTrigger: { trigger: "footer", start: "top 80%" }});
-            footerContentTl.to("footer .reveal-mask", { clipPath: 'inset(0 0% 0 0)', duration: 2.0, stagger: 0.2, ease: 'power4.out' });
-            footerContentTl.to("footer .fade-in-anim", { opacity: 1, y: 0, duration: 1.5, stagger: 0.1, ease: 'power3.out' }, "-=1.5");
-
-            // --- FINAL 3D MODEL ROTATION ---
-            const tl = gsap.timeline({ scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 2.5 }});
-            tl.to(qModel.rotation, { ease: 'none', duration: 4 }, 0);
-            tl.to(qModel.position, { x: 0, Y: 0, ease: 'power2.inOut', duration: 6 }, 0);
         }
 
-        // --- START OF LIQUID ETHER JS ---
-        // Run the script after the DOM is loaded
-        window.addEventListener('DOMContentLoaded', () => { // Keep this wrapper
+        /**
+         * Manages the OGL Light Rays background.
+         */
+        // const LightRaysManager = {
+        //     init: function () {
+        //         const config = { raysOrigin: "top-center", raysColor: "#ffff", raysSpeed: 1.5, lightSpread: 0.8, rayLength: 1.2, followMouse: true, mouseInfluence: 0.1, noiseAmount: 0.1, distortion: 0.05, pulsating: false, fadeDistance: 1.0, saturation: 1.0, }; const lightRaysVert = ` attribute vec2 position; varying vec2 vUv; void main() { vUv = position * 0.5 + 0.5; gl_Position = vec4(position, 0.0, 1.0); }`; const lightRaysFrag = `precision highp float; uniform float iTime; uniform vec2 iResolution; uniform vec2 rayPos; uniform vec2 rayDir; uniform vec3 raysColor; uniform float raysSpeed; uniform float lightSpread; uniform float rayLength; uniform float pulsating; uniform float fadeDistance; uniform float saturation; uniform vec2 mousePos; uniform float mouseInfluence; uniform float noiseAmount; uniform float distortion; varying vec2 vUv; float noise(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123); } float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA, float seedB, float speed) { vec2 sourceToCoord = coord - raySource; vec2 dirNorm = normalize(sourceToCoord); float cosAngle = dot(dirNorm, rayRefDirection); float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2; float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001)); float distance = length(sourceToCoord); float maxDistance = iResolution.x * rayLength; float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0); float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0); float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0; float baseStrength = clamp( (0.45 + 0.15 * sin(distortedAngle * seedA + iTime * speed)) + (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed)), 0.0, 1.0 ); return baseStrength * lengthFalloff * fadeFalloff * spreadFactor * pulse; } void mainImage(out vec4 fragColor, in vec2 fragCoord) { vec2 coord = vec2(fragCoord.x, iResolution.y - fragCoord.y); vec2 finalRayDir = rayDir; if (mouseInfluence > 0.0) { vec2 mouseScreenPos = mousePos * iResolution.xy; vec2 mouseDirection = normalize(mouseScreenPos - rayPos); finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence)); } vec4 rays1 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349, 1.5 * raysSpeed); vec4 rays2 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed); fragColor = rays1 * 0.5 + rays2 * 0.4; if (noiseAmount > 0.0) { float n = noise(coord * 0.01 + iTime * 0.1); fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n); } float brightness = 1.0 - (coord.y / iResolution.y); fragColor.x *= 0.1 + brightness * 0.8; fragColor.y *= 0.3 + brightness * 0.6; fragColor.z *= 0.5 + brightness * 0.5; if (saturation != 1.0) { float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114)); fragColor.rgb = mix(vec3(gray), fragColor.rgb, saturation); } fragColor.rgb *= raysColor; } void main() { vec4 color; mainImage(color, gl_FragCoord.xy); gl_FragColor = color; }`; const container = document.getElementById('light-rays-background'); if (!container) { console.error('LightRays container not found!'); return; } let oglRenderer, oglUniforms, oglMesh, oglAnimationId; let mouse = { x: 0.5, y: 0.5 }; let smoothMouse = { x: 0.5, y: 0.5 }; let updatePlacement; let handleMouseMove; oglRenderer = new OGLRenderer({ dpr: Math.min(window.devicePixelRatio, 2), alpha: true }); const gl = oglRenderer.gl; gl.canvas.style.width = '100%'; gl.canvas.style.height = '100%'; container.appendChild(gl.canvas); oglUniforms = { iTime: { value: 0 }, iResolution: { value: [1, 1] }, rayPos: { value: [0, 0] }, rayDir: { value: [0, 1] }, raysColor: { value: hexToRgb(config.raysColor) }, raysSpeed: { value: config.raysSpeed }, lightSpread: { value: config.lightSpread }, rayLength: { value: config.rayLength }, pulsating: { value: config.pulsating ? 1.0 : 0.0 }, fadeDistance: { value: config.fadeDistance }, saturation: { value: config.saturation }, mousePos: { value: [0.5, 0.5] }, mouseInfluence: { value: config.mouseInfluence }, noiseAmount: { value: config.noiseAmount }, distortion: { value: config.distortion } }; const geometry = new OGLTriangle(gl); const program = new OGLProgram(gl, { vertex: lightRaysVert, fragment: lightRaysFrag, uniforms: oglUniforms }); oglMesh = new OGLMesh(gl, { geometry, program }); updatePlacement = () => { if (!container || !oglRenderer) return; oglRenderer.dpr = Math.min(window.devicePixelRatio, 2); const { clientWidth: wCSS, clientHeight: hCSS } = container; oglRenderer.setSize(wCSS, hCSS); const dpr = oglRenderer.dpr; const w = wCSS * dpr; const h = hCSS * dpr; oglUniforms.iResolution.value = [w, h]; const { anchor, dir } = getAnchorAndDir(config.raysOrigin, w, h); oglUniforms.rayPos.value = anchor; oglUniforms.rayDir.value = dir; }; const loop = (t) => { if (!oglRenderer) return; oglUniforms.iTime.value = t * 0.001; if (config.followMouse && config.mouseInfluence > 0.0) { const smoothing = 0.92; smoothMouse.x = smoothMouse.x * smoothing + mouse.x * (1 - smoothing); smoothMouse.y = smoothMouse.y * smoothing + mouse.y * (1 - smoothing); oglUniforms.mousePos.value = [smoothMouse.x, smoothMouse.y]; } try { oglRenderer.render({ scene: oglMesh }); oglAnimationId = requestAnimationFrame(loop); } catch (error) { console.warn('WebGL rendering error (LightRays):', error); } }; if (config.followMouse) { handleMouseMove = (e) => { if (!container) return; const rect = container.getBoundingClientRect(); mouse.x = (e.clientX - rect.left) / rect.width; mouse.y = (e.clientY - rect.top) / rect.height; }; window.addEventListener('mousemove', handleMouseMove); } window.addEventListener('resize', updatePlacement); updatePlacement(); oglAnimationId = requestAnimationFrame(loop);
+        //     }
+        // };
 
-            // --- Configuration ---
-            const liquidEtherConfig = {
-                colors: ['#ffff', '#ffff', '#00ffff'], // Adjusted colors to match theme
-                mouseForce: 25, // Slightly increased force
-                cursorSize: 120, // Slightly larger cursor
-                isViscous: false,
-                viscous: 30,
-                iterationsViscous: 32,
-                iterationsPoisson: 32,
-                resolution: 0.4, // Slightly lower resolution for performance
-                isBounce: false,
-                autoDemo: true,
-                autoSpeed: 0.4,
-                autoIntensity: 1.8,
-                takeoverDuration: 0.3,
-                autoResumeDelay: 5000, // Increased delay
-                autoRampDuration: 0.8,
-                dt: 0.016, // Adjusted dt
-                BFECC: true
-            };
+        /**
+         * Manages all GSAP/ScrollTrigger animations.
+         */
+        const AnimationManager = {
+            init: function () {
+                gsap.registerPlugin(Draggable);
+                const splitTargets = document.querySelectorAll("[data-splitting]");
+                splitTargets.forEach(target => { new SplitType(target, { types: 'words, lines' }); });
 
-            // --- Target Element ---
-            // MODIFIED: Target the new div inside #projects
-            const mountRef = { current: document.getElementById('liquid-ether-projects-bg') };
-            if (!mountRef.current) {
-                console.warn("Liquid Ether mount element (#liquid-ether-projects-bg) not found.");
-                return; // Don't run if the target isn't there
+                // --- HERO & 3D MODEL ANIMATIONS ---
+                gsap.from(app.qModel.scale, { x: 5, y: 5, z: 5, duration: 8.5, ease: 'power3.out' });
+                gsap.to(app.camera.position, { z: 10.5, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2.5 } });
+                const heroTl = gsap.timeline();
+                heroTl.to("#hero h1 .word, .hero-description .word", { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1.8, stagger: 0.08, ease: 'power3.out' })
+                    .to("#hero h1", { scale: 1.05, duration: 1.2, ease: 'power2.out', repeat: 1, yoyo: true }, "-=1.5")
+                    .to(".hero-cta", { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out' }, "-=1.2");
+
+                gsap.to(".background-controller", { opacity: 1, ease: "power1.inOut", scrollTrigger: { trigger: "#hero", start: "bottom 90%", end: "bottom 40%", scrub: 2 } });
+
+                // --- HORIZONTAL SCROLL TIMELINE (DESKTOP) ---
+                if (window.innerWidth > 900) {
+                    const horizontalTrack = document.querySelector(".horizontal-track");
+                    const panels = gsap.utils.toArray(".horizontal-track > section");
+                    const masterTimeline = gsap.timeline();
+
+                    const stayTime = 1.0;
+                    const transitionTime = 1.0;
+
+                    // --- 1. ABOUT SECTION ---
+                    masterTimeline.to(horizontalTrack, { duration: stayTime }, "about");
+                    masterTimeline.to("#about .word", {
+                        y: 0, opacity: 1, filter: 'blur(0px)',
+                        stagger: 0.03, ease: 'power3.out', duration: 1.5
+                    }, "about");
+
+                    // --- 2. TRANSITION: About -> Services ---
+                    masterTimeline.add("aboutLeave", `about+=${stayTime}`);
+                    masterTimeline.to(horizontalTrack, {
+                        x: () => -panels[0].offsetWidth,
+                        ease: "none", duration: transitionTime
+                    }, "aboutLeave");
+                    masterTimeline.to("#about > div", {
+                        scale: 0.85, opacity: 0, filter: 'blur(8px)',
+                        ease: 'power2.in', duration: transitionTime * 0.8
+                    }, "aboutLeave");
+                    masterTimeline.to(".blur-overlay", {
+                        opacity: 1, backdropFilter: 'blur(5px)',
+                        ease: 'power2.in', duration: transitionTime * 0.8
+                    }, "aboutLeave");
+
+                    // --- MODIFIED SERVICES TIMELINE ---
+                    const servicesTl = gsap.timeline();
+                    gsap.set(".services-heading", { x: '100vw', opacity: 0 });
+                    gsap.set(".cards-container", { x: '100vw', opacity: 0 });
+                    servicesTl.to(".services-heading", {
+                        x: 0, opacity: 1,
+                        ease: "power2.out",
+                        duration: 0.8
+                    });
+                    servicesTl.to({}, { duration: 0.2 });
+                    servicesTl.to(".services-heading", {
+                        x: '-35vw', scale: 0.8, opacity: 0, filter: 'blur(5px)',
+                        ease: "power2.in",
+                        duration: 1
+                    });
+                    servicesTl.to(".cards-container", {
+                        x: '0%',
+                        opacity: 1,
+                        ease: "power2.out",
+                        duration: 0.6
+                    }, ">-=0.2");
+                    masterTimeline.add(servicesTl, "aboutLeave-=" + (transitionTime / 2));
+
+                    // "Stay" on Services section
+                    masterTimeline.to(horizontalTrack, { duration: stayTime }, "services");
+
+                    // --- 3. TRANSITION: Services -> Portfolio ---
+                    masterTimeline.add("servicesLeave", `services+=${stayTime}`);
+                    masterTimeline.to(horizontalTrack, {
+                        x: () => -panels[0].offsetWidth * 2,
+                        ease: "none", duration: transitionTime
+                    }, "servicesLeave");
+                    masterTimeline.to("#services .services-content-wrapper", {
+                        scale: 0.85, opacity: 0, filter: 'blur(8px)',
+                        ease: 'power2.in', duration: transitionTime * 0.8
+                    }, "servicesLeave");
+                    masterTimeline.to(".blur-overlay", {
+                        opacity: 1, backdropFilter: 'blur(5px)',
+                        ease: 'power2.in', duration: transitionTime * 0.8
+                    }, "servicesLeave");
+                    masterTimeline.fromTo("#portfolio .portfolio-heading", {
+                        opacity: 0, x: '50vw', filter: 'blur(5px)'
+                    }, {
+                        opacity: 1, x: 0, filter: 'blur(0px)',
+                        duration: 1.0, ease: 'power2.out'
+                    }, "servicesLeave+=0.2");
+                    masterTimeline.to(".blur-overlay", {
+                        opacity: 0, backdropFilter: 'blur(0px)',
+                        ease: 'power2.out', duration: 1.0
+                    }, "servicesLeave+=0.2");
+
+                    // "Stay" on Portfolio section
+                    masterTimeline.to(horizontalTrack, { duration: stayTime }, "portfolio");
+
+                    // "Intro" for Portfolio Rows
+                    const portfolioRow1Wrapper = document.getElementById("portfolio-row1-wrapper");
+                    const portfolioRow2Wrapper = document.getElementById("portfolio-row2-wrapper");
+                    const portfolioRow1 = document.getElementById("portfolio-row1-track");
+                    const portfolioRow2 = document.getElementById("portfolio-row2-track");
+                    masterTimeline.fromTo(portfolioRow1Wrapper, { x: "-100%", opacity: 0 }, { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.5 }, "portfolio");
+                    masterTimeline.to(portfolioRow1, { x: () => -(portfolioRow1.scrollWidth - portfolioRow1.clientWidth), ease: "none", duration: 2.0 }, "portfolio+=1.0");
+                    masterTimeline.fromTo(portfolioRow2Wrapper, { x: "100%", opacity: 0 }, { x: "0%", opacity: 1, ease: "power2.inOut", duration: 1.5 }, "portfolio");
+                    masterTimeline.fromTo(portfolioRow2, { x: () => -(portfolioRow2.scrollWidth - portfolioRow2.clientWidth) }, { x: 0, ease: "none", duration: 2.0 }, "portfolio+=1.0");
+
+                    ScrollTrigger.create({ animation: masterTimeline, trigger: '.horizontal-scroll-wrapper', pin: true, scrub: 3, end: "+=10000", invalidateOnRefresh: true });
+
+                } else {
+                    // --- MOBILE ANIMATIONS ---
+                    gsap.utils.toArray('#services h2 .word').forEach(word => { gsap.from(word.parentNode, { y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: word.closest('section'), start: "top 80%" } }); });
+                    gsap.from("#about .word", { y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', stagger: 0.05, scrollTrigger: { trigger: "#about", start: "top 80%" } });
+                    gsap.from(".hybrid-card-figure", { y: 50, opacity: 0, stagger: 0.15, duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: ".cards-container", start: "top 80%" } });
+                    gsap.from("#portfolio .portfolio-heading", { xPercent: 50, opacity: 0, ease: 'power2.out', scrollTrigger: { trigger: "#portfolio", start: "top 70%", end: "top 40%", scrub: 2 } });
+                    gsap.to(".portfolio-marquee-wrapper", { opacity: 1, x: 0, duration: 1.5, stagger: 0.2, ease: 'power2.out', scrollTrigger: { trigger: "#portfolio", start: "top 60%" } });
+
+                    document.querySelectorAll(".portfolio-marquee-content").forEach(track => { track.innerHTML += track.innerHTML; });
+                    gsap.to("#portfolio-row1-track", { xPercent: -50, ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 10 } });
+                    gsap.fromTo("#portfolio-row2-track", { xPercent: -50 }, { xPercent: 0, ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 10 } });
+                }
+
+                // --- PROJECTS SECTION ANIMATION (FLOATING) ---
+                if (window.innerWidth > 768) { // Only run complex animation on desktop
+                    const projectsTl = gsap.timeline({
+                        scrollTrigger: { trigger: "#projects", start: "top top", end: "+=200%", pin: true, scrub: 1.5 }
+                    });
+                    projectsTl.fromTo("#projects h2", { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' });
+                    projectsTl.to("#projects h2", { opacity: 0, scale: 0.8, ease: 'power1.in', duration: 0.6 }, ">0.5");
+
+                    const items = gsap.utils.toArray(".project-item");
+                    projectsTl.to(items, {
+                        opacity: 1, scale: 0.6,
+                        rotationZ: () => gsap.utils.random(-15, 15),
+                        x: () => gsap.utils.random(-30, 30),
+                        y: () => gsap.utils.random(-30, 30),
+                        stagger: { amount: 1.2, from: "random" },
+                        ease: "power2.out", duration: 1.5
+                    }, 0.3);
+
+                    items.forEach(item => {
+                        gsap.to(item, {
+                            x: `+=${gsap.utils.random(-20, 20)}`, y: `+=${gsap.utils.random(-20, 20)}`,
+                            rotationZ: `+=${gsap.utils.random(-10, 10)}`,
+                            repeat: -1, yoyo: true, ease: "sine.inOut",
+                            duration: gsap.utils.random(4, 7)
+                        });
+                    });
+
+                } else {
+                    // Simple fade-in for mobile projects section heading
+                    gsap.from("#projects h2", {
+                        opacity: 0, y: 30, duration: 1, ease: 'power2.out',
+                        scrollTrigger: { trigger: "#projects", start: "top 80%" }
+                    });
+                    // Simple fade-in for mobile project items
+                    gsap.from(".project-item", {
+                        opacity: 0, y: 30, stagger: 0.1, duration: 0.8, ease: 'power2.out',
+                        scrollTrigger: { trigger: "#projects", start: "top 70%" }
+                    });
+                }
+
+                // --- STACKED CARDS SECTION ---
+                // --- STACKED CARDS SECTION ---
+                if (window.innerWidth > 900) {
+
+                    // 1. Create the Draggable instances, but start them as DISABLED
+                    const stackedCardDraggables = Draggable.create(".stacked-card", {
+                        type: "x,y",
+                        bounds: "#stacked-cards", // Keep them inside the section
+                        inertia: true,
+                        enabled: false, // <-- IMPORTANT: Start disabled
+                        onDragStart: function () {
+                            gsap.to(this.target, {
+                                zIndex: 10,
+                                scale: this.target.classList.contains("card-2") ? 1.03 : 0.93,
+                                duration: 0.2
+                            });
+                        },
+                        onDragEnd: function () {
+                            const cardClass = this.target.classList[1];
+                            let originalZ = 1;
+                            let originalScale = 0.9;
+                            if (cardClass === "card-2") { originalZ = 3; originalScale = 1; }
+                            else if (cardClass === "card-3") { originalZ = 2; }
+
+                            gsap.to(this.target, {
+                                zIndex: originalZ,
+                                scale: originalScale,
+                                duration: 0.2
+                            });
+                        }
+                    });
+
+                    // 2. This is your ORIGINAL scroll-based timeline
+                    const stackedCardsTl = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: "#stacked-cards",
+                            start: "top top",
+                            end: "+=4000",
+                            pin: true,
+                            scrub: 1.5,
+
+                            // 3. ADD THIS onUpdate CALLBACK
+                            onUpdate: (self) => {
+                                // When the scroll animation is 99% complete...
+                                if (self.progress > 0.99) {
+                                    // ...enable dragging.
+                                    stackedCardDraggables.forEach(d => d.enable());
+                                } else {
+                                    // ...otherwise, disable dragging.
+                                    stackedCardDraggables.forEach(d => d.disable());
+                                }
+                            }
+                        }
+                    });
+
+                    // --- This is all your original animation code, restored ---
+                    stackedCardsTl.from("#stacked-cards h2 .word", {
+                        y: 30, opacity: 0, filter: 'blur(8px)', stagger: 0.08,
+                        ease: 'power3.out',
+                        duration: 1
+                    });
+                    gsap.set(".card-1", { yPercent: 120, xPercent: 0, opacity: 0, rotate: 0, scale: 0.8, filter: 'blur(5px)' });
+                    gsap.set(".card-2", { yPercent: 120, xPercent: 0, opacity: 0, rotate: 0, scale: 0.8, filter: 'blur(5px)' });
+                    gsap.set(".card-3", { yPercent: 120, xPercent: 0, opacity: 0, rotate: 0, scale: 0.8, filter: 'blur(5px)' });
+                    stackedCardsTl.to(".card-1", {
+                        yPercent: 0, xPercent: -5, opacity: 1, rotate: -8, scale: 0.9,
+                        filter: 'blur(0px)', ease: 'back.out(1.4)', duration: 1
+                    }, "+=0.5");
+                    stackedCardsTl.to(".card-2", {
+                        yPercent: -5, xPercent: 0, opacity: 1, rotate: 0, scale: 1,
+                        filter: 'blur(0px)', ease: 'back.out(1.4)', duration: 1
+                    }, "+=0.5");
+                    stackedCardsTl.to(".card-3", {
+                        yPercent: 0, xPercent: 5, opacity: 1, rotate: 8, scale: 0.9,
+                        filter: 'blur(0px)', ease: 'back.out(1.4)', duration: 1
+                    }, "+=0.5");
+
+                } else {
+                    // --- This is your ORIGINAL mobile animation ---
+                    gsap.from("#stacked-cards h2 .word", {
+                        y: 30, opacity: 0, filter: 'blur(8px)', stagger: 0.08,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: "#stacked-cards",
+                            start: "top 80%",
+                        }
+                    });
+                    const stackedCardsTl = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: ".cards-stack-wrapper",
+                            start: "top 85%",
+                        }
+                    });
+                    const cardInEase = 'back.out(1.7)';
+                    const cardInTime = 1.2;
+                    const cardInStagger = 0.25;
+                    gsap.set(".stacked-card", { yPercent: 100, xPercent: 0, opacity: 0, rotate: 0, scale: 0.8, filter: 'blur(5px)' });
+                    stackedCardsTl.to(".card-1", {
+                        yPercent: 0, xPercent: -5, opacity: 1, rotate: -8,
+                        scale: 0.9,
+                        filter: 'blur(0px)',
+                        ease: cardInEase,
+                        duration: cardInTime
+                    }, 0);
+                    stackedCardsTl.to(".card-2", {
+                        yPercent: -5, xPercent: 0, opacity: 1, rotate: 0,
+                        scale: 1,
+                        filter: 'blur(0px)',
+                        ease: cardInEase,
+                        duration: cardInTime
+                    }, cardInStagger);
+                    stackedCardsTl.to(".card-3", {
+                        yPercent: 0, xPercent: 5, opacity: 1, rotate: 8,
+                        scale: 0.9,
+                        filter: 'blur(0px)',
+                        ease: cardInEase,
+                        duration: cardInTime
+                    }, cardInStagger * 2);
+                }
+                // --- FOOTER ANIMATIONS ---
+                // --- FOOTER ANIMATIONS ---
+                gsap.to(".background-controller", { opacity: 0, ease: "power1.inOut", scrollTrigger: { trigger: ".footer-wrapper", start: "top 80%", end: "top 50%", scrub: 2 } });
+                const footerModelTl = gsap.timeline({ scrollTrigger: { trigger: ".footer-wrapper", start: "top 80%", end: "bottom bottom", scrub: 2.5 } });
+
+                // 🎯 CHANGE THIS BLOCK:
+                footerModelTl.to(app.qModel.position, { x: 0, y: 0, z: 2.5, ease: 'power2.inOut' }, 0);
+                footerModelTl.to(app.qModel.scale, { x: 2.5, y: 2.5, z: 2.5, ease: 'power2.inOut' }, 0); // <--- MODIFIED TO 2.5 (from 0.5)
+                footerModelTl.to(app.qModel.rotation, { x: 0.2, y: Math.PI * 2, z: 0, ease: 'power2.inOut' }, 0);
+                const footerContentTl = gsap.timeline({ scrollTrigger: { trigger: "footer", start: "top 80%" } });
+                footerContentTl.to("footer .reveal-mask", { clipPath: 'inset(0 0% 0 0)', duration: 4.0, stagger: 0.2, ease: 'power4.out' });
+                footerContentTl.to("footer .fade-in-anim", { opacity: 1, y: 0, duration: 1.5, stagger: 0.1, ease: 'power3.out' }, "-=1.5");
+
+                // --- FINAL 3D MODEL ROTATION (Kept separate from the footer transition) ---
+                const tl = gsap.timeline({ scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 2.5 } });
+                tl.to(app.qModel.rotation, { ease: 'none', duration: 4 }, 0);
+                tl.to(app.qModel.position, { x: 0, Y: 0, ease: 'power2.inOut', duration: 2 }, 0);
             }
-
-            // Simple objects to mimic React refs
-            const webglRef = { current: null };
-            const resizeObserverRef = { current: null };
-            const rafRef = { current: null };
-            const intersectionObserverRef = { current: null };
-            const isVisibleRef = { current: true };
-            const resizeRafRef = { current: null };
-
-            // Destructure config
-            const {
-                mouseForce, cursorSize, isViscous, viscous,
-                iterationsViscous, iterationsPoisson, dt, BFECC,
-                resolution, isBounce, colors, autoDemo,
-                autoSpeed, autoIntensity, takeoverDuration,
-                autoResumeDelay, autoRampDuration
-            } = liquidEtherConfig;
+        }
 
 
-            // --- LIQUID ETHER CLASSES AND FUNCTIONS (Copied Verbatim) ---
-             function makePaletteTexture(stops) {
-                 let arr;
-                 if (Array.isArray(stops) && stops.length > 0) {
-                     if (stops.length === 1) { arr = [stops[0], stops[0]]; } else { arr = stops; }
-                 } else { arr = ['#ffffff', '#ffffff']; }
-                 const w = arr.length; const data = new Uint8Array(w * 4);
-                 for (let i = 0; i < w; i++) {
-                     const c = new THREE.Color(arr[i]);
-                     data[i * 4 + 0] = Math.round(c.r * 255); data[i * 4 + 1] = Math.round(c.g * 255);
-                     data[i * 4 + 2] = Math.round(c.b * 255); data[i * 4 + 3] = 255;
-                 }
-                 const tex = new THREE.DataTexture(data, w, 1, THREE.RGBAFormat);
-                 tex.magFilter = THREE.LinearFilter; tex.minFilter = THREE.LinearFilter;
-                 tex.wrapS = THREE.ClampToEdgeWrapping; tex.wrapT = THREE.ClampToEdgeWrapping;
-                 tex.generateMipmaps = false; tex.needsUpdate = true; return tex;
-             }
-             const paletteTex = makePaletteTexture(colors);
-             const bgVec4 = new THREE.Vector4(0, 0, 0, 0); // Transparent background for the effect itself
 
-             class CommonClass { /* ... (CommonClass code copied verbatim) ... */
-                constructor() { this.width = 0; this.height = 0; this.aspect = 1; this.pixelRatio = 1; this.isMobile = false; this.breakpoint = 768; this.fboWidth = null; this.fboHeight = null; this.time = 0; this.delta = 0; this.container = null; this.renderer = null; this.clock = null; }
-                init(container) { this.container = container; this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2); this.resize(); this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); this.renderer.autoClear = false; this.renderer.setClearColor(new THREE.Color(0x000000), 0); this.renderer.setPixelRatio(this.pixelRatio); this.renderer.setSize(this.width, this.height); this.renderer.domElement.style.width = '100%'; this.renderer.domElement.style.height = '100%'; this.renderer.domElement.style.display = 'block'; this.clock = new THREE.Clock(); this.clock.start(); }
-                resize() { if (!this.container) return; const rect = this.container.getBoundingClientRect(); this.width = Math.max(1, Math.floor(rect.width)); this.height = Math.max(1, Math.floor(rect.height)); this.aspect = this.width / this.height; if (this.renderer) this.renderer.setSize(this.width, this.height, false); }
-                update() { this.delta = this.clock.getDelta(); this.time += this.delta; }
-             }
-             const Common = new CommonClass();
-
-             class MouseClass { /* ... (MouseClass code copied verbatim) ... */
-                constructor() { this.mouseMoved = false; this.coords = new THREE.Vector2(); this.coords_old = new THREE.Vector2(); this.diff = new THREE.Vector2(); this.timer = null; this.container = null; this._onMouseMove = this.onDocumentMouseMove.bind(this); this._onTouchStart = this.onDocumentTouchStart.bind(this); this._onTouchMove = this.onDocumentTouchMove.bind(this); this._onMouseEnter = this.onMouseEnter.bind(this); this._onMouseLeave = this.onMouseLeave.bind(this); this._onTouchEnd = this.onTouchEnd.bind(this); this.isHoverInside = false; this.hasUserControl = false; this.isAutoActive = false; this.autoIntensity = 2.0; this.takeoverActive = false; this.takeoverStartTime = 0; this.takeoverDuration = 0.25; this.takeoverFrom = new THREE.Vector2(); this.takeoverTo = new THREE.Vector2(); this.onInteract = null; }
-                init(container) { this.container = container; container.addEventListener('mousemove', this._onMouseMove, false); container.addEventListener('touchstart', this._onTouchStart, false); container.addEventListener('touchmove', this._onTouchMove, false); container.addEventListener('mouseenter', this._onMouseEnter, false); container.addEventListener('mouseleave', this._onMouseLeave, false); container.addEventListener('touchend', this._onTouchEnd, false); }
-                dispose() { if (!this.container) return; this.container.removeEventListener('mousemove', this._onMouseMove, false); this.container.removeEventListener('touchstart', this._onTouchStart, false); this.container.removeEventListener('touchmove', this._onTouchMove, false); this.container.removeEventListener('mouseenter', this._onMouseEnter, false); this.container.removeEventListener('mouseleave', this._onMouseLeave, false); this.container.removeEventListener('touchend', this._onTouchEnd, false); }
-                setCoords(x, y) { if (!this.container) return; if (this.timer) clearTimeout(this.timer); const rect = this.container.getBoundingClientRect(); const nx = (x - rect.left) / rect.width; const ny = (y - rect.top) / rect.height; this.coords.set(nx * 2 - 1, -(ny * 2 - 1)); this.mouseMoved = true; this.timer = setTimeout(() => { this.mouseMoved = false; }, 100); }
-                setNormalized(nx, ny) { this.coords.set(nx, ny); this.mouseMoved = true; }
-                onDocumentMouseMove(event) { if (this.onInteract) this.onInteract(); if (this.isAutoActive && !this.hasUserControl && !this.takeoverActive) { const rect = this.container.getBoundingClientRect(); const nx = (event.clientX - rect.left) / rect.width; const ny = (event.clientY - rect.top) / rect.height; this.takeoverFrom.copy(this.coords); this.takeoverTo.set(nx * 2 - 1, -(ny * 2 - 1)); this.takeoverStartTime = performance.now(); this.takeoverActive = true; this.hasUserControl = true; this.isAutoActive = false; return; } this.setCoords(event.clientX, event.clientY); this.hasUserControl = true; }
-                onDocumentTouchStart(event) { if (event.touches.length === 1) { const t = event.touches[0]; if (this.onInteract) this.onInteract(); this.setCoords(t.pageX, t.pageY); this.hasUserControl = true; } }
-                onDocumentTouchMove(event) { if (event.touches.length === 1) { const t = event.touches[0]; if (this.onInteract) this.onInteract(); this.setCoords(t.pageX, t.pageY); } }
-                onTouchEnd() { this.isHoverInside = false; }
-                onMouseEnter() { this.isHoverInside = true; }
-                onMouseLeave() { this.isHoverInside = false; }
-                update() { if (this.takeoverActive) { const t = (performance.now() - this.takeoverStartTime) / (this.takeoverDuration * 1000); if (t >= 1) { this.takeoverActive = false; this.coords.copy(this.takeoverTo); this.coords_old.copy(this.coords); this.diff.set(0, 0); } else { const k = t * t * (3 - 2 * t); this.coords.copy(this.takeoverFrom).lerp(this.takeoverTo, k); } } this.diff.subVectors(this.coords, this.coords_old); this.coords_old.copy(this.coords); if (this.coords_old.x === 0 && this.coords_old.y === 0) this.diff.set(0, 0); if (this.isAutoActive && !this.takeoverActive) this.diff.multiplyScalar(this.autoIntensity); }
-             }
-             const Mouse = new MouseClass();
-
-             class AutoDriver { /* ... (AutoDriver code copied verbatim) ... */
-                constructor(mouse, manager, opts) { this.mouse = mouse; this.manager = manager; this.enabled = opts.enabled; this.speed = opts.speed; this.resumeDelay = opts.resumeDelay || 3000; this.rampDurationMs = (opts.rampDuration || 0) * 1000; this.active = false; this.current = new THREE.Vector2(0, 0); this.target = new THREE.Vector2(); this.lastTime = performance.now(); this.activationTime = 0; this.margin = 0.2; this._tmpDir = new THREE.Vector2(); this.pickNewTarget(); }
-                pickNewTarget() { const r = Math.random; this.target.set((r() * 2 - 1) * (1 - this.margin), (r() * 2 - 1) * (1 - this.margin)); }
-                forceStop() { this.active = false; this.mouse.isAutoActive = false; }
-                update() { if (!this.enabled) return; const now = performance.now(); const idle = now - this.manager.lastUserInteraction; if (idle < this.resumeDelay) { if (this.active) this.forceStop(); return; } if (this.mouse.isHoverInside) { if (this.active) this.forceStop(); return; } if (!this.active) { this.active = true; this.current.copy(this.mouse.coords); this.lastTime = now; this.activationTime = now; } if (!this.active) return; this.mouse.isAutoActive = true; let dtSec = (now - this.lastTime) / 1000; this.lastTime = now; if (dtSec > 0.2) dtSec = 0.016; const dir = this._tmpDir.subVectors(this.target, this.current); const dist = dir.length(); if (dist < 0.01) { this.pickNewTarget(); return; } dir.normalize(); let ramp = 1; if (this.rampDurationMs > 0) { const t = Math.min(1, (now - this.activationTime) / this.rampDurationMs); ramp = t * t * (3 - 2 * t); } const step = this.speed * dtSec * ramp; const move = Math.min(step, dist); this.current.addScaledVector(dir, move); this.mouse.setNormalized(this.current.x, this.current.y); }
-             }
-
-             // Shaders (Copied Verbatim)
-             const face_vert=`attribute vec3 position;uniform vec2 px;uniform vec2 boundarySpace;varying vec2 uv;precision highp float;void main(){vec3 pos=position;vec2 scale=1.-boundarySpace*2.;pos.xy=pos.xy*scale;uv=vec2(.5)+(pos.xy)*.5;gl_Position=vec4(pos,1.);}`;
-             const line_vert=`attribute vec3 position;uniform vec2 px;precision highp float;varying vec2 uv;void main(){vec3 pos=position;uv=.5+pos.xy*.5;vec2 n=sign(pos.xy);pos.xy=abs(pos.xy)-px*1.;pos.xy*=n;gl_Position=vec4(pos,1.);}`;
-             const mouse_vert=`precision highp float;attribute vec3 position;attribute vec2 uv;uniform vec2 center;uniform vec2 scale;uniform vec2 px;varying vec2 vUv;void main(){vec2 pos=position.xy*scale*2.*px+center;vUv=uv;gl_Position=vec4(pos,0.,1.);}`;
-             const advection_frag=`precision highp float;uniform sampler2D velocity;uniform float dt;uniform bool isBFECC;uniform vec2 fboSize;uniform vec2 px;varying vec2 uv;void main(){vec2 ratio=max(fboSize.x,fboSize.y)/fboSize;if(isBFECC==false){vec2 vel=texture2D(velocity,uv).xy;vec2 uv2=uv-vel*dt*ratio;vec2 newVel=texture2D(velocity,uv2).xy;gl_FragColor=vec4(newVel,0.,0.);}else{vec2 spot_new=uv;vec2 vel_old=texture2D(velocity,uv).xy;vec2 spot_old=spot_new-vel_old*dt*ratio;vec2 vel_new1=texture2D(velocity,spot_old).xy;vec2 spot_new2=spot_old+vel_new1*dt*ratio;vec2 error=spot_new2-spot_new;vec2 spot_new3=spot_new-error/2.;vec2 vel_2=texture2D(velocity,spot_new3).xy;vec2 spot_old2=spot_new3-vel_2*dt*ratio;vec2 newVel2=texture2D(velocity,spot_old2).xy;gl_FragColor=vec4(newVel2,0.,0.);}}`;
-             const color_frag=`precision highp float;uniform sampler2D velocity;uniform sampler2D palette;uniform vec4 bgColor;varying vec2 uv;void main(){vec2 vel=texture2D(velocity,uv).xy;float lenv=clamp(length(vel),0.,1.);vec3 c=texture2D(palette,vec2(lenv,.5)).rgb;vec3 outRGB=mix(bgColor.rgb,c,lenv);float outA=mix(bgColor.a,1.,lenv);gl_FragColor=vec4(outRGB,outA);}`;
-             const divergence_frag=`precision highp float;uniform sampler2D velocity;uniform float dt;uniform vec2 px;varying vec2 uv;void main(){float x0=texture2D(velocity,uv-vec2(px.x,0.)).x;float x1=texture2D(velocity,uv+vec2(px.x,0.)).x;float y0=texture2D(velocity,uv-vec2(0.,px.y)).y;float y1=texture2D(velocity,uv+vec2(0.,px.y)).y;float divergence=(x1-x0+y1-y0)/2.;gl_FragColor=vec4(divergence/dt);}`;
-             const externalForce_frag=`precision highp float;uniform vec2 force;uniform vec2 center;uniform vec2 scale;uniform vec2 px;varying vec2 vUv;void main(){vec2 circle=(vUv-.5)*2.;float d=1.-min(length(circle),1.);d*=d;gl_FragColor=vec4(force*d,0.,1.);}`;
-             const poisson_frag=`precision highp float;uniform sampler2D pressure;uniform sampler2D divergence;uniform vec2 px;varying vec2 uv;void main(){float p0=texture2D(pressure,uv+vec2(px.x*2.,0.)).r;float p1=texture2D(pressure,uv-vec2(px.x*2.,0.)).r;float p2=texture2D(pressure,uv+vec2(0.,px.y*2.)).r;float p3=texture2D(pressure,uv-vec2(0.,px.y*2.)).r;float div=texture2D(divergence,uv).r;float newP=(p0+p1+p2+p3)/4.-div;gl_FragColor=vec4(newP);}`;
-             const pressure_frag=`precision highp float;uniform sampler2D pressure;uniform sampler2D velocity;uniform vec2 px;uniform float dt;varying vec2 uv;void main(){float step=1.;float p0=texture2D(pressure,uv+vec2(px.x*step,0.)).r;float p1=texture2D(pressure,uv-vec2(px.x*step,0.)).r;float p2=texture2D(pressure,uv+vec2(0.,px.y*step)).r;float p3=texture2D(pressure,uv-vec2(0.,px.y*step)).r;vec2 v=texture2D(velocity,uv).xy;vec2 gradP=vec2(p0-p1,p2-p3)*.5;v=v-gradP*dt;gl_FragColor=vec4(v,0.,1.);}`;
-             const viscous_frag=`precision highp float;uniform sampler2D velocity;uniform sampler2D velocity_new;uniform float v;uniform vec2 px;uniform float dt;varying vec2 uv;void main(){vec2 old=texture2D(velocity,uv).xy;vec2 new0=texture2D(velocity_new,uv+vec2(px.x*2.,0.)).xy;vec2 new1=texture2D(velocity_new,uv-vec2(px.x*2.,0.)).xy;vec2 new2=texture2D(velocity_new,uv+vec2(0.,px.y*2.)).xy;vec2 new3=texture2D(velocity_new,uv-vec2(0.,px.y*2.)).xy;vec2 newv=4.*old+v*dt*(new0+new1+new2+new3);newv/=4.*(1.+v*dt);gl_FragColor=vec4(newv,0.,0.);}`;
-
-             // Simulation Classes (Copied Verbatim)
-             class ShaderPass{constructor(props){this.props=props||{};this.uniforms=this.props.material?.uniforms;this.scene=null;this.camera=null;this.material=null;this.geometry=null;this.plane=null}init(){this.scene=new THREE.Scene;this.camera=new THREE.Camera;if(this.uniforms){this.material=new THREE.RawShaderMaterial(this.props.material);this.geometry=new THREE.PlaneGeometry(2,2);this.plane=new THREE.Mesh(this.geometry,this.material);this.scene.add(this.plane)}}update(){Common.renderer.setRenderTarget(this.props.output||null);Common.renderer.render(this.scene,this.camera);Common.renderer.setRenderTarget(null)}}
-             class Advection extends ShaderPass{constructor(simProps){super({material:{vertexShader:face_vert,fragmentShader:advection_frag,uniforms:{boundarySpace:{value:simProps.cellScale},px:{value:simProps.cellScale},fboSize:{value:simProps.fboSize},velocity:{value:simProps.src.texture},dt:{value:simProps.dt},isBFECC:{value:true}}},output:simProps.dst});this.uniforms=this.props.material.uniforms;this.init()}init(){super.init();this.createBoundary()}createBoundary(){const boundaryG=new THREE.BufferGeometry;const vertices_boundary=new Float32Array([-1,-1,0,-1,1,0,-1,1,0,1,1,0,1,1,0,1,-1,0,1,-1,0,-1,-1,0]);boundaryG.setAttribute('position',new THREE.BufferAttribute(vertices_boundary,3));const boundaryM=new THREE.RawShaderMaterial({vertexShader:line_vert,fragmentShader:advection_frag,uniforms:this.uniforms});this.line=new THREE.LineSegments(boundaryG,boundaryM);this.scene.add(this.line)}update({dt,isBounce,BFECC}){this.uniforms.dt.value=dt;this.line.visible=isBounce;this.uniforms.isBFECC.value=BFECC;super.update()}}
-             class ExternalForce extends ShaderPass{constructor(simProps){super({output:simProps.dst});this.init(simProps)}init(simProps){super.init();const mouseG=new THREE.PlaneGeometry(1,1);const mouseM=new THREE.RawShaderMaterial({vertexShader:mouse_vert,fragmentShader:externalForce_frag,blending:THREE.AdditiveBlending,depthWrite:false,uniforms:{px:{value:simProps.cellScale},force:{value:new THREE.Vector2(0,0)},center:{value:new THREE.Vector2(0,0)},scale:{value:new THREE.Vector2(simProps.cursor_size,simProps.cursor_size)}}});this.mouse=new THREE.Mesh(mouseG,mouseM);this.scene.add(this.mouse)}update(props){const forceX=Mouse.diff.x/2*props.mouse_force;const forceY=Mouse.diff.y/2*props.mouse_force;const cursorSizeX=props.cursor_size*props.cellScale.x;const cursorSizeY=props.cursor_size*props.cellScale.y;const centerX=Math.min(Math.max(Mouse.coords.x,-1+cursorSizeX+props.cellScale.x*2),1-cursorSizeX-props.cellScale.x*2);const centerY=Math.min(Math.max(Mouse.coords.y,-1+cursorSizeY+props.cellScale.y*2),1-cursorSizeY-props.cellScale.y*2);const uniforms=this.mouse.material.uniforms;uniforms.force.value.set(forceX,forceY);uniforms.center.value.set(centerX,centerY);uniforms.scale.value.set(props.cursor_size,props.cursor_size);super.update()}}
-             class Viscous extends ShaderPass{constructor(simProps){super({material:{vertexShader:face_vert,fragmentShader:viscous_frag,uniforms:{boundarySpace:{value:simProps.boundarySpace},velocity:{value:simProps.src.texture},velocity_new:{value:simProps.dst_.texture},v:{value:simProps.viscous},px:{value:simProps.cellScale},dt:{value:simProps.dt}}},output:simProps.dst,output0:simProps.dst_,output1:simProps.dst});this.init()}update({viscous,iterations,dt}){let fbo_in,fbo_out;this.uniforms.v.value=viscous;for(let i=0;i<iterations;i++){if(i%2===0){fbo_in=this.props.output0;fbo_out=this.props.output1}else{fbo_in=this.props.output1;fbo_out=this.props.output0}this.uniforms.velocity_new.value=fbo_in.texture;this.props.output=fbo_out;this.uniforms.dt.value=dt;super.update()}return fbo_out}}
-             class Divergence extends ShaderPass{constructor(simProps){super({material:{vertexShader:face_vert,fragmentShader:divergence_frag,uniforms:{boundarySpace:{value:simProps.boundarySpace},velocity:{value:simProps.src.texture},px:{value:simProps.cellScale},dt:{value:simProps.dt}}},output:simProps.dst});this.init()}update({vel}){this.uniforms.velocity.value=vel.texture;super.update()}}
-             class Poisson extends ShaderPass{constructor(simProps){super({material:{vertexShader:face_vert,fragmentShader:poisson_frag,uniforms:{boundarySpace:{value:simProps.boundarySpace},pressure:{value:simProps.dst_.texture},divergence:{value:simProps.src.texture},px:{value:simProps.cellScale}}},output:simProps.dst,output0:simProps.dst_,output1:simProps.dst});this.init()}update({iterations}){let p_in,p_out;for(let i=0;i<iterations;i++){if(i%2===0){p_in=this.props.output0;p_out=this.props.output1}else{p_in=this.props.output1;p_out=this.props.output0}this.uniforms.pressure.value=p_in.texture;this.props.output=p_out;super.update()}return p_out}}
-             class Pressure extends ShaderPass{constructor(simProps){super({material:{vertexShader:face_vert,fragmentShader:pressure_frag,uniforms:{boundarySpace:{value:simProps.boundarySpace},pressure:{value:simProps.src_p.texture},velocity:{value:simProps.src_v.texture},px:{value:simProps.cellScale},dt:{value:simProps.dt}}},output:simProps.dst});this.init()}update({vel,pressure}){this.uniforms.velocity.value=vel.texture;this.uniforms.pressure.value=pressure.texture;super.update()}}
-             class Simulation{constructor(options){this.options={iterations_poisson:32,iterations_viscous:32,mouse_force:20,resolution:.5,cursor_size:100,viscous:30,isBounce:false,dt:.014,isViscous:false,BFECC:true,...options};this.fbos={vel_0:null,vel_1:null,vel_viscous0:null,vel_viscous1:null,div:null,pressure_0:null,pressure_1:null};this.fboSize=new THREE.Vector2;this.cellScale=new THREE.Vector2;this.boundarySpace=new THREE.Vector2;this.init()}init(){this.calcSize();this.createAllFBO();this.createShaderPass()}getFloatType(){const isIOS=/(iPad|iPhone|iPod)/i.test(navigator.userAgent);return isIOS?THREE.HalfFloatType:THREE.FloatType}createAllFBO(){const type=this.getFloatType();const opts={type,depthBuffer:false,stencilBuffer:false,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,wrapS:THREE.ClampToEdgeWrapping,wrapT:THREE.ClampToEdgeWrapping};for(let key in this.fbos){this.fbos[key]=new THREE.WebGLRenderTarget(this.fboSize.x,this.fboSize.y,opts)}}createShaderPass(){this.advection=new Advection({cellScale:this.cellScale,fboSize:this.fboSize,dt:this.options.dt,src:this.fbos.vel_0,dst:this.fbos.vel_1});this.externalForce=new ExternalForce({cellScale:this.cellScale,cursor_size:this.options.cursor_size,dst:this.fbos.vel_1});this.viscous=new Viscous({cellScale:this.cellScale,boundarySpace:this.boundarySpace,viscous:this.options.viscous,src:this.fbos.vel_1,dst:this.fbos.vel_viscous1,dst_:this.fbos.vel_viscous0,dt:this.options.dt});this.divergence=new Divergence({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src:this.fbos.vel_viscous0,dst:this.fbos.div,dt:this.options.dt});this.poisson=new Poisson({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src:this.fbos.div,dst:this.fbos.pressure_1,dst_:this.fbos.pressure_0});this.pressure=new Pressure({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src_p:this.fbos.pressure_0,src_v:this.fbos.vel_viscous0,dst:this.fbos.vel_0,dt:this.options.dt})}calcSize(){const width=Math.max(1,Math.round(this.options.resolution*Common.width));const height=Math.max(1,Math.round(this.options.resolution*Common.height));const px_x=1/width;const px_y=1/height;this.cellScale.set(px_x,px_y);this.fboSize.set(width,height)}resize(){this.calcSize();for(let key in this.fbos){this.fbos[key].setSize(this.fboSize.x,this.fboSize.y)}}update(){if(this.options.isBounce){this.boundarySpace.set(0,0)}else{this.boundarySpace.copy(this.cellScale)}this.advection.update({dt:this.options.dt,isBounce:this.options.isBounce,BFECC:this.options.BFECC});this.externalForce.update({cursor_size:this.options.cursor_size,mouse_force:this.options.mouse_force,cellScale:this.cellScale});let vel=this.fbos.vel_1;if(this.options.isViscous){vel=this.viscous.update({viscous:this.options.viscous,iterations:this.options.iterations_viscous,dt:this.options.dt})}this.divergence.update({vel});const pressure=this.poisson.update({iterations:this.options.iterations_poisson});this.pressure.update({vel,pressure})}}
-             class Output{constructor(){this.init()}init(){this.simulation=new Simulation;this.scene=new THREE.Scene;this.camera=new THREE.Camera;this.output=new THREE.Mesh(new THREE.PlaneGeometry(2,2),new THREE.RawShaderMaterial({vertexShader:face_vert,fragmentShader:color_frag,transparent:true,depthWrite:false,uniforms:{velocity:{value:this.simulation.fbos.vel_0.texture},boundarySpace:{value:new THREE.Vector2},palette:{value:paletteTex},bgColor:{value:bgVec4}}}));this.scene.add(this.output)}addScene(mesh){this.scene.add(mesh)}resize(){this.simulation.resize()}render(){Common.renderer.setRenderTarget(null);Common.renderer.render(this.scene,this.camera)}update(){this.simulation.update();this.render()}}
-             class WebGLManager{constructor(props){this.props=props;Common.init(props.$wrapper);Mouse.init(props.$wrapper);Mouse.autoIntensity=props.autoIntensity;Mouse.takeoverDuration=props.takeoverDuration;this.lastUserInteraction=performance.now();Mouse.onInteract=()=>{this.lastUserInteraction=performance.now();if(this.autoDriver)this.autoDriver.forceStop()};this.autoDriver=new AutoDriver(Mouse,this,{enabled:props.autoDemo,speed:props.autoSpeed,resumeDelay:props.autoResumeDelay,rampDuration:props.autoRampDuration});this.init();this._loop=this.loop.bind(this);this._resize=this.resize.bind(this);window.addEventListener('resize',this._resize);this._onVisibility=()=>{const hidden=document.hidden;if(hidden){this.pause()}else if(isVisibleRef.current){this.start()}};document.addEventListener('visibilitychange',this._onVisibility);this.running=false}init(){this.props.$wrapper.prepend(Common.renderer.domElement);this.output=new Output}resize(){Common.resize();this.output.resize()}render(){if(this.autoDriver)this.autoDriver.update();Mouse.update();Common.update();this.output.update()}loop(){if(!this.running)return;this.render();rafRef.current=requestAnimationFrame(this._loop)}start(){if(this.running)return;this.running=true;this._loop()}pause(){this.running=false;if(rafRef.current){cancelAnimationFrame(rafRef.current);rafRef.current=null}}dispose(){try{window.removeEventListener('resize',this._resize);document.removeEventListener('visibilitychange',this._onVisibility);Mouse.dispose();if(Common.renderer){const canvas=Common.renderer.domElement;if(canvas&&canvas.parentNode)canvas.parentNode.removeChild(canvas);Common.renderer.dispose()}}catch(e){void 0}}}
-
-             // --- Liquid Ether Initialization Logic ---
-             const container = mountRef.current;
-             // container styles are set via CSS now
-
-             const webgl = new WebGLManager({
-                 $wrapper: container, autoDemo, autoSpeed, autoIntensity,
-                 takeoverDuration, autoResumeDelay, autoRampDuration
-             });
-             webglRef.current = webgl;
-
-             function applyOptionsFromProps() {
-                 if (!webglRef.current) return;
-                 const sim = webglRef.current.output?.simulation;
-                 if (!sim) return;
-                 const prevRes = sim.options.resolution;
-                 const { mouseForce, cursorSize, isViscous, viscous, iterationsViscous, iterationsPoisson, dt, BFECC, resolution, isBounce, autoDemo, autoSpeed, autoIntensity, takeoverDuration, autoResumeDelay, autoRampDuration } = liquidEtherConfig; // Use the correct config object
-                 Object.assign(sim.options, { mouse_force: mouseForce, cursor_size: cursorSize, isViscous, viscous, iterations_viscous: iterationsViscous, iterations_poisson: iterationsPoisson, dt, BFECC, resolution, isBounce });
-                 if (webglRef.current.autoDriver) {
-                     const driver = webglRef.current.autoDriver;
-                     driver.enabled = autoDemo; driver.speed = autoSpeed; driver.resumeDelay = autoResumeDelay; driver.rampDurationMs = autoRampDuration * 1000;
-                     if (driver.mouse) { driver.mouse.autoIntensity = autoIntensity; driver.mouse.takeoverDuration = takeoverDuration; }
-                 }
-                 if (resolution !== prevRes) { sim.resize(); }
-             }
-             applyOptionsFromProps();
-
-             // Only start if the section is initially visible (or always start if IntersectionObserver handles it)
-             // webgl.start(); // Start is handled by IntersectionObserver
-
-             // IntersectionObserver (Copied Verbatim, targets the #liquid-ether-projects-bg container)
-             const io = new IntersectionObserver( entries => { const entry = entries[0]; const isVisible = entry.isIntersecting && entry.intersectionRatio > 0; isVisibleRef.current = isVisible; if (!webglRef.current) return; if (isVisible && !document.hidden) { webglRef.current.start(); } else { webglRef.current.pause(); } }, { threshold: [0, 0.01, 0.1] });
-             io.observe(container);
-             intersectionObserverRef.current = io;
-
-             // ResizeObserver (Copied Verbatim, targets the #liquid-ether-projects-bg container)
-             const ro = new ResizeObserver(() => { if (!webglRef.current) return; if (resizeRafRef.current) cancelAnimationFrame(resizeRafRef.current); resizeRafRef.current = requestAnimationFrame(() => { if (!webglRef.current) return; webglRef.current.resize(); }); });
-             ro.observe(container);
-             resizeObserverRef.current = ro;
-
-             // Cleanup Logic (Copied Verbatim)
-             const cleanup = () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); if (resizeObserverRef.current) { try { resizeObserverRef.current.disconnect(); } catch (e) { void 0; } } if (intersectionObserverRef.current) { try { intersectionObserverRef.current.disconnect(); } catch (e) { void 0; } } if (webglRef.current) { webglRef.current.dispose(); } webglRef.current = null; };
-             window.addEventListener('beforeunload', cleanup);
-
-        }); // End of Liquid Ether DOMContentLoaded
-        // --- END OF LIQUID ETHER JS ---
-
-
-        // --- Load Event ---
-        window.addEventListener('load', () => {
-            initThree();      // Init 3D Q-Logo
-            initLightRays(); // Init OGL Light Rays
-            initAnimations(); // Init All GSAP Animations
-
+        // -----------------------------------------------------------------
+        // 5. MAIN INITIALIZATION
+        // -----------------------------------------------------------------
+        window.addEventListener('load', () => { 
+            ThreeSceneManager.init(); 
+            HybridCardManager.init();
+            AnimationManager.init(); 
+            const portfolioBlurConfig = {
+                target: "parent",
+                height: "8rem",   
+                strength: 3,
+                divCount: 6,
+                curve: "bezier",
+                exponential: true,
+                opacity: 1,
+            };
+            GradualBlurManager.create('#portfolio', { ...portfolioBlurConfig, position: "left" });
+            GradualBlurManager.create('#portfolio', { ...portfolioBlurConfig, position: "right" });
+ 
             loader.classList.add('hidden');
             ScrollTrigger.refresh();
-            joypixels.run();
+            if (typeof joypixels !== 'undefined') {
+                joypixels.run();
+            }
         });
+        const HybridCardManager = {
+            init: function () { 
+                const rotateAmplitude = 15;
+                const scaleOnHover = 1.08;
+                const maxDisplacementScale = 120;
+                const tiltLerpFactor = 0.08;
+                const decayLerpFactor = 0.1;
+                const decayTargetFade = 0.92;
+
+                const cards = document.querySelectorAll('.hybrid-card-figure');
+                if (cards.length === 0) return;
+
+                cards.forEach(figure => {
+                    const inner = figure.querySelector('.hybrid-card-inner');
+                    const caption = figure.querySelector('.hybrid-card-caption');
+                    const displacementMap = figure.querySelector('feDisplacementMap');
+
+                    if (!inner || !caption || !displacementMap) {
+                        console.warn('Hybrid card is missing required elements.', figure);
+                        return;
+                    }
+
+                    let isHovering = false;
+                    let lastMouseY = 0;
+                    let targetRotX = 0, targetRotY = 0;
+                    let currentRotX = 0, currentRotY = 0;
+                    let targetDisplacement = 0, currentDisplacement = 0;
+
+                    const setCaption = gsap.quickSetter(caption, "css");
+                    const setInner = gsap.quickSetter(inner, "css");
+                    const setFilter = gsap.quickSetter(displacementMap, "scale", "attr");
+
+                    // --- Main Animation Loop (runs on GSAP ticker) ---
+                    function updateAnimation() {
+                        if (!isHovering) return;
+
+                        // 1. Tilt Effect (using linear interpolation for smooth movement)
+                        currentRotX = gsap.utils.interpolate(currentRotX, targetRotX, tiltLerpFactor);
+                        currentRotY = gsap.utils.interpolate(currentRotY, targetRotY, tiltLerpFactor);
+                        setInner({ rotateX: currentRotX, rotateY: currentRotY });
+
+                        // 2. Decay Effect (smoothly apply distortion)
+                        currentDisplacement = gsap.utils.interpolate(currentDisplacement, targetDisplacement, decayLerpFactor);
+                        setFilter(currentDisplacement);
+
+                        // Fade out the target distortion slightly each frame if mouse stops
+                        targetDisplacement *= decayTargetFade;
+                    }
+
+                    function handleMouseMove(e) {
+                        if (!figure || !isHovering) return;
+                        const rect = figure.getBoundingClientRect();
+                        const offsetX = e.clientX - rect.left - rect.width / 2;
+                        const offsetY = e.clientY - rect.top - rect.height / 2;
+
+                        // Set rotation targets based on mouse position
+                        targetRotX = (offsetY / (rect.height / 2)) * -rotateAmplitude;
+                        targetRotY = (offsetX / (rect.width / 2)) * rotateAmplitude;
+
+                        // Caption Follow/Rotation (instant update)
+                        const velocityY = offsetY - lastMouseY;
+                        const rotateFigcaption = -velocityY * 0.6;
+                        lastMouseY = offsetY;
+                        const tooltipX = e.clientX - rect.left;
+                        const tooltipY = e.clientY - rect.top;
+                        setCaption({ x: tooltipX, y: tooltipY, rotate: rotateFigcaption });
+
+                        // Set max distortion target based on mouse speed (decay source)
+                        const cursorMovementIntensity = Math.min(Math.hypot(e.movementX, e.movementY), 50);
+                        targetDisplacement = (cursorMovementIntensity / 50) * maxDisplacementScale;
+                    }
+
+                    function handleMouseEnter() {
+                        isHovering = true;
+                        gsap.ticker.add(updateAnimation); // Start the animation loop
+
+                        // Scale up the card
+                        gsap.to(inner, { duration: 0.4, scale: scaleOnHover, ease: "power3.out" });
+                        // Show the caption
+                        gsap.to(caption, { duration: 0.2, opacity: 1, ease: "power1.out" });
+
+                        // Initial pulse
+                        currentDisplacement = 30;
+                        targetDisplacement = 0;
+                    }
+
+                    function handleMouseLeave() {
+                        isHovering = false;
+                        gsap.ticker.remove(updateAnimation); // Stop the animation loop
+
+                        // Reset effects smoothly with an elastic spring-back
+                        gsap.to(inner, { duration: 0.5, scale: 1, rotateX: 0, rotateY: 0, ease: "elastic.out(1, 0.6)" });
+                        gsap.to(caption, { duration: 0.4, opacity: 0, rotate: 0, x: 0, y: 0, ease: "power2.inOut" });
+                        gsap.to(displacementMap, { duration: 0.8, attr: { scale: 0 }, ease: "power3.out" });
+
+                        // Reset state
+                        lastMouseY = 0;
+                        targetRotX = 0; targetRotY = 0;
+                        currentRotX = 0; currentRotY = 0;
+                        targetDisplacement = 0; currentDisplacement = 0;
+                    }
+
+                    // Attach all event listeners
+                    figure.addEventListener('mousemove', handleMouseMove);
+                    figure.addEventListener('mouseenter', handleMouseEnter);
+                    figure.addEventListener('mouseleave', handleMouseLeave);
+                });
+            }
+        };
+
+
     </script>
 </body>
+
 </html>
