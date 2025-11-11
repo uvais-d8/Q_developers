@@ -494,7 +494,6 @@
             font-weight: 800;
             margin: 0;
             color: var(--purple);
-            text-transform: uppercase;
         }
 
         /* This is the wrapper for the rows */
@@ -621,7 +620,7 @@
         }
 
         .item-2 {
-            top: 25%;
+            top: 10%;
             left: 70%;
             background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
         }
@@ -647,7 +646,7 @@
 
         .item-6 {
             top: 5%;
-            left: 40%;
+            left: 30%;
             background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
         }
 
@@ -659,8 +658,8 @@
         }
 
         .item-8 {
-            top: 35%;
-            left: 40%;
+            top: 5%;
+            left: 50%;
             background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
             /* Reused */
         }
@@ -1874,15 +1873,18 @@
                     const panels = gsap.utils.toArray(".horizontal-track > section");
                     const masterTimeline = gsap.timeline();
 
-                    const stayTime = 1.0;
+                    const stayTime = 2.0;
                     const transitionTime = 1.0;
 
                     // --- 1. ABOUT SECTION ---
                     masterTimeline.to(horizontalTrack, { duration: stayTime }, "about");
-                    masterTimeline.to("#about .word", {
-                        y: 0, opacity: 1, filter: 'blur(0px)',
-                        stagger: 0.03, ease: 'power3.out', duration: 1.5
-                    }, "about");
+                    // Use the first word of the heading as the stagger trigger
+                    masterTimeline.fromTo("#about .word",
+                        { y: 30, opacity: 0, filter: 'blur(8px)' },
+                        {
+                            y: 0, opacity: 1, filter: 'blur(0px)',
+                            stagger: 0.03, ease: 'power3.out', duration: 1.5
+                        }, "about");
 
                     // --- 2. TRANSITION: About -> Services ---
                     masterTimeline.add("aboutLeave", `about+=${stayTime}`);
@@ -1901,14 +1903,38 @@
 
                     // --- MODIFIED SERVICES TIMELINE ---
                     const servicesTl = gsap.timeline();
-                    gsap.set(".services-heading", { x: '100vw', opacity: 0 });
+
+                    // CRITICAL FIX: Ensure the element starts in its initial (invisible) state 
+                    gsap.set(".services-heading h2 .word", { opacity: 0, filter: 'blur(8px)', y: 30 }); // NEW: Set initial state for words
+                    gsap.set(".services-heading", { opacity: 0, x: '50vw' });
                     gsap.set(".cards-container", { x: '100vw', opacity: 0 });
+
+                    // 2. Animate the words of the heading in place (The blur-in effect)
+                    servicesTl.fromTo(".services-heading h2 .word",
+                        { y: 30, opacity: 0, filter: 'blur(8px)' },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            filter: 'blur(0px)',
+                            stagger: 0.08, // Increased stagger for slower reveal
+                            ease: 'power3.out',
+                            duration: 1.8 // Increased duration for a slower, more deliberate fade-in
+                        }, "startServices+=0.2");
+                    // 1. Slide in the heading container
                     servicesTl.to(".services-heading", {
                         x: 0, opacity: 1,
                         ease: "power2.out",
                         duration: 0.8
-                    });
-                    servicesTl.to({}, { duration: 0.2 });
+                    }, "startServices"); // Added a label for synchronization
+
+                    // 2. Animate the words of the heading in place (The blur-in effect)
+                    servicesTl.to(".services-heading h2 .word",
+                        {
+                            y: 0, opacity: 1, filter: 'blur(0px)',
+                            stagger: 0.05, ease: 'power3.out', duration: 1.0
+                        }, "startServices+=0.2"); // Start the words slightly after the container starts moving in
+
+                    servicesTl.to({}, { duration: 0.2 }); // Wait a little
                     servicesTl.to(".services-heading", {
                         x: '-35vw', scale: 0.8, opacity: 0, filter: 'blur(5px)',
                         ease: "power2.in",
@@ -1921,8 +1947,6 @@
                         duration: 0.6
                     }, ">-=0.2");
                     masterTimeline.add(servicesTl, "aboutLeave-=" + (transitionTime / 2));
-
-                    // "Stay" on Services section
                     masterTimeline.to(horizontalTrack, { duration: stayTime }, "services");
 
                     // --- 3. TRANSITION: Services -> Portfolio ---
@@ -1966,27 +1990,48 @@
                     ScrollTrigger.create({ animation: masterTimeline, trigger: '.horizontal-scroll-wrapper', pin: true, scrub: 3, end: "+=10000", invalidateOnRefresh: true });
 
                 } else {
-                    // --- MOBILE ANIMATIONS ---
-                    gsap.utils.toArray('#services h2 .word').forEach(word => { gsap.from(word.parentNode, { y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: word.closest('section'), start: "top 80%" } }); });
-                    gsap.from("#about .word", { y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', stagger: 0.05, scrollTrigger: { trigger: "#about", start: "top 80%" } });
-                    gsap.from(".hybrid-card-figure", { y: 50, opacity: 0, stagger: 0.15, duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: ".cards-container", start: "top 80%" } });
-                    gsap.from("#portfolio .portfolio-heading", { xPercent: 50, opacity: 0, ease: 'power2.out', scrollTrigger: { trigger: "#portfolio", start: "top 70%", end: "top 40%", scrub: 2 } });
-                    gsap.to(".portfolio-marquee-wrapper", { opacity: 1, x: 0, duration: 1.5, stagger: 0.2, ease: 'power2.out', scrollTrigger: { trigger: "#portfolio", start: "top 60%" } });
+                    // --- MOBILE ANIMATIONS (Vertical Scroll Fallback) ---
+                    gsap.utils.toArray([
+                        '#about h2',
+                        '.services-heading h2',
+                        '#portfolio .portfolio-heading',
+                        '#projects h2',  
+                        '#stacked-cards h2'
+                    ]).forEach(heading => { 
+                        const splitWords = heading.querySelectorAll('.word');
+                        gsap.from(splitWords, {
+                            y: 30, opacity: 0, filter: 'blur(8px)', stagger: 0.04,
+                            duration: 1.2, ease: 'power3.out',
+                            scrollTrigger: {
+                                trigger: heading,
+                                start: "top 80%",
+                                once: true
+                            }
+                        });
+                    });
 
+                    // Keep secondary text and non-heading animations separate
+                    gsap.from("#about .about-subheading .word, #about .about-text .word", { y: 30, opacity: 0, filter: 'blur(8px)', duration: 1.2, ease: 'power3.out', stagger: 0.05, scrollTrigger: { trigger: "#about", start: "top 80%" } });
+                    gsap.from(".hybrid-card-figure", { y: 50, opacity: 0, stagger: 0.15, duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: ".cards-container", start: "top 80%" } });
+
+                    // Portfolio Marquee (Vertical Scroll Fallback)
+                    gsap.to(".portfolio-marquee-wrapper", { opacity: 1, x: 0, duration: 1.5, stagger: 0.2, ease: 'power2.out', scrollTrigger: { trigger: "#portfolio", start: "top 60%" } });
                     document.querySelectorAll(".portfolio-marquee-content").forEach(track => { track.innerHTML += track.innerHTML; });
                     gsap.to("#portfolio-row1-track", { xPercent: -50, ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 10 } });
                     gsap.fromTo("#portfolio-row2-track", { xPercent: -50 }, { xPercent: 0, ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 10 } });
                 }
-
-                // --- PROJECTS SECTION ANIMATION (FLOATING) ---
                 if (window.innerWidth > 768) { // Only run complex animation on desktop
-                    const projectsTl = gsap.timeline({
-                        scrollTrigger: { trigger: "#projects", start: "top top", end: "+=200%", pin: true, scrub: 1.5 }
-                    });
-                    projectsTl.fromTo("#projects h2", { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' });
-                    projectsTl.to("#projects h2", { opacity: 0, scale: 0.8, ease: 'power1.in', duration: 0.6 }, ">0.5");
+                    const projectsTl = gsap.timeline({
+                        scrollTrigger: { trigger: "#projects", start: "top top", end: "+=200%", pin: true, scrub: 1.5 }
+                    });
+                    // Step 1: Animate the heading in (scale up and fade in)
+                    projectsTl.fromTo("#projects h2", 
+                        { opacity: 0, scale: 1.2 }, 
+                        { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' });
+                    
+                    // REMOVED: projectsTl.to("#projects h2", { opacity: 0, scale: 0.8, ease: 'power1.in', duration: 0.6 }, ">0.5");
 
-                    const items = gsap.utils.toArray(".project-item");
+                    const items = gsap.utils.toArray(".project-item");
                     projectsTl.to(items, {
                         opacity: 1, scale: 0.6,
                         rotationZ: () => gsap.utils.random(-15, 15),
@@ -2086,12 +2131,13 @@
                         yPercent: 0, xPercent: -5, opacity: 1, rotate: -8, scale: 0.9,
                         filter: 'blur(0px)', ease: 'back.out(1.4)', duration: 1
                     }, "+=0.5");
-                    stackedCardsTl.to(".card-2", {
-                        yPercent: -5, xPercent: 0, opacity: 1, rotate: 0, scale: 1,
-                        filter: 'blur(0px)', ease: 'back.out(1.4)', duration: 1
-                    }, "+=0.5");
+
                     stackedCardsTl.to(".card-3", {
                         yPercent: 0, xPercent: 5, opacity: 1, rotate: 8, scale: 0.9,
+                        filter: 'blur(0px)', ease: 'back.out(1.4)', duration: 1
+                    }, "+=0.5");
+                    stackedCardsTl.to(".card-2", {
+                        yPercent: -5, xPercent: 0, opacity: 1, rotate: 0, scale: 1,
                         filter: 'blur(0px)', ease: 'back.out(1.4)', duration: 1
                     }, "+=0.5");
 
@@ -2162,13 +2208,13 @@
         // -----------------------------------------------------------------
         // 5. MAIN INITIALIZATION
         // -----------------------------------------------------------------
-        window.addEventListener('load', () => { 
-            ThreeSceneManager.init(); 
+        window.addEventListener('load', () => {
+            ThreeSceneManager.init();
             HybridCardManager.init();
-            AnimationManager.init(); 
+            AnimationManager.init();
             const portfolioBlurConfig = {
                 target: "parent",
-                height: "8rem",   
+                height: "8rem",
                 strength: 3,
                 divCount: 6,
                 curve: "bezier",
@@ -2177,7 +2223,7 @@
             };
             GradualBlurManager.create('#portfolio', { ...portfolioBlurConfig, position: "left" });
             GradualBlurManager.create('#portfolio', { ...portfolioBlurConfig, position: "right" });
- 
+
             loader.classList.add('hidden');
             ScrollTrigger.refresh();
             if (typeof joypixels !== 'undefined') {
@@ -2185,7 +2231,7 @@
             }
         });
         const HybridCardManager = {
-            init: function () { 
+            init: function () {
                 const rotateAmplitude = 15;
                 const scaleOnHover = 1.08;
                 const maxDisplacementScale = 120;
